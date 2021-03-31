@@ -21,7 +21,7 @@ def getSubprojectVersion(project) {
 		return version + "+uncommited"
 	}
 
-	return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex("${project.minecraft_version}").substring(0, 2)
+	return version + "+" + latestCommits.get(0).id.substring(0, 8) + "-${project.minecraft_version}")
 }
 
 allprojects {
