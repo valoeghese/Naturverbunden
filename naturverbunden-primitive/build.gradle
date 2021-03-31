@@ -1,10 +1,6 @@
 archivesBaseName = "naturverbunden-primitive"
 version = getSubprojectVersion(project)
 
-minecraft {
-	accessWidener = file("src/main/resources/nvb.aw")
-}
-
 dependencies {
 	compile project(path: ':naturverbunden-core', configuration: 'dev')
 }
