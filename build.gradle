@@ -8,8 +8,6 @@ if(rootProject.file("private.gradle").exists()) { //Publishing details
 	apply from: "private.gradle"
 }
 
-import org.apache.commons.codec.digest.DigestUtils
-
 def getSubprojectVersion(project) {
 	def version = "${project.mod_version}"
 
