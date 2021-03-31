@@ -25,8 +25,8 @@ import org.apache.logging.log4j.Logger;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
 import valoeghese.naturverbunden.common.primitive.PrimitiveContent;
-import valoeghese.naturverbunden.core.NVBFeatures;
 import valoeghese.naturverbunden.core.NVBRecipes;
+import valoeghese.naturverbunden.worldgen.primitive.PrimitiveWorldgen;
 
 public class Naturverbunden implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("Naturverbunden");
@@ -35,8 +35,8 @@ public class Naturverbunden implements ModInitializer {
 	public void onInitialize() {
 		PrimitiveContent.forceRegister();
 		NVBRecipes.initialise();
-		NVBFeatures.forceRegister();
-		NVBFeatures.initialiseWorldGen();
+		PrimitiveWorldgen.forceRegister();
+		PrimitiveWorldgen.initialiseWorldGen();
 	}
 
 	public static Identifier id(String id) {

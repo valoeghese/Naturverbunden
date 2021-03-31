@@ -3,11 +3,11 @@
   "package": "valoeghese.naturverbunden.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinHungerManager",
-    "MixinItem",
-    "MixinLivingEntity",
-    "MixinPlayerEntity",
-    "MixinServerWorld"
+    "health.MixinHungerManager",
+    "health.MixinLivingEntity",
+    "health.MixinPlayerEntity",
+    "health.MixinServerWorld",
+    "primitive.MixinItem"
   ],
   "client": [
   ],

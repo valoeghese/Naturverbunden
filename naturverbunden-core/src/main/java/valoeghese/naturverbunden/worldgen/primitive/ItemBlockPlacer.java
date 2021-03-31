@@ -33,7 +33,7 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.gen.placer.BlockPlacer;
 import net.minecraft.world.gen.placer.BlockPlacerType;
 import valoeghese.naturverbunden.common.primitive.ItemBlockEntity;
-import valoeghese.naturverbunden.core.NVBFeatures;
+import valoeghese.naturverbunden.core.NVBFeatureUtils;
 
 public class ItemBlockPlacer extends BlockPlacer {
 	public ItemBlockPlacer(Item item) {
@@ -51,7 +51,7 @@ public class ItemBlockPlacer extends BlockPlacer {
 
 	@Override
 	protected BlockPlacerType<?> getType() {
-		return NVBFeatures.ITEM_BLOCK_PLACER;
+		return PrimitiveWorldgen.ITEM_BLOCK_PLACER;
 	}
 
 	public static final Codec<ItemBlockPlacer> CODEC = RecordCodecBuilder.create(instance -> {
