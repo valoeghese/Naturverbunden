@@ -1,0 +1,9 @@
+archivesBaseName = "naturverbunden-core"
+version = getSubprojectVersion(project)
+
+minecraft {
+	accessWidener = file("src/main/resources/nvb.aw")
+}
+
+dependencies {
+}

@@ -6,5 +6,11 @@ pluginManagement {
             url = 'https://maven.fabricmc.net/'
         }
         gradlePluginPortal()
+		mavenLocal()
     }
 }
+
+rootProject.name = "naturverbunden"
+
+include 'naturverbunden-core'
+include 'naturverbunden-primitive'
