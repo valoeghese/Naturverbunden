@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "nvb",
+  "version": "1.0.0",
+  
+  "name": "Naturverbunden",
+  "description": "Mod Description.",
+  "authors": [
+    "Me!"
+  ],
+  
+  "icon": "assets/naturverbunden/icon.png",
+  "license": "No Licence.",
+  
+  "environment": "*",
+  
+  "entrypoints": {
+    "main": [
+      "valoeghese.naturverbunden.Naturverbunden"
+    ],
+    "client": [
+      "valoeghese.naturverbunden.client.NVBClient"
+    ],
+    "cardinal-components-entity": [
+      "valoeghese.naturverbunden.init.NVBComponents"
+    ]
+  },
+  
+  "accessWidener": "nvb.aw",
+
+  "depends": {
+    "fabricloader": ">=0.4.0"
+  },
+  
+  "mixins": [
+    "naturverbunden.mixins.json"
+  ],
+  
+  "custom": {
+    "cardinal-components": [
+      "nvb:playerstats"
+    ]
+  }
+}
