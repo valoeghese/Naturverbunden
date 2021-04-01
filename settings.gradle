@@ -13,4 +13,7 @@ pluginManagement {
 rootProject.name = "naturverbunden"
 
 include 'naturverbunden-core'
+
+include 'naturverbunden-health'
 include 'naturverbunden-primitive'
+include 'naturverbunden-terrain'

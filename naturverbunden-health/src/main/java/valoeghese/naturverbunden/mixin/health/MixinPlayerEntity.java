@@ -22,30 +22,29 @@ package valoeghese.naturverbunden.mixin.health;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import valoeghese.naturverbunden.core.NVBComponents;
+import valoeghese.naturverbunden.HealthModule;
 
-@Mixin(ServerWorld.class)
-public class MixinServerWorld {
-	@Inject(at = @At("HEAD"), method = "wakeSleepingPlayers")
-	private void onWakeSleepingPlayers(CallbackInfo info) {
-		@SuppressWarnings("resource")
-		World world = (World) (Object) this;
+@Mixin(PlayerEntity.class)
+public abstract class MixinPlayerEntity extends LivingEntity {
+	protected MixinPlayerEntity(EntityType<? extends LivingEntity> entityType, World world) {
+		super(entityType, world);
+	}
 
-		if (world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)) {
-			world.getPlayers().stream().filter(LivingEntity::isSleeping).forEach(player -> {
-				if (player.getHealth() < player.getMaxHealth() && player.getHungerManager().getFoodLevel() > 0) {
-					player.heal(player.getMaxHealth() / 2);
-					player.addExhaustion(30.0f);
-					NVBComponents.getStats((ServerPlayerEntity) player).resetHealPoints();
-				}
-			});
+	/**
+	 * @reason replace healing with long/short rest.
+	 */
+	@Inject(at = @At("RETURN"), method = "canFoodHeal", cancellable = true)
+	private void onCanFoodHeal(CallbackInfoReturnable<Boolean> cir) {
+		if (!this.world.isClient()) {
+			cir.setReturnValue(cir.getReturnValueZ() && HealthModule.getStats((ServerPlayerEntity) (Object) this).allowNaturalHeal(this.world.getTime()));
 		}
 	}
+
 }

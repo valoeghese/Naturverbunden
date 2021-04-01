@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "nvb-health",
+  "version": "${version}",
+  
+  "name": "Naturverbunden Health Module",
+  "description": "A realistic progression overhaul for minecraft.",
+  "authors": [
+    "Mekal \"Valoeghese\" Covic"
+  ],
+
+  "icon": "assets/nvb-health/icon.png",
+  "license": "LGPLv3",
+
+  "environment": "*",
+
+  "entrypoints": {
+    "cardinal-components-entity": [
+      "valoeghese.naturverbunden.HealthModule"
+    ]
+  },
+
+  "depends": {
+    "fabricloader": ">=0.4.0"
+  },
+  
+  "mixins": [
+    "nvb-health.mixins.json"
+  ],
+  
+  "custom": {
+    "cardinal-components": [
+      "nvb:playerstats"
+    ]
+  }
+}

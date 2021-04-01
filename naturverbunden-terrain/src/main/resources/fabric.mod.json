@@ -1,26 +1,30 @@
 {
   "schemaVersion": 1,
-  "id": "nvb",
+  "id": "nvb-terrain",
   "version": "${version}",
   
-  "name": "Naturverbunden",
+  "name": "Naturverbunden Terrain Module",
   "description": "A realistic progression overhaul for minecraft.",
   "authors": [
     "Mekal \"Valoeghese\" Covic"
   ],
-  
-  "icon": "assets/nvb/icon.png",
+
+  "icon": "assets/nvb-terrain/icon.png",
   "license": "LGPLv3",
   
   "environment": "*",
   
-  "accessWidener": "nvb.aw",
+  "entrypoints": {
+    "main": [
+      "valoeghese.naturverbunden.TerrainModule"
+    ]
+  },
 
   "depends": {
     "fabricloader": ">=0.4.0"
   },
   
   "mixins": [
-    "naturverbunden.mixins.json"
+    "nvb-terrain.mixins.json"
   ]
 }

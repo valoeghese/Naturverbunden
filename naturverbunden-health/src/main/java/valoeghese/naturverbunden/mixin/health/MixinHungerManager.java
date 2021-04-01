@@ -26,12 +26,12 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
-import valoeghese.naturverbunden.core.NVBComponents;
+import valoeghese.naturverbunden.HealthModule;
 
 @Mixin(HungerManager.class)
 public class MixinHungerManager {
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;heal(F)V"), method = "update(Lnet/minecraft/entity/player/PlayerEntity;)V")
 	private void redirectUpdateHeal(PlayerEntity player, float amount) {
-		player.heal(NVBComponents.getStats((ServerPlayerEntity) player).expendHealPoints(amount));
+		player.heal(HealthModule.getStats((ServerPlayerEntity) player).expendHealPoints(amount));
 	}
 }

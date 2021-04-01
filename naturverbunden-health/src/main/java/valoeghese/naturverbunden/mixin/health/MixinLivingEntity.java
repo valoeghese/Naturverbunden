@@ -20,31 +20,35 @@
 package valoeghese.naturverbunden.mixin.health;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
-import valoeghese.naturverbunden.core.NVBComponents;
+import valoeghese.naturverbunden.HealthModule;
 
-@Mixin(PlayerEntity.class)
-public abstract class MixinPlayerEntity extends LivingEntity {
-	protected MixinPlayerEntity(EntityType<? extends LivingEntity> entityType, World world) {
-		super(entityType, world);
+@Mixin(LivingEntity.class)
+public abstract class MixinLivingEntity extends Entity {
+	public MixinLivingEntity(EntityType<?> type, World world) {
+		super(type, world);
 	}
 
-	/**
-	 * @reason replace healing with long/short rest.
-	 */
-	@Inject(at = @At("RETURN"), method = "canFoodHeal", cancellable = true)
-	private void onCanFoodHeal(CallbackInfoReturnable<Boolean> cir) {
-		if (!this.world.isClient()) {
-			cir.setReturnValue(cir.getReturnValueZ() && NVBComponents.getStats((ServerPlayerEntity) (Object) this).allowNaturalHeal(this.world.getTime()));
+	@Inject(at = @At("HEAD"), method = "setSprinting")
+	private void onSetSprinting(boolean sprinting, CallbackInfo info) {
+		LivingEntity self = (LivingEntity) (Object) this;
+
+		if (self instanceof ServerPlayerEntity) {
+			ServerPlayerEntity player = (ServerPlayerEntity) self;
+			HealthModule.getStats((ServerPlayerEntity) player).setUnlockVonSprint(this.world.getTime(), !sprinting);
 		}
 	}
 
+	@Shadow
+	public abstract AttributeContainer getAttributes();
 }

@@ -20,35 +20,32 @@
 package valoeghese.naturverbunden.mixin.health;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import valoeghese.naturverbunden.core.NVBComponents;
+import valoeghese.naturverbunden.HealthModule;
 
-@Mixin(LivingEntity.class)
-public abstract class MixinLivingEntity extends Entity {
-	public MixinLivingEntity(EntityType<?> type, World world) {
-		super(type, world);
-	}
+@Mixin(ServerWorld.class)
+public class MixinServerWorld {
+	@Inject(at = @At("HEAD"), method = "wakeSleepingPlayers")
+	private void onWakeSleepingPlayers(CallbackInfo info) {
+		@SuppressWarnings("resource")
+		World world = (World) (Object) this;
 
-	@Inject(at = @At("HEAD"), method = "setSprinting")
-	private void onSetSprinting(boolean sprinting, CallbackInfo info) {
-		LivingEntity self = (LivingEntity) (Object) this;
-
-		if (self instanceof ServerPlayerEntity) {
-			ServerPlayerEntity player = (ServerPlayerEntity) self;
-			NVBComponents.getStats((ServerPlayerEntity) player).setUnlockVonSprint(this.world.getTime(), !sprinting);
+		if (world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)) {
+			world.getPlayers().stream().filter(LivingEntity::isSleeping).forEach(player -> {
+				if (player.getHealth() < player.getMaxHealth() && player.getHungerManager().getFoodLevel() > 0) {
+					player.heal(player.getMaxHealth() / 2);
+					player.addExhaustion(30.0f);
+					HealthModule.getStats((ServerPlayerEntity) player).resetHealPoints();
+				}
+			});
 		}
 	}
-
-	@Shadow
-	public abstract AttributeContainer getAttributes();
 }

@@ -1,8 +1,12 @@
 {
   "required": true,
-  "package": "valoeghese.naturverbunden.mixin",
+  "package": "valoeghese.naturverbunden.mixin.health",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinHungerManager",
+    "MixinLivingEntity",
+    "MixinPlayerEntity",
+    "MixinServerWorld"
   ],
   "client": [
   ],

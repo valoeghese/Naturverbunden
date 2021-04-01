@@ -1,8 +1,9 @@
 {
   "required": true,
-  "package": "valoeghese.naturverbunden.mixin",
+  "package": "valoeghese.naturverbunden.mixin.primitive",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinItem"
   ],
   "client": [
   ],

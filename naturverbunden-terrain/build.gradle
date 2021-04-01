@@ -1,0 +1,7 @@
+archivesBaseName = "naturverbunden-terrain"
+version = getSubprojectVersion(project)
+
+dependencies {
+	compile project(path: ':naturverbunden-core')
+	compile project(path: ':naturverbunden-primitive')
+}
