@@ -1,38 +1,33 @@
 {
   "schemaVersion": 1,
-  "id": "nvb",
+  "id": "nvb-primitive",
   "version": "${version}",
   
-  "name": "Naturverbunden",
+  "name": "Naturverbunden Primitive Module",
   "description": "A realistic progression overhaul for minecraft.",
   "authors": [
     "Mekal \"Valoeghese\" Covic"
   ],
-  
-  "icon": "assets/nvb/icon.png",
+
+  "icon": "assets/nvb-primitive/icon.png",
   "license": "LGPLv3",
   
   "environment": "*",
   
   "entrypoints": {
-    "cardinal-components-entity": [
-      "valoeghese.naturverbunden.init.NVBComponents"
+    "main": [
+      "valoeghese.naturverbunden.PrimitiveModule"
+    ],
+    "client": [
+      "valoeghese.naturverbunden.primitive.PrimitiveModuleClient"
     ]
   },
-  
-  "accessWidener": "nvb.aw",
 
   "depends": {
     "fabricloader": ">=0.4.0"
   },
   
   "mixins": [
-    "naturverbunden.mixins.json"
-  ],
-  
-  "custom": {
-    "cardinal-components": [
-      "nvb:playerstats"
-    ]
-  }
+    "nvb-primitive.mixins.json"
+  ]
 }

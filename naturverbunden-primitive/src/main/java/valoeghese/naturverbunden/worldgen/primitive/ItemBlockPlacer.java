@@ -32,7 +32,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.gen.placer.BlockPlacer;
 import net.minecraft.world.gen.placer.BlockPlacerType;
-import valoeghese.naturverbunden.common.primitive.ItemBlockEntity;
+import valoeghese.naturverbunden.block.primitive.ItemBlockEntity;
 import valoeghese.naturverbunden.core.NVBFeatureUtils;
 
 public class ItemBlockPlacer extends BlockPlacer {

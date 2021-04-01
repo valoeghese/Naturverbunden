@@ -20,6 +20,7 @@
 package valoeghese.naturverbunden.mechanics.primitive;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 
 public class PrimitiveCrafting {
 	public static boolean match(List<Item> ingredients) {
@@ -68,6 +70,10 @@ public class PrimitiveCrafting {
 
 	public static void addRecipe(List<Item> ingredients, Item result) {
 		RECIPES.put(ingredients, result);
+	}
+
+	public static void addDefaultRecipes() {
+		addRecipe(Arrays.asList(Items.STICK, Items.STICK, Items.FLINT), Items.DIAMOND);
 	}
 
 	private static final Map<List<Item>, Item> RECIPES = new HashMap<>();

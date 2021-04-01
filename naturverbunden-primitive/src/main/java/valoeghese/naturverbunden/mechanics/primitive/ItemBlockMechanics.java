@@ -27,8 +27,8 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import valoeghese.naturverbunden.common.primitive.ItemBlockEntity;
-import valoeghese.naturverbunden.common.primitive.PrimitiveContent;
+import valoeghese.naturverbunden.block.primitive.ItemBlockEntity;
+import valoeghese.naturverbunden.block.primitive.PrimitiveBlocks;
 
 public class ItemBlockMechanics {
 	public static void placeItem(ItemUsageContext context, Consumer<ActionResult> sreturn) {
@@ -39,7 +39,7 @@ public class ItemBlockMechanics {
 		// If it isn't empty nor it has enchantments and it's not food (unless you're sneaking) and the position valid
 		if (!stack.isEmpty() && !stack.hasEnchantments() && (!stack.isFood() || context.getPlayer().isSneaking()) && !world.isOutOfHeightLimit(pos)) {
 			if (world.isAir(pos)) {
-				BlockState state = PrimitiveContent.ITEM_BLOCK.getDefaultState();
+				BlockState state = PrimitiveBlocks.ITEM_BLOCK.getDefaultState();
 
 				// Set the block in the world
 				world.setBlockState(pos, state);

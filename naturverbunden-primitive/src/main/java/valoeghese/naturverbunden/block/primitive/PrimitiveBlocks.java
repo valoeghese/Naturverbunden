@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden.common.primitive;
+package valoeghese.naturverbunden.block.primitive;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.AbstractBlock;
@@ -27,7 +27,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.sound.BlockSoundGroup;
 import valoeghese.naturverbunden.core.NVBBlockUtils;
 
-public class PrimitiveContent extends NVBBlockUtils {
+public class PrimitiveBlocks extends NVBBlockUtils {
 	public static final Block ITEM_BLOCK = register("item_block", AbstractBlock.Settings.of(Material.DECORATION)
 			.strength(-1.0f, 0.4f)
 			.noCollision()

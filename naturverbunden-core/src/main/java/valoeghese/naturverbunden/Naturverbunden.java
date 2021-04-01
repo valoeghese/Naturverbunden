@@ -22,22 +22,10 @@ package valoeghese.naturverbunden;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
-import valoeghese.naturverbunden.common.primitive.PrimitiveContent;
-import valoeghese.naturverbunden.core.NVBRecipes;
-import valoeghese.naturverbunden.worldgen.primitive.PrimitiveWorldgen;
 
-public class Naturverbunden implements ModInitializer {
+public class Naturverbunden {
 	public static final Logger LOGGER = LogManager.getLogger("Naturverbunden");
-
-	@Override
-	public void onInitialize() {
-		PrimitiveContent.forceRegister();
-		NVBRecipes.initialise();
-		PrimitiveWorldgen.forceRegister();
-		PrimitiveWorldgen.initialiseWorldGen();
-	}
 
 	public static Identifier id(String id) {
 		return new Identifier("nvb", id);

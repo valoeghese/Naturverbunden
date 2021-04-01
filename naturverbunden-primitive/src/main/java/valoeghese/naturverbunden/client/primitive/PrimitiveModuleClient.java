@@ -17,20 +17,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden.client;
+package valoeghese.naturverbunden.client.primitive;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import valoeghese.naturverbunden.Naturverbunden;
-import valoeghese.naturverbunden.client.primitive.ItemBlockRenderer;
-import valoeghese.naturverbunden.common.primitive.PrimitiveContent;
+import valoeghese.naturverbunden.block.primitive.PrimitiveBlocks;
 
-public class NVBClient implements ClientModInitializer {
+public class PrimitiveModuleClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		Naturverbunden.LOGGER.info("Initializing Client");
-		BlockEntityRendererRegistry.INSTANCE.register(PrimitiveContent.ITEM_BLOCK_ENTITY, ItemBlockRenderer::new);
+		Naturverbunden.LOGGER.info("[Primitive] Initializing Client");
+		BlockEntityRendererRegistry.INSTANCE.register(PrimitiveBlocks.ITEM_BLOCK_ENTITY, ItemBlockRenderer::new);
 	}
 
 }

@@ -28,7 +28,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Vec3f;
-import valoeghese.naturverbunden.common.primitive.ItemBlockEntity;
+import valoeghese.naturverbunden.block.primitive.ItemBlockEntity;
 
 public class ItemBlockRenderer implements BlockEntityRenderer<ItemBlockEntity> {
 	public ItemBlockRenderer(BlockEntityRendererFactory.Context ctx) {

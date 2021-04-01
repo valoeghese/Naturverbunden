@@ -27,7 +27,7 @@ import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.placer.BlockPlacerType;
-import valoeghese.naturverbunden.common.primitive.PrimitiveContent;
+import valoeghese.naturverbunden.block.primitive.PrimitiveBlocks;
 import valoeghese.naturverbunden.core.NVBFeatureUtils;
 
 public class PrimitiveWorldgen extends NVBFeatureUtils {
@@ -36,10 +36,10 @@ public class PrimitiveWorldgen extends NVBFeatureUtils {
 	// Forest Ground Sticks
 	// TODO make this a tree decorator
 	private static final RegistryKey<ConfiguredFeature<?, ?>> K_FOREST_GROUND_STICKS = key("forest_ground_sticks");
-	public static final ConfiguredFeature<?, ?> FOREST_GROUND_STICKS = createFrequentPatch(K_FOREST_GROUND_STICKS, 6, PrimitiveContent.ITEM_BLOCK.getDefaultState(), new ItemBlockPlacer(Items.STICK)); 
+	public static final ConfiguredFeature<?, ?> FOREST_GROUND_STICKS = createFrequentPatch(K_FOREST_GROUND_STICKS, 6, PrimitiveBlocks.ITEM_BLOCK.getDefaultState(), new ItemBlockPlacer(Items.STICK)); 
 
 	private static final RegistryKey<ConfiguredFeature<?, ?>> K_SPARSE_GROUND_STICKS = key("sparse_ground_sticks");
-	public static final ConfiguredFeature<?, ?> SPARSE_GROUND_STICKS = createFrequentPatch(K_SPARSE_GROUND_STICKS, 2, PrimitiveContent.ITEM_BLOCK.getDefaultState(), new ItemBlockPlacer(Items.STICK)); 
+	public static final ConfiguredFeature<?, ?> SPARSE_GROUND_STICKS = createFrequentPatch(K_SPARSE_GROUND_STICKS, 2, PrimitiveBlocks.ITEM_BLOCK.getDefaultState(), new ItemBlockPlacer(Items.STICK)); 
 
 	public static final ConfiguredFeature<?, ?> forceRegister() {
 		return FOREST_GROUND_STICKS;

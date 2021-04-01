@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden.common.primitive;
+package valoeghese.naturverbunden.block.primitive;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +41,7 @@ import valoeghese.naturverbunden.mechanics.primitive.PrimitiveCrafting;
 
 public class ItemBlockEntity extends BlockEntity {
 	public ItemBlockEntity(BlockPos pos, BlockState state) {
-		super(PrimitiveContent.ITEM_BLOCK_ENTITY, pos, state);
+		super(PrimitiveBlocks.ITEM_BLOCK_ENTITY, pos, state);
 		this.items = DefaultedList.ofSize(3, ItemStack.EMPTY);
 	}
 
