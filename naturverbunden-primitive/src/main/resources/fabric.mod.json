@@ -19,7 +19,7 @@
       "valoeghese.naturverbunden.PrimitiveModule"
     ],
     "client": [
-      "valoeghese.naturverbunden.primitive.PrimitiveModuleClient"
+      "valoeghese.naturverbunden.client.primitive.PrimitiveModuleClient"
     ]
   },
 
