@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "nvb-core",
+  "id": "nvb",
   "version": "${version}",
   
-  "name": "Naturverbunden Core Module",
+  "name": "Naturverbunden",
   "description": "A realistic progression overhaul for minecraft.",
   "authors": [
     "Mekal \"Valoeghese\" Covic"
@@ -13,14 +13,8 @@
   "license": "LGPLv3",
   
   "environment": "*",
-  
-  "accessWidener": "nvb.aw",
 
   "depends": {
     "fabricloader": ">=0.4.0"
-  },
-  
-  "mixins": [
-    "nvb-core.mixins.json"
-  ]
+  }
 }

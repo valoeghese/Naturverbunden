@@ -6,7 +6,6 @@ minecraft {
 }
 
 dependencies {
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	implementation "tk.valoeghese:ZoesteriaConfig:${project.zoesteria_config_version}"
 	include "tk.valoeghese:ZoesteriaConfig:${project.zoesteria_config_version}"
 }
