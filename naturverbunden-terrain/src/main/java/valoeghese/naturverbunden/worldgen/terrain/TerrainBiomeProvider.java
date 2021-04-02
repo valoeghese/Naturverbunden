@@ -25,6 +25,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.dynamic.RegistryLookupCodec;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -48,7 +49,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 		this.humidityNoise = new Noise(gr, 1);
 		this.mountainChain = new Noise(gr, 1);
 		this.mountainChainStretch = new Noise(gr, 1);
-		this.tempOffset = (gr.nextDouble() - 0.5) * 20; // -10 to 10
+		this.tempOffset = (gr.nextDouble() - 0.5) * 6.66; // -3.33 to 3.33
 	}
 
 	private final long seed;
@@ -71,12 +72,28 @@ public class TerrainBiomeProvider extends BiomeSource {
 		double humidity = this.humidityNoise.sample(x * humidityFrequency, z * humidityFrequency);
 		// Chain Sample. Used for mountain chains and fake orthographic lift humidity modification
 		double chainSample = this.mountainChain.sample(x * chainFrequency, z);
-		// Normalised mountain terrain strength between 0 and 1.
-		double mountainChain = chainNormaliser * Math.max(0.0, chainCutoff - Math.abs(chainSample));
-		
+		// mountain terrain strength.
+		double mountainChain = chainCutoff - Math.abs(chainSample);
+		boolean applyLiftToHumidity = mountainChain > -chainCutoff;
+		// normalised between 0 and 1
+		mountainChain = chainNormaliser * Math.max(0.0, mountainChain);
+
+		// Fake Orthographic Lift and Rain Shadow
+		if (applyLiftToHumidity) {
+			humidity += 0.3 * (chainSample > 0 ? 1 : -1);
+		}
+
+		// https://www.desmos.com/calculator/iab0cvwydf
+		// This temperature ranges from 0-3, and represents HOW COLD SOMETHING IS
+		// IF YOU ARE READING THIS PLEASE NOTE THAT HIGHER VALUES ARE COLDER TEMPERATURES
+		int temperature = calculateTemperature(z + 60 * MathHelper.sin(0.01f * x));
 		
 	}
 
+	private int calculateTemperature(double z) {
+		double rawVal = Math.abs(z * TEMPERATURE_SCALE + this.tempOffset) + 0.5;
+		return Math.min(3, MathHelper.floor(rawVal));
+	}
 	@Override
 	public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
 		return this.biomeRegistry.get(this.getTerrainType(biomeX << 2, biomeZ << 2).getBiome());
@@ -93,4 +110,6 @@ public class TerrainBiomeProvider extends BiomeSource {
 	public BiomeSource withSeed(long seed) {
 		return new TerrainBiomeProvider(this.biomeRegistry, seed);
 	}
+
+	private static final double TEMPERATURE_SCALE = 1.0 / 450.0;
 }
