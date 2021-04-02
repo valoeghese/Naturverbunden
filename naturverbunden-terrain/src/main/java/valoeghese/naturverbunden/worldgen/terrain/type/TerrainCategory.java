@@ -21,7 +21,7 @@ package valoeghese.naturverbunden.worldgen.terrain.type;
 
 public enum TerrainCategory {
 	OCEAN,
-	EDGE,
 	LAND,
+	EDGE,
 	RIVER
 }

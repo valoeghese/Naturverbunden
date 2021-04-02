@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden.worldgen.terrain.layer;
+package valoeghese.naturverbunden.worldgen.terrain.layer.util;
 
 import java.util.Arrays;
 
@@ -29,6 +29,7 @@ import net.minecraft.world.biome.layer.util.LayerSampler;
 /**
  * Caching Layer Sampler that shortens the number of possible hash values via using an `original & mask` algorithm, and uses an array lookup.
  * Original concept by Gegy, implementation written from scratch by me.
+ * @implNote originally a mixin (warning: mojmap): https://github.com/valoeghese/EpicValoMod/blob/master/src/main/java/valoeghese/epic/mixin/MixinLazyArea.java
  */
 public class FleiﬂigArea implements LayerSampler {
 	public FleiﬂigArea(Long2IntLinkedOpenHashMap map, int size, LayerOperator operator) {

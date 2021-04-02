@@ -19,27 +19,28 @@
 
 package valoeghese.naturverbunden.worldgen.terrain.layer;
 
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.util.LayerFactory;
-import valoeghese.naturverbunden.worldgen.terrain.layer.util.FleiﬂigArea;
+import net.minecraft.world.biome.layer.type.CrossSamplingLayer;
+import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
 
-public class TerrainTypeSampler {
-	private final FleiﬂigArea sampler;
+public enum DenoteBeachesLayer implements CrossSamplingLayer {
+	INSTANCE;
 
-	public TerrainTypeSampler(LayerFactory<FleiﬂigArea> layerFactory) {
-		this.sampler = layerFactory.make();
-	}
+	@Override
+	public int sample(LayerRandomnessSource rand, int n, int e, int s, int w, int centre) {
+		int toc = centre >> INFO_BITS; // type of centre
+		int ton = n >> INFO_BITS; // ton of bricks
+		int toe = e >> INFO_BITS; // my big toe
+		int tos = s >> INFO_BITS; // terms of service
+		int tow = w >> INFO_BITS; // what happens if you leave your car on private property
 
-	public TerrainCategory sample(Registry<Biome> biomeRegistry, int x, int z) {
-		int i = this.sampler.sample(x, z);
-		TerrainCategory[] values = TerrainCategory.values();
-
-		if (i >= values.length) {
-			throw new IllegalStateException("Invalid terrain category id emitted by layers: " + i);
-		} else {
-			return values[i];
+		if (toc != 0 || 0 == ton || 0 == toe || 0 == tos || 0 == tow) {
+			return (TerrainCategory.EDGE.ordinal() << INFO_BITS) | (centre & INFO_BITS);
 		}
+
+		return centre;
 	}
+	
+	// Assuming 4 bits of information after the initial type data
+	private static int INFO_BITS = 4;
 }

@@ -19,27 +19,37 @@
 
 package valoeghese.naturverbunden.worldgen.terrain.layer;
 
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.util.LayerFactory;
-import valoeghese.naturverbunden.worldgen.terrain.layer.util.FleiﬂigArea;
-import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
+import net.minecraft.world.biome.layer.type.CrossSamplingLayer;
+import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
-public class TerrainTypeSampler {
-	private final FleiﬂigArea sampler;
+public enum HillsInformationLayer implements CrossSamplingLayer {
+	INSTANCE;
 
-	public TerrainTypeSampler(LayerFactory<FleiﬂigArea> layerFactory) {
-		this.sampler = layerFactory.make();
-	}
+	@Override
+	public int sample(LayerRandomnessSource context, int n, int e, int s, int w, int centre) {
+		int similarity = 0;
+		int value = centre << 1;
 
-	public TerrainCategory sample(Registry<Biome> biomeRegistry, int x, int z) {
-		int i = this.sampler.sample(x, z);
-		TerrainCategory[] values = TerrainCategory.values();
-
-		if (i >= values.length) {
-			throw new IllegalStateException("Invalid terrain category id emitted by layers: " + i);
-		} else {
-			return values[i];
+		if (n == centre) {
+			similarity++;
 		}
+
+		if (e == centre) {
+			similarity++;
+		}
+
+		if (s == centre) {
+			similarity++;
+		}
+
+		if (w == centre) {
+			similarity++;
+		}
+		
+		if (similarity > 3 && context.nextInt(3) == 0) {
+			value |= 1;
+		}
+		
+		return value;
 	}
 }

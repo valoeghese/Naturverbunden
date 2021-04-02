@@ -19,27 +19,14 @@
 
 package valoeghese.naturverbunden.worldgen.terrain.layer;
 
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.util.LayerFactory;
-import valoeghese.naturverbunden.worldgen.terrain.layer.util.FleiﬂigArea;
-import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
+import net.minecraft.world.biome.layer.type.InitLayer;
+import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
-public class TerrainTypeSampler {
-	private final FleiﬂigArea sampler;
+public enum LandOceanLayer implements InitLayer {
+	INSTANCE;
 
-	public TerrainTypeSampler(LayerFactory<FleiﬂigArea> layerFactory) {
-		this.sampler = layerFactory.make();
-	}
-
-	public TerrainCategory sample(Registry<Biome> biomeRegistry, int x, int z) {
-		int i = this.sampler.sample(x, z);
-		TerrainCategory[] values = TerrainCategory.values();
-
-		if (i >= values.length) {
-			throw new IllegalStateException("Invalid terrain category id emitted by layers: " + i);
-		} else {
-			return values[i];
-		}
+	@Override
+	public int sample(LayerRandomnessSource rand, int x, int z) {
+		return x == 0 && z == 0 ? 1 : (rand.nextInt(6) == 0 ? 1 : 0); // Land 0b1 or Ocean 0b0
 	}
 }

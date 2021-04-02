@@ -19,27 +19,23 @@
 
 package valoeghese.naturverbunden.worldgen.terrain.layer;
 
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.util.LayerFactory;
-import valoeghese.naturverbunden.worldgen.terrain.layer.util.FleiﬂigArea;
-import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
+import net.minecraft.world.biome.layer.type.IdentitySamplingLayer;
+import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
-public class TerrainTypeSampler {
-	private final FleiﬂigArea sampler;
+public enum InformationLayer implements IdentitySamplingLayer {
+	ONE_BIT(1),
+	TWO_BIT(2);
 
-	public TerrainTypeSampler(LayerFactory<FleiﬂigArea> layerFactory) {
-		this.sampler = layerFactory.make();
+	private InformationLayer(int bits) {
+		this.bits = bits;
 	}
 
-	public TerrainCategory sample(Registry<Biome> biomeRegistry, int x, int z) {
-		int i = this.sampler.sample(x, z);
-		TerrainCategory[] values = TerrainCategory.values();
+	private final int bits;
 
-		if (i >= values.length) {
-			throw new IllegalStateException("Invalid terrain category id emitted by layers: " + i);
-		} else {
-			return values[i];
-		}
+	@Override
+	public int sample(LayerRandomnessSource context, int value) {
+		value <<= this.bits; // shift the existing data over to make space
+		value |= context.nextInt(0b11 >> (2 - this.bits)); // Add relevant bits pseudorandomly in the new space
+		return value; // return the resultant value containing the old and new information
 	}
 }
