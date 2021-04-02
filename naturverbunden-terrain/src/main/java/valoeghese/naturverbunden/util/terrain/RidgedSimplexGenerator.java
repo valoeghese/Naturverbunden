@@ -17,15 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden;
+package valoeghese.naturverbunden.util.terrain;
 
-import net.fabricmc.api.ModInitializer;
+import java.util.Random;
 
-public class TerrainModule implements ModInitializer {
-
-	@Override
-	public void onInitialize() {
-		Naturverbunden.LOGGER.info("[Terrain] Initialising!");
+public class RidgedSimplexGenerator extends OpenSimplexGenerator {
+	public RidgedSimplexGenerator(Random rand) {
+		super(rand);
 	}
 
+	@Override
+	public double sample(double x) {
+		return 1 - Math.abs(super.sample(x)) * 2;
+	}
+
+	@Override
+	public double sample(double x, double y) {
+		return 1 - Math.abs(super.sample(x, y)) * 2;
+	}
 }

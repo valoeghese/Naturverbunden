@@ -17,19 +17,24 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden.core;
+package valoeghese.naturverbunden.worldgen.terrain.type;
 
-public class NVBBiomes {
-	// Mountains				- Mountain Chain Gen. Also Moor
-	// Plains; Forest			- Vanilla Style
-	// Scrubland				- I described this biome somewhere already
-	// Ice Cap					- Vanilla's Ice Bioems and frozen ocean
-	// Boreal Forest 			- (aspen and pines) 
-	// Rainforest				- Like jungle but less dense. Also a TBO redwood edition, and a hardened clay edition
-	// Caldera					- Important source for some minerals
-	// Swampland:				- bayou (like tbo), marshland (reeds)
-	// Savanna					- Savanna. Savanna. Savanna.
-	// Desert					- Hot, Temperate, Outback
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
 
-	// Ocean types and Rivers and Shield
+/**
+ * Represents a terrain type.
+ */
+public abstract class TerrainType {
+	protected TerrainType(RegistryKey<Biome> biome) {
+		this.biome = biome;
+	}
+
+	private final RegistryKey<Biome> biome;
+
+	public final RegistryKey<Biome> getBiome() {
+		return this.biome;
+	}
+
+	public abstract double getHeight(int x, int z);
 }

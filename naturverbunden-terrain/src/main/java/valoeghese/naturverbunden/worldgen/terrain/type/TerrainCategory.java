@@ -17,15 +17,11 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden;
+package valoeghese.naturverbunden.worldgen.terrain.type;
 
-import net.fabricmc.api.ModInitializer;
-
-public class TerrainModule implements ModInitializer {
-
-	@Override
-	public void onInitialize() {
-		Naturverbunden.LOGGER.info("[Terrain] Initialising!");
-	}
-
+public enum TerrainCategory {
+	OCEAN,
+	EDGE,
+	LAND,
+	RIVER
 }

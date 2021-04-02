@@ -17,15 +17,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden;
+package valoeghese.naturverbunden.worldgen.terrain;
 
-import net.fabricmc.api.ModInitializer;
+public class TerrainBiomes {
+	// Mountains				- Mountain Chain Gen. Also Moor
+	// Plains; Forest			- Vanilla Style
+	// Scrubland				- I described this biome somewhere already
+	// Ice Cap					- Vanilla's Ice Bioems and frozen ocean
+	// Boreal Forest 			- (aspen and pines) 
+	// Rainforest				- Like jungle but less dense. Also a TBO redwood edition, and a hardened clay edition
+	// Caldera					- Important source for some minerals
+	// Swampland:				- bayou (like tbo), marshland (reeds)
+	// Savanna					- Savanna. Savanna. Savanna.
+	// Desert					- Hot, Temperate, Outback
 
-public class TerrainModule implements ModInitializer {
-
-	@Override
-	public void onInitialize() {
-		Naturverbunden.LOGGER.info("[Terrain] Initialising!");
-	}
-
+	// Ocean types and Rivers and Shield
 }
