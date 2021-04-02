@@ -28,9 +28,8 @@ import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import valoeghese.naturverbunden.util.terrain.Noise;
-import valoeghese.naturverbunden.util.terrain.RidgedSimplexGenerator;
+import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
 public class TerrainBiomeProvider extends BiomeSource {
 	public static final Codec<TerrainBiomeProvider> CODEC = RecordCodecBuilder.create(instance ->
@@ -47,23 +46,40 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 		Random gr = new Random(seed);
 		this.humidityNoise = new Noise(gr, 1);
-		this.mountainChainNoise = new Noise(gr, 3, RidgedSimplexGenerator::new);
+		this.mountainChain = new Noise(gr, 1);
+		this.mountainChainStretch = new Noise(gr, 1);
 		this.tempOffset = (gr.nextDouble() - 0.5) * 20; // -10 to 10
 	}
 
 	private final long seed;
 	private final Noise humidityNoise;
-	private final Noise mountainChainNoise;
+	private final Noise mountainChain;
+	private final Noise mountainChainStretch;
 	private final double tempOffset;
 
 	private final Registry<Biome> biomeRegistry;
 
 	// Terrain
 
+	public TerrainType getTerrainType(int x, int z) {
+		final double humidityFrequency = 1.0 /600.0;
+		final double chainFrequency = 1.0 / 1200.0;
+		final double chainCutoff = 0.2;
+		final double chainNormaliser = 1 / chainCutoff;
+
+		// Humidity from -1 to 1
+		double humidity = this.humidityNoise.sample(x * humidityFrequency, z * humidityFrequency);
+		// Chain Sample. Used for mountain chains and fake orthographic lift humidity modification
+		double chainSample = this.mountainChain.sample(x * chainFrequency, z);
+		// Normalised mountain terrain strength between 0 and 1.
+		double mountainChain = chainNormaliser * Math.max(0.0, chainCutoff - Math.abs(chainSample));
+		
+		
+	}
+
 	@Override
 	public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.biomeRegistry.get(this.getTerrainType(biomeX << 2, biomeZ << 2).getBiome());
 	}
 
 	// Boring Stuff
