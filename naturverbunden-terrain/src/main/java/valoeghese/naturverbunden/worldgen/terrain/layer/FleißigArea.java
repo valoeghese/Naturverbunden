@@ -26,12 +26,13 @@ import org.spongepowered.asm.mixin.Overwrite;
 import it.unimi.dsi.fastutil.longs.Long2IntLinkedOpenHashMap;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.layer.util.LayerOperator;
+import net.minecraft.world.biome.layer.util.LayerSampler;
 
 /**
  * Caching Layer Sampler that shortens the number of possible hash values via using an `original & mask` algorithm, and uses an array lookup.
  * Original concept by Gegy, implementation written from scratch by me.
  */
-public class FleiﬂigArea {
+public class FleiﬂigArea implements LayerSampler {
 	public FleiﬂigArea(Long2IntLinkedOpenHashMap map, int size, LayerOperator operator) {
 		this.operator = operator;
 		int arrSize = 1; // 2^n = 2 * (2^(n-1))
@@ -63,8 +64,8 @@ public class FleiﬂigArea {
 	private long[] positions;
 	private int[] values;
 
-	@Overwrite
-	public int get(int x, int y) {
+	@Override
+	public int sample(int x, int y) {
 		try {
 			long pos = ChunkPos.toLong(x, y);
 			int loc = mix5(x, y) & this.mask;

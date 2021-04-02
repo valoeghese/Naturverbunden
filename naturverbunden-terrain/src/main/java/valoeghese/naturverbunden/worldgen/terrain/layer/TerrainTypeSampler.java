@@ -26,10 +26,10 @@ import net.minecraft.world.biome.layer.util.LayerFactory;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
 
 public class TerrainTypeSampler {
-	private final CachingLayerSampler sampler;
+	private final FleiﬂigArea sampler;
 
-	public TerrainTypeSampler(LayerFactory<CachingLayerSampler> layerFactory) {
-		this.sampler = (CachingLayerSampler)layerFactory.make();
+	public TerrainTypeSampler(LayerFactory<FleiﬂigArea> layerFactory) {
+		this.sampler = layerFactory.make();
 	}
 
 	public TerrainCategory sample(Registry<Biome> biomeRegistry, int x, int z) {
