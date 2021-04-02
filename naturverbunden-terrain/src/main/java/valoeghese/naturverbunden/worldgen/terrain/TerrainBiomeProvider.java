@@ -30,6 +30,8 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import valoeghese.naturverbunden.util.terrain.Noise;
+import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
+import valoeghese.naturverbunden.worldgen.terrain.layer.util.Layers;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
 public class TerrainBiomeProvider extends BiomeSource {
@@ -50,6 +52,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 		this.mountainChain = new Noise(gr, 1);
 		this.mountainChainStretch = new Noise(gr, 1);
 		this.tempOffset = (gr.nextDouble() - 0.5) * 6.66; // -3.33 to 3.33
+		this.infoSampler = Layers.build(seed);
 	}
 
 	private final long seed;
@@ -57,6 +60,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 	private final Noise mountainChain;
 	private final Noise mountainChainStretch;
 	private final double tempOffset;
+	private final TerrainInfoSampler infoSampler;
 
 	private final Registry<Biome> biomeRegistry;
 
@@ -87,7 +91,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 		// This temperature ranges from 0-3, and represents HOW COLD SOMETHING IS
 		// IF YOU ARE READING THIS PLEASE NOTE THAT HIGHER VALUES ARE COLDER TEMPERATURES
 		int temperature = calculateTemperature(z + 60 * MathHelper.sin(0.01f * x));
-		
+
+		TerrainInfoSampler.Info terrainInfo = this.infoSampler.sample(x >> 2, z >> 2);
 	}
 
 	private int calculateTemperature(double z) {

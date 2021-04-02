@@ -35,12 +35,17 @@ public enum DenoteBeachesLayer implements CrossSamplingLayer {
 		int tow = w >> INFO_BITS; // what happens if you leave your car on private property
 
 		if (toc != 0 || 0 == ton || 0 == toe || 0 == tos || 0 == tow) {
-			return (TerrainCategory.EDGE.ordinal() << INFO_BITS) | (centre & INFO_BITS);
+			return switchCategory(TerrainCategory.BEACH, centre);
 		}
 
 		return centre;
 	}
-	
+
+	static int switchCategory(TerrainCategory category, int centre) {
+		return (category.ordinal() << INFO_BITS) | (centre & INFO_MASK);
+	}
+
 	// Assuming 4 bits of information after the initial type data
-	private static int INFO_BITS = 4;
+	static int INFO_BITS = 4;
+	static int INFO_MASK = 0b1111;
 }

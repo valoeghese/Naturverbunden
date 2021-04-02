@@ -19,15 +19,29 @@
 
 package valoeghese.naturverbunden.worldgen.terrain.layer;
 
+import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.layer.type.MergingLayer;
+import net.minecraft.world.biome.layer.util.IdentityCoordinateTransformer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import net.minecraft.world.biome.layer.util.LayerSampler;
+import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
 
-public enum MergeRiversLayer implements MergingLayer {
-	INSTANCES;
+public enum MergeRiversLayer implements MergingLayer, IdentityCoordinateTransformer {
+	INSTANCE;
 
 	@Override
 	public int sample(LayerRandomnessSource context, LayerSampler info, LayerSampler rivers, int x, int z) {
-		
+		int value = info.sample(x, z);
+		int river = rivers.sample(x, z);
+		int type = value >> DenoteBeachesLayer.INFO_BITS;
+
+		if (type > 0) { // TerrainCategory.OCEAN.ordinal()
+			if (BuiltinBiomes.fromRawId(river) == BiomeKeys.RIVER) {
+				return DenoteBeachesLayer.switchCategory(TerrainCategory.RIVER, value);
+			}
+		}
+
+		return value;
 	}
 }

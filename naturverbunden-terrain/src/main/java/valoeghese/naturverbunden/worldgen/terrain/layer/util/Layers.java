@@ -34,9 +34,10 @@ import valoeghese.naturverbunden.worldgen.terrain.layer.DiagonalShapeEdgeLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.HillsInformationLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.InformationLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.LandOceanLayer;
+import valoeghese.naturverbunden.worldgen.terrain.layer.MergeRiversLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.NaiveMoreLandLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.ShapeEdgeLayer;
-import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainTypeSampler;
+import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 
 public class Layers {
 	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> stack(long seed, ParentedLayer layer, LayerFactory<T> parent, int count, LongFunction<C> cp) {
@@ -87,12 +88,15 @@ public class Layers {
 			}
 		}
 
+		layer = SmoothLayer.INSTANCE.create(cp.apply(1000L), layer);
+		layer = MergeRiversLayer.INSTANCE.create(cp.apply(4L), layer, rivers);
+
 		return layer;
 	}
 
-	public static TerrainTypeSampler build(long seed) {
+	public static TerrainInfoSampler build(long seed) {
 		LayerFactory<FleißigArea> layerFactory = build(salt -> new CachingLayerContext(512, seed, salt));
-		return new TerrainTypeSampler(layerFactory);
+		return new TerrainInfoSampler(layerFactory);
 	}
 
 }

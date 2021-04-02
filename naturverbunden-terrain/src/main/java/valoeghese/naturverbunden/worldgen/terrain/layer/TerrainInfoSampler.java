@@ -19,27 +19,36 @@
 
 package valoeghese.naturverbunden.worldgen.terrain.layer;
 
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.util.LayerFactory;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.FleiﬂigArea;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
 
-public class TerrainTypeSampler {
+public class TerrainInfoSampler {
 	private final FleiﬂigArea sampler;
 
-	public TerrainTypeSampler(LayerFactory<FleiﬂigArea> layerFactory) {
+	public TerrainInfoSampler(LayerFactory<FleiﬂigArea> layerFactory) {
 		this.sampler = layerFactory.make();
 	}
 
-	public TerrainCategory sample(Registry<Biome> biomeRegistry, int x, int z) {
-		int i = this.sampler.sample(x, z);
+	public Info sample(int x, int z) {
+		int sample = this.sampler.sample(x, z);
+		int category = sample >> DenoteBeachesLayer.INFO_BITS;
 		TerrainCategory[] values = TerrainCategory.values();
 
-		if (i >= values.length) {
-			throw new IllegalStateException("Invalid terrain category id emitted by layers: " + i);
+		if (category >= values.length) {
+			throw new IllegalStateException("Invalid terrain category id emitted by layers: " + category);
 		} else {
-			return values[i];
+			return new Info(values[category], sample & DenoteBeachesLayer.INFO_MASK);
 		}
+	}
+
+	public static class Info {
+		public Info(TerrainCategory category, int info) {
+			this.category = category;
+			this.info = info;
+		}
+
+		final TerrainCategory category;
+		final int info;
 	}
 }
