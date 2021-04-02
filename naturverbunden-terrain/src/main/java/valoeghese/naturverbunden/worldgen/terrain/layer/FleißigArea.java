@@ -21,8 +21,6 @@ package valoeghese.naturverbunden.worldgen.terrain.layer;
 
 import java.util.Arrays;
 
-import org.spongepowered.asm.mixin.Overwrite;
-
 import it.unimi.dsi.fastutil.longs.Long2IntLinkedOpenHashMap;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.layer.util.LayerOperator;
