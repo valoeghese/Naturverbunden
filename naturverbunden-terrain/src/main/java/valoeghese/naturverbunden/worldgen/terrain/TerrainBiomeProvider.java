@@ -32,14 +32,15 @@ import net.minecraft.world.biome.source.BiomeSource;
 import valoeghese.naturverbunden.util.terrain.Noise;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.Layers;
+import valoeghese.naturverbunden.worldgen.terrain.type.MountainsTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
 public class TerrainBiomeProvider extends BiomeSource {
 	public static final Codec<TerrainBiomeProvider> CODEC = RecordCodecBuilder.create(instance ->
-		instance.group(
-				RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(s -> s.biomeRegistry),
-				Codec.LONG.fieldOf("seed").stable().forGetter(s -> s.seed))
-				.apply(instance, instance.stable(TerrainBiomeProvider::new)));
+	instance.group(
+			RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(s -> s.biomeRegistry),
+			Codec.LONG.fieldOf("seed").stable().forGetter(s -> s.seed))
+	.apply(instance, instance.stable(TerrainBiomeProvider::new)));
 
 	public TerrainBiomeProvider(Registry<Biome> biomes, long seed) {
 		super(biomes.stream().map(b -> () -> b));
@@ -53,6 +54,10 @@ public class TerrainBiomeProvider extends BiomeSource {
 		this.mountainChainStretch = new Noise(gr, 1);
 		this.tempOffset = (gr.nextDouble() - 0.5) * 6.66; // -3.33 to 3.33
 		this.infoSampler = Layers.build(seed);
+
+		// Terrain Types
+		gr.setSeed(seed + 1);
+		this.terrainMountains = new MountainsTerrainType(gr);
 	}
 
 	private final long seed;
@@ -64,6 +69,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	private final Registry<Biome> biomeRegistry;
 
+	private final TerrainType terrainMountains;
+
 	// Terrain
 
 	public TerrainType getTerrainType(int x, int z) {
@@ -72,8 +79,6 @@ public class TerrainBiomeProvider extends BiomeSource {
 		final double chainCutoff = 0.2;
 		final double chainNormaliser = 1 / chainCutoff;
 
-		// Humidity from -1 to 1
-		double humidity = this.humidityNoise.sample(x * humidityFrequency, z * humidityFrequency);
 		// Chain Sample. Used for mountain chains and fake orthographic lift humidity modification
 		double chainSample = this.mountainChain.sample(x * chainFrequency, z);
 		// mountain terrain strength.
@@ -82,22 +87,44 @@ public class TerrainBiomeProvider extends BiomeSource {
 		// normalised between 0 and 1
 		mountainChain = chainNormaliser * Math.max(0.0, mountainChain);
 
-		// Fake Orthographic Lift and Rain Shadow
-		if (applyLiftToHumidity) {
-			humidity += 0.3 * (chainSample > 0 ? 1 : -1);
+		if (mountainChain > 0.5) {
+			return this.terrainMountains;
+		} else { // Using an else block for readability
+			// Humidity from -1 to 1
+			double humidity = this.humidityNoise.sample(x * humidityFrequency, z * humidityFrequency);
+
+			// Fake Orthographic Lift and Rain Shadow
+			if (applyLiftToHumidity) {
+				humidity += 0.3 * (chainSample > 0 ? 1 : -1);
+			}
+
+			// https://www.desmos.com/calculator/iab0cvwydf
+			// This temperature ranges from 0-3, and represents HOW COLD SOMETHING IS
+			// IF YOU ARE READING THIS PLEASE NOTE THAT HIGHER VALUES ARE COLDER TEMPERATURES
+			// 0 = Equatorial (Mostly rainforest, No Deserts) - This humidity is handled below
+			// 1 = Subtropical (Mostly Deserts, Medditeranean, Savannah)
+			// 2 = Temperate (More cool stuff, boreal, deciduous, temperate rainforest, grasslands, moors)
+			// 3 = Polar (Snow stuff)
+			int temperature = calculateTemperature(z + 80 * MathHelper.sin(0.01f * x));
+			
+			// Equatorial Humidity Increase due to rising air in hadley cells. Value from 0 to 0.5
+			double humidityIncrease = Math.abs(2 * (z * TEMPERATURE_SCALE + this.tempOffset));
+			humidityIncrease = 1.0 - (humidityIncrease * humidityIncrease);
+			humidity += 0.5 * humidityIncrease; // 0-1 -> 0-0.5 and append
+
+			TerrainInfoSampler.Info terrainInfo = this.infoSampler.sample(x >> 2, z >> 2);
+			
+			
 		}
-
-		// https://www.desmos.com/calculator/iab0cvwydf
-		// This temperature ranges from 0-3, and represents HOW COLD SOMETHING IS
-		// IF YOU ARE READING THIS PLEASE NOTE THAT HIGHER VALUES ARE COLDER TEMPERATURES
-		int temperature = calculateTemperature(z + 60 * MathHelper.sin(0.01f * x));
-
-		TerrainInfoSampler.Info terrainInfo = this.infoSampler.sample(x >> 2, z >> 2);
 	}
 
 	private int calculateTemperature(double z) {
 		double rawVal = Math.abs(z * TEMPERATURE_SCALE + this.tempOffset) + 0.5;
 		return Math.min(3, MathHelper.floor(rawVal));
+	}
+
+	private double calcEquatorialHumidity(double x) {
+		
 	}
 	@Override
 	public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
