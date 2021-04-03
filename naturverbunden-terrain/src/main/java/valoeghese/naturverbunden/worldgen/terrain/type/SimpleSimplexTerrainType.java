@@ -30,29 +30,22 @@ import valoeghese.naturverbunden.util.terrain.Noise;
  */
 public class SimpleSimplexTerrainType extends TerrainType {
 	public SimpleSimplexTerrainType(RegistryKey<Biome> biome, Random seed, int octaves, double baseHeight, double frequency, double amplitude) {
-		this(biome, new Noise(seed, octaves), baseHeight, frequency, amplitude, amplitude);
-	}
-
-	public SimpleSimplexTerrainType(RegistryKey<Biome> biome, Noise noise, double baseHeight, double frequency, double amplitudeHigh, double amplitudeLow) {
 		super(biome);
 
-		this.noise = noise;
+		this.noise = new Noise(seed, octaves);
 		this.frequency = frequency;
-		this.amplitudeLow = amplitudeLow;
-		this.amplitudeHigh = amplitudeHigh;
+		this.amplitude = amplitude;
 		this.baseHeight = baseHeight;
 	}
 
 	private final Noise noise;
 	private final double frequency;
-	private final double amplitudeLow;
-	private final double amplitudeHigh;
+	private final double amplitude;
 	private final double baseHeight;
 
 	@Override
 	public double getHeight(int x, int z) {
-		double sample = this.noise.sample(x * this.frequency, z * this.frequency);
-		return (sample < 0 ? this.amplitudeLow * sample : this.amplitudeHigh * sample) + this.baseHeight;
+		return this.baseHeight + this.amplitude * this.noise.sample(x * this.frequency, z * this.frequency);
 	}
 
 }
