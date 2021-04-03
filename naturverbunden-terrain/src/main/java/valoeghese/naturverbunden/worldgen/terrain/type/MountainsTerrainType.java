@@ -25,6 +25,9 @@ import net.minecraft.world.biome.BiomeKeys;
 import valoeghese.naturverbunden.util.terrain.Noise;
 import valoeghese.naturverbunden.util.terrain.RidgedSimplexGenerator;
 
+/**
+ * Represents mountain terrain.
+ */
 public class MountainsTerrainType extends TerrainType {
 	public MountainsTerrainType(Random seed) {
 		super(BiomeKeys.MOUNTAINS);

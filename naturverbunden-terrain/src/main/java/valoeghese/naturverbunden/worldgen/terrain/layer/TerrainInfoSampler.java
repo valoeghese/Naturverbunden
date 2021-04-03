@@ -48,7 +48,7 @@ public class TerrainInfoSampler {
 			this.info = info;
 		}
 
-		final TerrainCategory category;
-		final int info;
+		public final TerrainCategory category;
+		public final int info;
 	}
 }

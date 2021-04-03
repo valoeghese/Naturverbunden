@@ -19,10 +19,13 @@
 
 package valoeghese.naturverbunden.worldgen.terrain;
 
-public class TerrainBiomes {
+public class NaturverbundenBiomes {
+	// Lots of these will be vanilla biomes
+	// But in some cases I may need to add my own
+
 	// Mountains				- Mountain Chain Gen. Also Moor
 	// Plains; Forest			- Vanilla Style
-	// Scrubland				- I described this biome somewhere already
+	// Scrubland				- I described this biome somewhere already. Should I use a greyer sky?
 	// Ice Cap					- Vanilla's Ice Bioems and frozen ocean
 	// Boreal Forest 			- (aspen and pines) 
 	// Rainforest				- Like jungle but less dense. Also a TBO redwood edition, and a hardened clay edition

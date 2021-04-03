@@ -28,11 +28,14 @@ import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.BiomeSource;
 import valoeghese.naturverbunden.util.terrain.Noise;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.Layers;
 import valoeghese.naturverbunden.worldgen.terrain.type.MountainsTerrainType;
+import valoeghese.naturverbunden.worldgen.terrain.type.SimpleSimplexTerrainType;
+import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
 public class TerrainBiomeProvider extends BiomeSource {
@@ -58,6 +61,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 		// Terrain Types
 		gr.setSeed(seed + 1);
 		this.terrainMountains = new MountainsTerrainType(gr);
+		this.terrainRiver = new SimpleSimplexTerrainType(BiomeKeys.RIVER, gr, 1, 58.0, 0.2, 1.0);
+		this.terrainRiverFrozen = new SimpleSimplexTerrainType(BiomeKeys.FROZEN_RIVER, gr, 1, 58.0, 0.2, 1.0);
 	}
 
 	private final long seed;
@@ -70,6 +75,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 	private final Registry<Biome> biomeRegistry;
 
 	private final TerrainType terrainMountains;
+	private final TerrainType terrainRiver;
+	private final TerrainType terrainRiverFrozen;
 
 	// Terrain
 
@@ -109,11 +116,15 @@ public class TerrainBiomeProvider extends BiomeSource {
 			
 			// Equatorial Humidity Increase due to rising air in hadley cells. Value from 0 to 0.5
 			double humidityIncrease = Math.abs(2 * (z * TEMPERATURE_SCALE + this.tempOffset));
-			humidityIncrease = 1.0 - (humidityIncrease * humidityIncrease);
+			humidityIncrease = Math.max(0.0, 1.0 - (humidityIncrease * humidityIncrease));
 			humidity += 0.5 * humidityIncrease; // 0-1 -> 0-0.5 and append
 
 			TerrainInfoSampler.Info terrainInfo = this.infoSampler.sample(x >> 2, z >> 2);
-			
+
+			if (mountainChain < 0.05 && terrainInfo.category == TerrainCategory.RIVER) {
+				return temperature == 3 ? this.terrainRiverFrozen : this.terrainRiver;
+			}
+
 			
 		}
 	}
@@ -123,9 +134,6 @@ public class TerrainBiomeProvider extends BiomeSource {
 		return Math.min(3, MathHelper.floor(rawVal));
 	}
 
-	private double calcEquatorialHumidity(double x) {
-		
-	}
 	@Override
 	public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
 		return this.biomeRegistry.get(this.getTerrainType(biomeX << 2, biomeZ << 2).getBiome());

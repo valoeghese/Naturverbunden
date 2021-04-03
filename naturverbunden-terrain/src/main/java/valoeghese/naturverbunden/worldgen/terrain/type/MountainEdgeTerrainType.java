@@ -22,7 +22,7 @@ package valoeghese.naturverbunden.worldgen.terrain.type;
 import net.minecraft.world.biome.BiomeKeys;
 
 /**
- * Represents a mixed mountain edge sample at a position
+ * Represents a mixed mountain edge sample at a position.
  */
 public class MountainEdgeTerrainType extends TerrainType {
 	public MountainEdgeTerrainType(TerrainType mix, TerrainType mountains, double mountainousness, boolean hills) {
