@@ -19,6 +19,185 @@
 
 package valoeghese.naturverbunden.worldgen.terrain;
 
-public class TerrainChunkGenerator {
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.noise.NoiseSampler;
+import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
+import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.HeightLimitView;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.Heightmap.Type;
+import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkRandom;
+import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.world.gen.chunk.VerticalBlockSample;
+import valoeghese.naturverbunden.util.terrain.Vec2d;
+import valoeghese.naturverbunden.util.terrain.Voronoi;
+
+public class TerrainChunkGenerator extends ChunkGenerator {
+	public TerrainChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings) {
+		super(biomeSource, biomeSource, settings.get().getStructuresConfig(), seed);
+
+		this.seed = seed;
+		this.voronoiSeed = (int) (seed & 0xFFFFFFFF);
+		this.settings = settings.get();
+		this.surfaceDepthNoise = new OctaveSimplexNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
+
+		if (biomeSource instanceof TerrainBiomeProvider) {
+			this.terrainTypeSampler = (TerrainBiomeProvider) biomeSource;
+		} else {
+			throw new IllegalStateException("biome provider of a TerrainChunkGenerator must be a TerrainBiomeProvider");
+		}
+	}
+
+	private final long seed;
+	private final int voronoiSeed;
+	private final ChunkGeneratorSettings settings;
+	private final NoiseSampler surfaceDepthNoise;
+	private final TerrainBiomeProvider terrainTypeSampler;
+
+	@Override
+	protected Codec<? extends ChunkGenerator> getCodec() {
+		return CODEC;
+	}
+
+	@Override
+	public ChunkGenerator withSeed(long seed) {
+		return new TerrainChunkGenerator(this.populationSource, seed, () -> this.settings);
+	}
+
+	@Override
+	public void buildSurface(ChunkRegion region, Chunk chunk) {
+		ChunkPos chunkPos = chunk.getPos();
+		int i = chunkPos.x;
+		int j = chunkPos.z;
+		ChunkRandom chunkRandom = new ChunkRandom();
+		chunkRandom.setTerrainSeed(i, j);
+		ChunkPos chunkPos2 = chunk.getPos();
+		int k = chunkPos2.getStartX();
+		int l = chunkPos2.getStartZ();
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
+
+		for(int m = 0; m < 16; ++m) {
+			for(int n = 0; n < 16; ++n) {
+				int o = k + m;
+				int p = l + n;
+				int q = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, m, n) + 1;
+				double e = this.surfaceDepthNoise.sample((double)o * 0.0625D, (double)p * 0.0625D, 0.0625D, (double)m * 0.0625D) * 15.0D;
+				region.getBiome(mutable.set(k + m, q, l + n)).buildSurface(chunkRandom, chunk, o, p, q, e, STONE, WATER, this.getSeaLevel(), region.getSeed());
+			}
+		}
+
+		//this.buildBedrock(chunk, chunkRandom);
+	}
+
+	@Override
+	public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {
+		ChunkPos pos = chunk.getPos();
+		int seaLevel = this.getSeaLevel();
+		BlockPos.Mutable setPos = new BlockPos.Mutable();
+
+		for (int x = 0; x < 16; ++x) {
+			setPos.setX(pos.getStartX() + x);
+
+			for (int z = 0; z < 16; ++z) {
+				setPos.setZ(pos.getStartZ() + z);
+
+				int height = Math.min(chunk.getTopY() - 1, this.calculateTerrainHeight(setPos.getX(), setPos.getZ()));
+
+				for (int y = chunk.getBottomY(); y < height; ++y) {
+					setPos.setY(y);
+					chunk.setBlockState(setPos, STONE, false);
+				}
+				
+				if (height < seaLevel) {
+					for (int y = height; y < seaLevel; ++y) {
+						chunk.setBlockState(setPos, WATER, false);
+					}
+				}
+			}
+		}
+		
+		return CompletableFuture.completedFuture(chunk);
+	}
+
+	private int calculateTerrainHeight(int x, int z) {
+		double totalHeight = 0.0;
+		double totalWeight = 0.0;
+		final double maxSquareRadius = 4.0 * 4.0;
+		
+		// Sample Relevant Voronoi in 5x5 area around the player for smoothing
+		// This is not optimised
+
+		final int calcX = (x >> 4);
+		final int calcZ = (z >> 4);
+		final Vec2d pos = new Vec2d(x * 0.0625, z * 0.0625);
+
+		int sampleX = 0;
+		int sampleZ = 0;
+
+		// 5x5 sample because that is the possible range of the circle
+		// can't wait for some mathematical oversight to break my code somewhere amirite
+		for (int xo = -2; xo <= 2; ++xo) {
+			sampleX = xo + calcX;
+
+			for (int zo = -2; zo <= 2; ++zo) {
+				sampleZ = zo + calcZ;
+
+				Vec2d voronoi = Voronoi.sampleVoronoiGrid(sampleX, sampleZ, this.voronoiSeed);
+				double weight = maxSquareRadius - voronoi.squaredDist(pos);
+
+				// this is kept square-weighted because sqrt is a trash not pog not based operation and is slower than the hare from aesop's fables
+				if (weight > 0) {
+					totalWeight += weight;
+					totalHeight += weight * this.terrainTypeSampler.getTerrainType(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0)).getHeight(x, z);
+				}
+			}
+		}
+
+		return (int) (totalHeight / totalWeight);
+	}
+
+	@Override
+	public int getHeight(int x, int z, Type heightmap, HeightLimitView world) {
+		// Lazy Implementation
+		int height = this.calculateTerrainHeight(x, z);
+		int seaLevel = this.getSeaLevel();
+
+		if (height < seaLevel && heightmap.getBlockPredicate().test(WATER)) {
+			return seaLevel;
+		}
+
+		return height;
+	}
+
+	@Override
+	public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static final Codec<TerrainChunkGenerator> CODEC = RecordCodecBuilder.create(instance ->
+	instance.group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(chunkGenerator -> chunkGenerator.populationSource),
+			Codec.LONG.fieldOf("seed").stable().forGetter(chunkGenerator -> chunkGenerator.seed),
+			ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(chunkGenerator -> () -> chunkGenerator.settings))
+	.apply(instance, TerrainChunkGenerator::new));
+
+	public static final BlockState STONE = Blocks.STONE.getDefaultState();
+	public static final BlockState AIR = Blocks.AIR.getDefaultState();
+	public static final BlockState WATER = Blocks.WATER.getDefaultState();
 }
