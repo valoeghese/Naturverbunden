@@ -31,9 +31,12 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.BiomeSource;
 import valoeghese.naturverbunden.util.terrain.Noise;
+import valoeghese.naturverbunden.util.terrain.RidgedSimplexGenerator;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.Layers;
+import valoeghese.naturverbunden.worldgen.terrain.type.MountainEdgeTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.MountainsTerrainType;
+import valoeghese.naturverbunden.worldgen.terrain.type.MultiNoiseTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.SimpleSimplexTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
@@ -63,6 +66,22 @@ public class TerrainBiomeProvider extends BiomeSource {
 		this.terrainMountains = new MountainsTerrainType(gr);
 		this.terrainRiver = new SimpleSimplexTerrainType(BiomeKeys.RIVER, gr, 1, 58.0, 0.2, 1.0);
 		this.terrainRiverFrozen = new SimpleSimplexTerrainType(BiomeKeys.FROZEN_RIVER, gr, 1, 58.0, 0.2, 1.0);
+
+		// The equivalent of future "Jungle"
+		this.terrainEquator = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, gr, 1, 70.0, 1.0 / 100.0, 10.0);
+		// Rainforest will be more mountainous
+		// The equivalent of future "Savanna"
+		this.terrainSubequator = new MultiNoiseTerrainType(BiomeKeys.SAVANNA, 84.0)
+				.addNoise(new Noise(gr, 2, RidgedSimplexGenerator::new), 1.0 / 120.0, 22.0)
+				.addNoise(new Noise(gr, 1), 1.0 / 90.0, 12.0);
+
+		// The equivalent of future "Plains"
+		this.terrainTemperate = new MultiNoiseTerrainType(BiomeKeys.PLAINS, 80.0)
+				.addNoise(new Noise(gr, 1, RidgedSimplexGenerator::new), 1.0 / 130.0, 30.0, 12.0)
+				.addNoise(new Noise(gr, 2), 1.0 / 90.0, 25.0, 8.0);
+
+		this.terrainIceCap = new SimpleSimplexTerrainType(BiomeKeys.SNOWY_TUNDRA, gr, 2, 68.0, 1.0 / 75.0, 8.0);
+		// Also snow mountain short peak areas
 	}
 
 	private final long seed;
@@ -74,9 +93,19 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	private final Registry<Biome> biomeRegistry;
 
+	// Special
 	private final TerrainType terrainMountains;
 	private final TerrainType terrainRiver;
 	private final TerrainType terrainRiverFrozen;
+
+	// Ocean
+
+	// Normal Land
+	// In Development: these are temporary
+	private final TerrainType terrainEquator;
+	private final TerrainType terrainSubequator;
+	private final TerrainType terrainTemperate;
+	private final TerrainType terrainIceCap;
 
 	// Terrain
 
@@ -97,12 +126,12 @@ public class TerrainBiomeProvider extends BiomeSource {
 		if (mountainChain > 0.5) {
 			return this.terrainMountains;
 		} else { // Using an else block for readability
-			// Humidity from -1 to 1
-			double humidity = this.humidityNoise.sample(x * humidityFrequency, z * humidityFrequency);
+			// Humidity from -1 to 1. Initial: -0.9 to 0.9
+			double humidity = this.humidityNoise.sample(x * humidityFrequency, z * humidityFrequency) * 0.9; // cannot get more extreme climate values without additional stuff below
 
 			// Fake Orthographic Lift and Rain Shadow
 			if (applyLiftToHumidity) {
-				humidity += 0.3 * (chainSample > 0 ? 1 : -1);
+				humidity += 0.3 * (chainSample > 0 ? 1 : -1); // +0.3 and -0.3. Total of 0.6 change.
 			}
 
 			// https://www.desmos.com/calculator/iab0cvwydf
@@ -113,19 +142,43 @@ public class TerrainBiomeProvider extends BiomeSource {
 			// 2 = Temperate (More cool stuff, boreal, deciduous, temperate rainforest, grasslands, moors)
 			// 3 = Polar (Snow stuff)
 			int temperature = calculateTemperature(z + 80 * MathHelper.sin(0.01f * x));
-			
-			// Equatorial Humidity Increase due to rising air in hadley cells. Value from 0 to 0.5
+
+			// Equatorial Humidity Increase due to rising air in hadley cells. Value from 0 to 0.6
 			double humidityIncrease = Math.abs(2 * (z * TEMPERATURE_SCALE + this.tempOffset));
 			humidityIncrease = Math.max(0.0, 1.0 - (humidityIncrease * humidityIncrease));
-			humidity += 0.5 * humidityIncrease; // 0-1 -> 0-0.5 and append
+			humidity += 0.6 * humidityIncrease; // 0-1 -> 0-0.6 and append
 
 			TerrainInfoSampler.Info terrainInfo = this.infoSampler.sample(x >> 2, z >> 2);
 
 			if (mountainChain < 0.05 && terrainInfo.category == TerrainCategory.RIVER) {
 				return temperature == 3 ? this.terrainRiverFrozen : this.terrainRiver;
-			}
+			} else {
+				TerrainType preliminary = null;
 
-			
+				switch (temperature) {
+				case 3:
+					preliminary = this.terrainIceCap;
+					break;
+				case 2:
+					preliminary = this.terrainTemperate;
+					break;
+				case 1:
+					preliminary = this.terrainSubequator;
+					break;
+				case 0:
+					preliminary = this.terrainEquator;
+					break;
+				default:
+					throw new IllegalStateException("WTF");
+				}
+				
+				if (mountainChain > 0) {
+					// Because mountainChain edge goes from 0 to 0.5, multiply by 2.
+					return new MountainEdgeTerrainType(preliminary, this.terrainMountains, mountainChain, true);
+				} else {
+					return preliminary;
+				}
+			}
 		}
 	}
 
