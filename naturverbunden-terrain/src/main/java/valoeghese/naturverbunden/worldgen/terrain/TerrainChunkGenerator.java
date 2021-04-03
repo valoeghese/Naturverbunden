@@ -34,10 +34,12 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.NoiseSampler;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
@@ -123,7 +125,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 					setPos.setY(y);
 					chunk.setBlockState(setPos, STONE, false);
 				}
-				
+
 				if (height < seaLevel) {
 					for (int y = height; y < seaLevel; ++y) {
 						chunk.setBlockState(setPos, WATER, false);
@@ -131,7 +133,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				}
 			}
 		}
-		
+
 		return CompletableFuture.completedFuture(chunk);
 	}
 
@@ -139,7 +141,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		double totalHeight = 0.0;
 		double totalWeight = 0.0;
 		final double maxSquareRadius = 4.0 * 4.0;
-		
+
 		// Sample Relevant Voronoi in 5x5 area around the player for smoothing
 		// This is not optimised
 
@@ -187,8 +189,27 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
-		// TODO Auto-generated method stub
-		return null;
+		BlockState[] states = new BlockState[world.getHeight()];
+		int height = this.calculateTerrainHeight(x, z);
+
+		int i = 0;
+		int y;
+
+		for (y = world.getBottomY(); y < height; ++y) {
+			states[i++] = STONE;
+		}
+
+		int seaLevel = this.getSeaLevel();
+
+		while (y++ < seaLevel) {
+			states[i++] = WATER;
+		}
+
+		return new VerticalBlockSample(world.getBottomY(), states);
+	}
+
+	public static TerrainChunkGenerator create(Registry<Biome> biomeReg, Registry<ChunkGeneratorSettings> settingsReg, long seed) {
+		return new TerrainChunkGenerator(new TerrainBiomeProvider(biomeReg, seed), seed, () -> settingsReg.getOrThrow(ChunkGeneratorSettings.OVERWORLD));
 	}
 
 	public static final Codec<TerrainChunkGenerator> CODEC = RecordCodecBuilder.create(instance ->
@@ -200,4 +221,5 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 	public static final BlockState STONE = Blocks.STONE.getDefaultState();
 	public static final BlockState AIR = Blocks.AIR.getDefaultState();
 	public static final BlockState WATER = Blocks.WATER.getDefaultState();
+
 }

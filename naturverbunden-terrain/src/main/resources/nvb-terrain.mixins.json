@@ -3,9 +3,9 @@
   "package": "valoeghese.naturverbunden.mixin.terrain",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinGeneratorOptions"
   ],
   "client": [
-    "MixinGeneratorType"
   ],
   "server": [
   ],

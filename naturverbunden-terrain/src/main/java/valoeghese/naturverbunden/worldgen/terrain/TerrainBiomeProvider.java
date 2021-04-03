@@ -116,7 +116,16 @@ public class TerrainBiomeProvider extends BiomeSource {
 		final double chainNormaliser = 1 / chainCutoff;
 
 		// Chain Sample. Used for mountain chains and fake orthographic lift humidity modification
-		double chainSample = this.mountainChain.sample(x * chainFrequency, z);
+		double chainStretch = this.mountainChainStretch.sample(x * humidityFrequency, z * humidityFrequency);
+
+		double chainSample = 0;
+
+		if (chainStretch >= 0) {
+			chainSample = this.mountainChain.sample(x * chainFrequency * (1.0 + 0.5 * chainStretch), z * chainFrequency);
+		} else {
+			chainSample = this.mountainChain.sample(x * chainFrequency, z * chainFrequency * (1.0 - 0.5 * chainStretch));
+		}
+
 		// mountain terrain strength.
 		double mountainChain = chainCutoff - Math.abs(chainSample);
 		boolean applyLiftToHumidity = mountainChain > -chainCutoff;
