@@ -39,6 +39,7 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
+import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
@@ -221,6 +222,30 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		}
 
 		return new VerticalBlockSample(world.getBottomY(), states);
+	}
+
+	@Override
+	public void populateEntities(ChunkRegion region) {
+		ChunkPos chunkPos = region.getCenterPos();
+		Biome biome = region.getBiome(chunkPos.getStartPos());
+		ChunkRandom chunkRandom = new ChunkRandom();
+		chunkRandom.setPopulationSeed(region.getSeed(), chunkPos.getStartX(), chunkPos.getStartZ());
+		SpawnHelper.populateEntities(region, biome, chunkPos, chunkRandom);
+	}
+
+	@Override
+	public int getWorldHeight() {
+		return this.settings.getGenerationShapeConfig().getHeight();
+	}
+
+	@Override
+	public int getSeaLevel() {
+		return this.settings.getSeaLevel();
+	}
+
+	@Override
+	public int getMinimumY() {
+		return this.settings.getGenerationShapeConfig().getMinimumY();
 	}
 
 	public static TerrainChunkGenerator create(Registry<Biome> biomeReg, Registry<ChunkGeneratorSettings> settingsReg, long seed) {
