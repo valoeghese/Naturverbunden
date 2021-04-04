@@ -21,40 +21,23 @@ package valoeghese.naturverbunden.worldgen.terrain.type;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 /**
- * Represents a terrain type.
+ * Terrain type that generates height with a simple octave simplex noise algorithm.
  */
-public abstract class TerrainType {
-	protected TerrainType(RegistryKey<Biome> biome, @Nullable Biome.Category category) {
-		this.biome = biome;
+public class FlatTerrainType extends TerrainType {
+	public FlatTerrainType(RegistryKey<Biome> biome, double height, @Nullable Biome.Category category) {
+		super(biome, category);
 
-		if (category == null) {
-			Biome builtin = BuiltinRegistries.BIOME.get(biome);
-
-			if (builtin == null) {
-				throw new IllegalStateException("Tried to auto-provide category from the builtin registry, as specified by the terrain type. Found no matching entry for " + biome.getValue() + "!");
-			}
-
-			this.category = builtin.getCategory();
-		} else {
-			this.category = category;
-		}
+		this.height = height;
 	}
 
-	private final RegistryKey<Biome> biome;
-	private final Biome.Category category;
+	private final double height;
 
-	public final RegistryKey<Biome> getBiome() {
-		return this.biome;
+	@Override
+	public double getHeight(int x, int z) {
+		return this.height;
 	}
-
-	public final Biome.Category getCategory() {
-		return this.category;
-	}
-
-	public abstract double getHeight(int x, int z);
 }

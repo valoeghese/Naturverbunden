@@ -19,14 +19,15 @@
 
 package valoeghese.naturverbunden.worldgen.terrain.type;
 
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
 /**
  * Represents a mixed mountain edge sample at a position.
  */
-public class MountainEdgeTerrainType extends TerrainType {
+public class MountainEdgeTerrainType extends ParentedTerrainType {
 	public MountainEdgeTerrainType(TerrainType mix, TerrainType mountains, double mountainousness, boolean hills) {
-		super(mountainousness > 0.2 ? (hills ? BiomeKeys.WOODED_MOUNTAINS : BiomeKeys.MOUNTAINS) : mix.getBiome());
+		super(mountainousness > 0.2 ? (hills ? DUMMY_WOODED_MOUNTAINS : mountains) : mix);
 
 		this.mix = mix;
 		this.mountains = mountains;
@@ -40,4 +41,13 @@ public class MountainEdgeTerrainType extends TerrainType {
 	public double getHeight(int x, int z) {
 		return this.strength * this.mountains.getHeight(x, z) + (1.0 - this.strength) * this.mix.getHeight(x, z);
 	}
+
+	private static final TerrainType DUMMY_WOODED_MOUNTAINS = new FlatTerrainType(BiomeKeys.WOODED_MOUNTAINS, 0, Biome.Category.EXTREME_HILLS);
 }
+
+abstract class ParentedTerrainType extends TerrainType {
+	protected ParentedTerrainType(TerrainType parent) {
+		super(parent.getBiome(), parent.getCategory());
+	}
+}
+

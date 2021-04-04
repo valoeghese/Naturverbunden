@@ -31,7 +31,7 @@ import valoeghese.naturverbunden.util.terrain.Noise;
  */
 public class MultiNoiseTerrainType extends TerrainType {
 	public MultiNoiseTerrainType(RegistryKey<Biome> biome, double baseHeight) {
-		super(biome);
+		super(biome, null);
 
 		this.baseHeight = baseHeight;
 	}

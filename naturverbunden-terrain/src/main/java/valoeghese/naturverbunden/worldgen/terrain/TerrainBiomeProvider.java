@@ -36,6 +36,7 @@ import valoeghese.naturverbunden.util.terrain.cache.GridOperator;
 import valoeghese.naturverbunden.util.terrain.cache.LossyCache;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.Layers;
+import valoeghese.naturverbunden.worldgen.terrain.type.FlatTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.MountainEdgeTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.MountainsTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.MultiNoiseTerrainType;
@@ -68,8 +69,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 		// Terrain Types
 		gr.setSeed(seed + 1);
 		this.terrainMountains = new MountainsTerrainType(gr);
-		this.terrainRiver = new SimpleSimplexTerrainType(BiomeKeys.RIVER, gr, 1, 58.0, 0.2, 0.0);
-		this.terrainRiverFrozen = new SimpleSimplexTerrainType(BiomeKeys.FROZEN_RIVER, gr, 1, 58.0, 0.2, 0.0);
+		this.terrainRiver = new FlatTerrainType(BiomeKeys.RIVER, 58.0, Biome.Category.RIVER);
+		this.terrainRiverFrozen = new FlatTerrainType(BiomeKeys.FROZEN_RIVER, 58.0, Biome.Category.RIVER);
 
 		// The equivalent of future "Jungle"
 		this.terrainEquator = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, gr, 1, 70.0, 1.0 / 100.0, 10.0);

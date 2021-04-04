@@ -21,6 +21,7 @@ package valoeghese.naturverbunden.worldgen.terrain.type;
 
 import java.util.Random;
 
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import valoeghese.naturverbunden.util.terrain.Noise;
 import valoeghese.naturverbunden.util.terrain.RidgedSimplexGenerator;
@@ -30,7 +31,7 @@ import valoeghese.naturverbunden.util.terrain.RidgedSimplexGenerator;
  */
 public class MountainsTerrainType extends TerrainType {
 	public MountainsTerrainType(Random seed) {
-		super(BiomeKeys.MOUNTAINS);
+		super(BiomeKeys.MOUNTAINS, Biome.Category.EXTREME_HILLS);
 		this.mountainChainNoise = new Noise(seed, 3, RidgedSimplexGenerator::new);
 	}
 

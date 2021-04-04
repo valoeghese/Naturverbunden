@@ -35,14 +35,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.NoiseSampler;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.layer.util.LayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
@@ -178,16 +176,16 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				sampleZ = zo + calcZ;
 
 				Vec2d voronoi = Voronoi.sampleVoronoiGrid(sampleX, sampleZ, this.voronoiSeed);
-				double weight = maxSquareRadius - voronoi.squaredDist(pos);
+				double sqrDist = voronoi.squaredDist(pos);
+				double weight = maxSquareRadius - sqrDist;
 
 				// this is kept square-weighted because sqrt is a trash not pog not based operation and is slower than the hare from aesop's fables
 				if (weight > 0) {
 					TerrainType type =  ((TerrainBiomeProvider) this.biomeSource).sampleTerrainType(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0));
-					RegistryKey<Biome> biome = type.getBiome();
 
-					// TODO manual custom chunk gen for rivers
-					if (biome == BiomeKeys.RIVER || biome == BiomeKeys.FROZEN_RIVER) {
-						weight *= 2;
+					// Rivers have a much shorter distance for their weight to take effect, but are stronger
+					if (type.getCategory() == Biome.Category.RIVER) {
+						weight = 18 * ((2.0 * 2.0) - sqrDist);
 					}
 
 					totalWeight += weight;

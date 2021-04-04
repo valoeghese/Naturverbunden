@@ -30,7 +30,7 @@ import valoeghese.naturverbunden.util.terrain.Noise;
  */
 public class SimpleSimplexTerrainType extends TerrainType {
 	public SimpleSimplexTerrainType(RegistryKey<Biome> biome, Random seed, int octaves, double baseHeight, double frequency, double amplitude) {
-		super(biome);
+		super(biome, null);
 
 		this.noise = new Noise(seed, octaves);
 		this.frequency = frequency;
