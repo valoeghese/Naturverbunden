@@ -191,7 +191,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 					if (type.getCategory() == Biome.Category.RIVER) {
 						//sqrDist -= riverRadOffset;
 						if ((closestRiver == -1.0 || closestRiver > sqrDist) && sqrDist <= maxSquareRadius) {
-							sqrDist = closestRiver;
+							closestRiver = sqrDist;
 						}
 					} else {
 						totalWeight += weight;
@@ -207,7 +207,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		if (closestRiver == -1.0) {
 			return (int) height;
 		} else {
-			System.out.println("smooth");
+//			System.out.println("smooth");
 			final double river = 61.0; //TerrainBiomeProvider.TERRAIN_RIVER.getHeight(x, z);
 			double progress = closestRiver / maxSquareRadius;
 			progress -= 0.25;
