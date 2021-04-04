@@ -216,6 +216,10 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 			states[i++] = WATER;
 		}
 
+		while (i++ < states.length) {
+			states[i] = AIR;
+		}
+
 		return new VerticalBlockSample(world.getBottomY(), states);
 	}
 
