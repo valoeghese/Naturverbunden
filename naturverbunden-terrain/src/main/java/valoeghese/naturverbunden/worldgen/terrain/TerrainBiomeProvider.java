@@ -69,8 +69,6 @@ public class TerrainBiomeProvider extends BiomeSource {
 		// Terrain Types
 		gr.setSeed(seed + 1);
 		this.terrainMountains = new MountainsTerrainType(gr);
-		this.terrainRiver = new FlatTerrainType(BiomeKeys.RIVER, 58.0, Biome.Category.RIVER);
-		this.terrainRiverFrozen = new FlatTerrainType(BiomeKeys.FROZEN_RIVER, 58.0, Biome.Category.RIVER);
 
 		// The equivalent of future "Jungle"
 		this.terrainEquator = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, gr, 1, 70.0, 1.0 / 100.0, 10.0);
@@ -101,8 +99,6 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	// Special
 	private final TerrainType terrainMountains;
-	private final TerrainType terrainRiver;
-	private final TerrainType terrainRiverFrozen;
 
 	// Ocean
 
@@ -170,7 +166,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 			TerrainInfoSampler.Info terrainInfo = this.infoSampler.sample(x >> 2, z >> 2);
 
 			if (mountainChain < 0.05 && terrainInfo.category == TerrainCategory.RIVER) {
-				return temperature == 3 ? this.terrainRiverFrozen : this.terrainRiver;
+				return temperature == 3 ? this.TERRAIN_RIVER_FROZEN : this.TERRAIN_RIVER;
 			} else {
 				TerrainType preliminary = null;
 
@@ -223,5 +219,10 @@ public class TerrainBiomeProvider extends BiomeSource {
 		return new TerrainBiomeProvider(this.biomeRegistry, seed);
 	}
 
+	// River
+	public static final TerrainType TERRAIN_RIVER = new FlatTerrainType(BiomeKeys.RIVER, 61.0, Biome.Category.RIVER);
+	private static final TerrainType TERRAIN_RIVER_FROZEN = new FlatTerrainType(BiomeKeys.FROZEN_RIVER, 61.0, Biome.Category.RIVER);
+
+	// Temperature Scale
 	private static final double TEMPERATURE_SCALE = 1.0 / 450.0;
 }

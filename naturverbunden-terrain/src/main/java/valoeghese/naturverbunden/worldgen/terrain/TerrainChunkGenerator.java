@@ -153,9 +153,11 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 	}
 
 	private int calculateTerrainHeight(int x, int z) {
-		double totalHeight = 0.0;
+		double height = 0.0;
 		double totalWeight = 0.0;
-		final double maxSquareRadius = 3.0 * 3.0;
+		final double maxSquareRadius = 9.0; // 3.0 * 3.0;
+
+		double closestRiver = Double.NaN;
 
 		// Sample Relevant Voronoi in 5x5 area around the player for smoothing
 		// This is not optimised
@@ -183,18 +185,28 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				if (weight > 0) {
 					TerrainType type =  ((TerrainBiomeProvider) this.biomeSource).sampleTerrainType(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0));
 
-					// Rivers have a much shorter distance for their weight to take effect, but are stronger
+					// Rivers are special bunnies
 					if (type.getCategory() == Biome.Category.RIVER) {
-						weight = 18 * ((2.0 * 2.0) - sqrDist);
+						if (closestRiver == Double.NaN || closestRiver > sqrDist) {
+							sqrDist = closestRiver;
+						}
+					} else {
+						totalWeight += weight;
+						height += weight * type.getHeight(x, z);
 					}
-
-					totalWeight += weight;
-					totalHeight += weight * type.getHeight(x, z);
 				}
 			}
 		}
 
-		return (int) (totalHeight / totalWeight);
+		// Complete the average
+		height = height / totalWeight;
+
+		if (closestRiver == Double.NaN) {
+			return (int) height;
+		} else {
+			final double river = 61.0; //TerrainBiomeProvider.TERRAIN_RIVER.getHeight(x, z);
+			return (int) (MathHelper.lerp(closestRiver / maxSquareRadius, river, height));
+		}
 	}
 
 	@Override
