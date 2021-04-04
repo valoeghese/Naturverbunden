@@ -41,6 +41,7 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.layer.util.LayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
@@ -50,6 +51,10 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import valoeghese.naturverbunden.util.terrain.Vec2d;
 import valoeghese.naturverbunden.util.terrain.Voronoi;
+import valoeghese.naturverbunden.util.terrain.cache.GridOperator;
+import valoeghese.naturverbunden.util.terrain.cache.LossyCache;
+import valoeghese.naturverbunden.worldgen.terrain.layer.util.FleißigArea;
+import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
 public class TerrainChunkGenerator extends ChunkGenerator {
 	public TerrainChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings) {
@@ -61,7 +66,8 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		this.surfaceDepthNoise = new OctaveSimplexNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
 
 		if (biomeSource instanceof TerrainBiomeProvider) {
-			this.terrainTypeSampler = (TerrainBiomeProvider) biomeSource;
+			this.terrainTypeSampler = new LossyCache<>(512, ((TerrainBiomeProvider) biomeSource)::getTerrainType);
+			this.terrainHeightSampler = new FleißigArea(512, this::calculateTerrainHeight);
 		} else {
 			throw new IllegalStateException("biome provider of a TerrainChunkGenerator must be a TerrainBiomeProvider");
 		}
@@ -71,7 +77,8 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 	private final int voronoiSeed;
 	private final ChunkGeneratorSettings settings;
 	private final NoiseSampler surfaceDepthNoise;
-	private final TerrainBiomeProvider terrainTypeSampler;
+	private final GridOperator<TerrainType> terrainTypeSampler;
+	private final LayerSampler terrainHeightSampler;
 
 	@Override
 	protected Codec<? extends ChunkGenerator> getCodec() {
@@ -80,7 +87,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public ChunkGenerator withSeed(long seed) {
-		return new TerrainChunkGenerator(this.populationSource, seed, () -> this.settings);
+		return new TerrainChunkGenerator(this.populationSource.withSeed(seed), seed, () -> this.settings);
 	}
 
 	@Override
@@ -125,7 +132,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 			for (int z = 0; z < 16; ++z) {
 				setPos.setZ(z);
 
-				int height = Math.min(chunk.getTopY() - 1, this.calculateTerrainHeight(totalX, startZ + z));
+				int height = Math.min(chunk.getTopY() - 1, this.terrainHeightSampler.sample(totalX, startZ + z));
 
 				for (int y = chunk.getBottomY(); y < height; ++y) {
 					setPos.setY(y);
@@ -178,7 +185,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				// this is kept square-weighted because sqrt is a trash not pog not based operation and is slower than the hare from aesop's fables
 				if (weight > 0) {
 					totalWeight += weight;
-					totalHeight += weight * this.terrainTypeSampler.getTerrainType(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0)).getHeight(x, z);
+					totalHeight += weight * this.terrainTypeSampler.get(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0)).getHeight(x, z);
 				}
 			}
 		}
@@ -189,7 +196,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 	@Override
 	public int getHeight(int x, int z, Type heightmap, HeightLimitView world) {
 		// Lazy Implementation
-		int height = this.calculateTerrainHeight(x, z);
+		int height = this.terrainHeightSampler.sample(x, z);
 		int seaLevel = this.getSeaLevel();
 
 		if (height < seaLevel && heightmap.getBlockPredicate().test(WATER)) {
@@ -202,7 +209,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 	@Override
 	public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
 		BlockState[] states = new BlockState[world.getHeight()];
-		int height = this.calculateTerrainHeight(x, z);
+		int height = this.terrainHeightSampler.sample(x, z);
 
 		int i = 0;
 		int y;

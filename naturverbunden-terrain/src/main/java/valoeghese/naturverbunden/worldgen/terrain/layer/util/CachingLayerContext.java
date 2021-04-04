@@ -43,15 +43,15 @@ public class CachingLayerContext implements LayerSampleContext<FleißigArea> {
 	}
 
 	public FleißigArea createSampler(LayerOperator layerOperator) {
-		return new FleißigArea(this.cache, this.cacheCapacity, layerOperator);
+		return new FleißigArea(this.cacheCapacity, layerOperator);
 	}
 
 	public FleißigArea createSampler(LayerOperator layerOperator, CachingLayerSampler cachingLayerSampler) {
-		return new FleißigArea(this.cache, Math.min(512, cachingLayerSampler.getCapacity() * 4), layerOperator);
+		return new FleißigArea(Math.min(512, cachingLayerSampler.getCapacity() * 4), layerOperator);
 	}
 
 	public FleißigArea createSampler(LayerOperator layerOperator, CachingLayerSampler cachingLayerSampler, CachingLayerSampler cachingLayerSampler2) {
-		return new FleißigArea(this.cache, Math.min(512, Math.max(cachingLayerSampler.getCapacity(), cachingLayerSampler2.getCapacity()) * 4), layerOperator);
+		return new FleißigArea(Math.min(512, Math.max(cachingLayerSampler.getCapacity(), cachingLayerSampler2.getCapacity()) * 4), layerOperator);
 	}
 
 	public void initSeed(long x, long y) {
