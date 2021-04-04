@@ -169,7 +169,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		int sampleX = 0;
 		int sampleZ = 0;
 
-		// 5x5 sample because that is the possible range of the circle
+		// 9x9 sample because that is the possible range of the circle
 		// can't wait for some mathematical oversight to break my code somewhere amirite
 		for (int xo = -4; xo <= 4; ++xo) {
 			sampleX = xo + calcX;
