@@ -35,12 +35,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.NoiseSampler;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.layer.util.LayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
@@ -185,7 +187,14 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				// this is kept square-weighted because sqrt is a trash not pog not based operation and is slower than the hare from aesop's fables
 				if (weight > 0) {
 					totalWeight += weight;
-					totalHeight += weight * this.terrainTypeSampler.get(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0)).getHeight(x, z);
+					TerrainType type = this.terrainTypeSampler.get(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0));
+					RegistryKey<Biome> biome = type.getBiome();
+
+					if (biome == BiomeKeys.RIVER || biome == BiomeKeys.FROZEN_RIVER) {
+						weight *= 2;
+					}
+
+					totalHeight += weight * type.getHeight(x, z);
 				}
 			}
 		}
