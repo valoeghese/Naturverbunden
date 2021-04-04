@@ -132,7 +132,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 			for (int z = 0; z < 16; ++z) {
 				setPos.setZ(z);
 
-				int height = Math.min(chunk.getTopY() - 1, this.terrainHeightSampler.sample(totalX, startZ + z));
+				int height = Math.min(chunk.getTopY() - 1, this.terrainHeightSampler.sample(totalX, startZ + z)); // this.terrainHeightSampler.sample(totalX, startZ + z)
 
 				for (int y = chunk.getBottomY(); y < height; ++y) {
 					setPos.setY(y);
@@ -206,6 +206,11 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		return height;
 	}
 
+	@Override
+	public void generateFeatures(ChunkRegion region, StructureAccessor accessor) {
+		// TODO Auto-generated method stub
+		//super.generateFeatures(region, accessor);
+	}
 	@Override
 	public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
 		BlockState[] states = new BlockState[world.getHeight()];

@@ -26,8 +26,8 @@ import net.minecraft.util.math.MathHelper;
  */
 public final class Voronoi {
 	public static Vec2d sampleVoronoiGrid(int x, int y, int seed) {
-		double vx = x + (randomdouble(x, y, seed) + 0.5) * 0.5;
-		double vy = y + (randomdouble(x, y, seed + 1) + 0.5) * 0.5;
+		double vx = x + randomdouble(x, y, seed);
+		double vy = y + randomdouble(x, y, seed + 1);
 		return new Vec2d(vx, vy);
 	}
 
