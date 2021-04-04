@@ -53,8 +53,6 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import valoeghese.naturverbunden.util.terrain.Vec2d;
 import valoeghese.naturverbunden.util.terrain.Voronoi;
-import valoeghese.naturverbunden.util.terrain.cache.GridOperator;
-import valoeghese.naturverbunden.util.terrain.cache.LossyCache;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.FleißigArea;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
@@ -68,7 +66,6 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		this.surfaceDepthNoise = new OctaveSimplexNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
 
 		if (biomeSource instanceof TerrainBiomeProvider) {
-			this.terrainHeightSampler = ((TerrainBiomeProvider) biomeSource)::sampleTerrainType;
 			this.terrainHeightSampler = new FleißigArea(512, this::calculateTerrainHeight);
 		} else {
 			throw new IllegalStateException("biome provider of a TerrainChunkGenerator must be a TerrainBiomeProvider");
@@ -186,7 +183,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				// this is kept square-weighted because sqrt is a trash not pog not based operation and is slower than the hare from aesop's fables
 				if (weight > 0) {
 					totalWeight += weight;
-					TerrainType type = this.terrainTypeSampler.get(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0));
+					TerrainType type =  ((TerrainBiomeProvider) this.biomeSource).sampleTerrainType(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0));
 					RegistryKey<Biome> biome = type.getBiome();
 
 					if (biome == BiomeKeys.RIVER || biome == BiomeKeys.FROZEN_RIVER) {
@@ -214,11 +211,6 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		return height;
 	}
 
-	@Override
-	public void generateFeatures(ChunkRegion region, StructureAccessor accessor) {
-		// TODO Auto-generated method stub
-		//super.generateFeatures(region, accessor);
-	}
 	@Override
 	public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
 		BlockState[] states = new BlockState[world.getHeight()];
