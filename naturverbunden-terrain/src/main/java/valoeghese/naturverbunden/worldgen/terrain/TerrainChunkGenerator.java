@@ -182,14 +182,15 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 
 				// this is kept square-weighted because sqrt is a trash not pog not based operation and is slower than the hare from aesop's fables
 				if (weight > 0) {
-					totalWeight += weight;
 					TerrainType type =  ((TerrainBiomeProvider) this.biomeSource).sampleTerrainType(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0));
 					RegistryKey<Biome> biome = type.getBiome();
 
+					// TODO manual custom chunk gen for rivers
 					if (biome == BiomeKeys.RIVER || biome == BiomeKeys.FROZEN_RIVER) {
 						weight *= 2;
 					}
 
+					totalWeight += weight;
 					totalHeight += weight * type.getHeight(x, z);
 				}
 			}

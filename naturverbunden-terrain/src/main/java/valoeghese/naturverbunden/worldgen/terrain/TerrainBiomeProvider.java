@@ -68,8 +68,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 		// Terrain Types
 		gr.setSeed(seed + 1);
 		this.terrainMountains = new MountainsTerrainType(gr);
-		this.terrainRiver = new SimpleSimplexTerrainType(BiomeKeys.RIVER, gr, 1, 58.0, 0.2, 1.0);
-		this.terrainRiverFrozen = new SimpleSimplexTerrainType(BiomeKeys.FROZEN_RIVER, gr, 1, 58.0, 0.2, 1.0);
+		this.terrainRiver = new SimpleSimplexTerrainType(BiomeKeys.RIVER, gr, 1, 58.0, 0.2, 0.0);
+		this.terrainRiverFrozen = new SimpleSimplexTerrainType(BiomeKeys.FROZEN_RIVER, gr, 1, 58.0, 0.2, 0.0);
 
 		// The equivalent of future "Jungle"
 		this.terrainEquator = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, gr, 1, 70.0, 1.0 / 100.0, 10.0);
@@ -120,7 +120,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	private TerrainType getTerrainType(int x, int z) {
 		final double humidityFrequency = 1.0 / 800.0;
-		final double chainFrequency = 1.0 / 2400.0;
+		final double chainFrequency = 1.0 / 2800.0;
 		final double chainCutoff = 0.2;
 		final double chainNormaliser = 1 / chainCutoff;
 
@@ -130,9 +130,9 @@ public class TerrainBiomeProvider extends BiomeSource {
 		double chainSample = 0;
 
 		if (chainStretch >= 0) {
-			chainSample = this.mountainChain.sample(x * chainFrequency * (1.0 + 0.5 * chainStretch), z * chainFrequency);
+			chainSample = this.mountainChain.sample(x * chainFrequency * (1.0 - 0.5 * chainStretch), z * chainFrequency);
 		} else {
-			chainSample = this.mountainChain.sample(x * chainFrequency, z * chainFrequency * (1.0 - 0.5 * chainStretch));
+			chainSample = this.mountainChain.sample(x * chainFrequency, z * chainFrequency * (1.0 + 0.5 * chainStretch));
 		}
 
 		// mountain terrain strength.
