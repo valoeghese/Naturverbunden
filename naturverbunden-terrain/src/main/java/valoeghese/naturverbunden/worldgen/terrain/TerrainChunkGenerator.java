@@ -68,7 +68,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		this.surfaceDepthNoise = new OctaveSimplexNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
 
 		if (biomeSource instanceof TerrainBiomeProvider) {
-			this.terrainTypeSampler = new LossyCache<>(512, ((TerrainBiomeProvider) biomeSource)::getTerrainType);
+			this.terrainHeightSampler = ((TerrainBiomeProvider) biomeSource)::sampleTerrainType;
 			this.terrainHeightSampler = new FleißigArea(512, this::calculateTerrainHeight);
 		} else {
 			throw new IllegalStateException("biome provider of a TerrainChunkGenerator must be a TerrainBiomeProvider");
@@ -79,7 +79,6 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 	private final int voronoiSeed;
 	private final ChunkGeneratorSettings settings;
 	private final NoiseSampler surfaceDepthNoise;
-	private final GridOperator<TerrainType> terrainTypeSampler;
 	private final LayerSampler terrainHeightSampler;
 
 	@Override

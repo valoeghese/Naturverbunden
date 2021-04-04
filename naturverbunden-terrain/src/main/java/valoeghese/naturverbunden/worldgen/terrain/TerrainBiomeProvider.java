@@ -32,6 +32,8 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.BiomeSource;
 import valoeghese.naturverbunden.util.terrain.Noise;
 import valoeghese.naturverbunden.util.terrain.RidgedSimplexGenerator;
+import valoeghese.naturverbunden.util.terrain.cache.GridOperator;
+import valoeghese.naturverbunden.util.terrain.cache.LossyCache;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.Layers;
 import valoeghese.naturverbunden.worldgen.terrain.type.MountainEdgeTerrainType;
@@ -60,6 +62,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 		this.mountainChainStretch = new Noise(gr, 1);
 		this.tempOffset = (gr.nextDouble() - 0.5) * 6.66; // -3.33 to 3.33
 		this.infoSampler = Layers.build(seed);
+
+		this.terrainTypeSampler = new LossyCache<>(512, this::getTerrainType);
 
 		// Terrain Types
 		gr.setSeed(seed + 1);
@@ -90,6 +94,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 	private final Noise mountainChainStretch;
 	private final double tempOffset;
 	private final TerrainInfoSampler infoSampler;
+	private final GridOperator<TerrainType> terrainTypeSampler;
 
 	private final Registry<Biome> biomeRegistry;
 
@@ -109,7 +114,11 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	// Terrain
 
-	public TerrainType getTerrainType(int x, int z) {
+	public TerrainType sampleTerrainType(int x, int z) {
+		return this.terrainTypeSampler.get(x, z);
+	}
+
+	private TerrainType getTerrainType(int x, int z) {
 		final double humidityFrequency = 1.0 /600.0;
 		final double chainFrequency = 1.0 / 1200.0;
 		final double chainCutoff = 0.2;
@@ -198,7 +207,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	@Override
 	public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-		return this.biomeRegistry.get(this.getTerrainType(biomeX << 2, biomeZ << 2).getBiome());
+		return this.biomeRegistry.get(this.sampleTerrainType(biomeX << 2, biomeZ << 2).getBiome());
 	}
 
 	// Boring Stuff
