@@ -159,24 +159,24 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 	private int calculateTerrainHeight(int x, int z) {
 		double totalHeight = 0.0;
 		double totalWeight = 0.0;
-		final double maxSquareRadius = 4.0 * 4.0;
+		final double maxSquareRadius = 3.0 * 3.0;
 
 		// Sample Relevant Voronoi in 5x5 area around the player for smoothing
 		// This is not optimised
 
 		final int calcX = (x >> 4);
 		final int calcZ = (z >> 4);
-		final Vec2d pos = new Vec2d(x * 0.0625, z * 0.0625);
+		final Vec2d pos = new Vec2d((double) x * 0.0625, (double) z * 0.0625);
 
 		int sampleX = 0;
 		int sampleZ = 0;
 
 		// 5x5 sample because that is the possible range of the circle
 		// can't wait for some mathematical oversight to break my code somewhere amirite
-		for (int xo = -2; xo <= 2; ++xo) {
+		for (int xo = -4; xo <= 4; ++xo) {
 			sampleX = xo + calcX;
 
-			for (int zo = -2; zo <= 2; ++zo) {
+			for (int zo = -4; zo <= 4; ++zo) {
 				sampleZ = zo + calcZ;
 
 				Vec2d voronoi = Voronoi.sampleVoronoiGrid(sampleX, sampleZ, this.voronoiSeed);
