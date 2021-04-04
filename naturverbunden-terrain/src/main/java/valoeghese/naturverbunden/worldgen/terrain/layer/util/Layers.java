@@ -95,7 +95,7 @@ public class Layers {
 	}
 
 	public static TerrainInfoSampler build(long seed) {
-		LayerFactory<FleißigArea> layerFactory = build(salt -> new CachingLayerContext(512, seed, salt));
+		LayerFactory<FleiÃŸigArea> layerFactory = build(salt -> new CachingLayerContext(512, seed, salt));
 		return new TerrainInfoSampler(layerFactory);
 	}
 

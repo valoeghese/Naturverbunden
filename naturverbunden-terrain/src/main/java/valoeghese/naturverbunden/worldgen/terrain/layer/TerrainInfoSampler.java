@@ -20,13 +20,13 @@
 package valoeghese.naturverbunden.worldgen.terrain.layer;
 
 import net.minecraft.world.biome.layer.util.LayerFactory;
-import valoeghese.naturverbunden.worldgen.terrain.layer.util.FleiﬂigArea;
+import valoeghese.naturverbunden.worldgen.terrain.layer.util.Flei√üigArea;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
 
 public class TerrainInfoSampler {
-	private final FleiﬂigArea sampler;
+	private final Flei√üigArea sampler;
 
-	public TerrainInfoSampler(LayerFactory<FleiﬂigArea> layerFactory) {
+	public TerrainInfoSampler(LayerFactory<Flei√üigArea> layerFactory) {
 		this.sampler = layerFactory.make();
 	}
 

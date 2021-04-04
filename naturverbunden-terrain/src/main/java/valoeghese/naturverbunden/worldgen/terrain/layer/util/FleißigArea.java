@@ -31,8 +31,8 @@ import net.minecraft.world.biome.layer.util.LayerSampler;
  * Original concept by Gegy, implementation written from scratch by me.
  * @implNote originally a mixin (warning: mojmap): https://github.com/valoeghese/EpicValoMod/blob/master/src/main/java/valoeghese/epic/mixin/MixinLazyArea.java
  */
-public class FleiﬂigArea implements LayerSampler {
-	public FleiﬂigArea(Long2IntLinkedOpenHashMap map, int size, LayerOperator operator) {
+public class Flei√üigArea implements LayerSampler {
+	public Flei√üigArea(Long2IntLinkedOpenHashMap map, int size, LayerOperator operator) {
 		this.operator = operator;
 		int arrSize = 1; // 2^n = 2 * (2^(n-1))
 		int nextArrSize;
@@ -77,7 +77,7 @@ public class FleiﬂigArea implements LayerSampler {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("FleiﬂigArea broke! You'll need to restart your game, sadly. If this issue persists, let me (Valoeghese) know!");
+			System.err.println("Flei√üigArea broke! You'll need to restart your game, sadly. If this issue persists, let me (Valoeghese) know!");
 			throw new RuntimeException(e);
 		}
 	}

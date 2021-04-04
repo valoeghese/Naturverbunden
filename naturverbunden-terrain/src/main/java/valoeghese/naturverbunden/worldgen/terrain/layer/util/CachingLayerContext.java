@@ -27,7 +27,7 @@ import net.minecraft.world.biome.layer.util.LayerSampleContext;
 import net.minecraft.world.biome.source.SeedMixer;
 import net.minecraft.world.gen.SimpleRandom;
 
-public class CachingLayerContext implements LayerSampleContext<FleiﬂigArea> {
+public class CachingLayerContext implements LayerSampleContext<Flei√üigArea> {
 	private final Long2IntLinkedOpenHashMap cache;
 	private final int cacheCapacity;
 	private final PerlinNoiseSampler noiseSampler;
@@ -42,16 +42,16 @@ public class CachingLayerContext implements LayerSampleContext<FleiﬂigArea> {
 		this.cacheCapacity = cacheCapacity;
 	}
 
-	public FleiﬂigArea createSampler(LayerOperator layerOperator) {
-		return new FleiﬂigArea(this.cache, this.cacheCapacity, layerOperator);
+	public Flei√üigArea createSampler(LayerOperator layerOperator) {
+		return new Flei√üigArea(this.cache, this.cacheCapacity, layerOperator);
 	}
 
-	public FleiﬂigArea createSampler(LayerOperator layerOperator, CachingLayerSampler cachingLayerSampler) {
-		return new FleiﬂigArea(this.cache, Math.min(512, cachingLayerSampler.getCapacity() * 4), layerOperator);
+	public Flei√üigArea createSampler(LayerOperator layerOperator, CachingLayerSampler cachingLayerSampler) {
+		return new Flei√üigArea(this.cache, Math.min(512, cachingLayerSampler.getCapacity() * 4), layerOperator);
 	}
 
-	public FleiﬂigArea createSampler(LayerOperator layerOperator, CachingLayerSampler cachingLayerSampler, CachingLayerSampler cachingLayerSampler2) {
-		return new FleiﬂigArea(this.cache, Math.min(512, Math.max(cachingLayerSampler.getCapacity(), cachingLayerSampler2.getCapacity()) * 4), layerOperator);
+	public Flei√üigArea createSampler(LayerOperator layerOperator, CachingLayerSampler cachingLayerSampler, CachingLayerSampler cachingLayerSampler2) {
+		return new Flei√üigArea(this.cache, Math.min(512, Math.max(cachingLayerSampler.getCapacity(), cachingLayerSampler2.getCapacity()) * 4), layerOperator);
 	}
 
 	public void initSeed(long x, long y) {

@@ -85,22 +85,22 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 	@Override
 	public void buildSurface(ChunkRegion region, Chunk chunk) {
 		ChunkPos chunkPos = chunk.getPos();
-		int i = chunkPos.x;
-		int j = chunkPos.z;
-		ChunkRandom chunkRandom = new ChunkRandom();
-		chunkRandom.setTerrainSeed(i, j);
-		ChunkPos chunkPos2 = chunk.getPos();
-		int k = chunkPos2.getStartX();
-		int l = chunkPos2.getStartZ();
+		int chunkX = chunkPos.x;
+		int chunkZ = chunkPos.z;
+		ChunkRandom rand = new ChunkRandom();
+		rand.setTerrainSeed(chunkX, chunkZ);
+
+		int startX = chunkPos.getStartX();
+		int startZ = chunkPos.getStartZ();
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 
-		for(int m = 0; m < 16; ++m) {
-			for(int n = 0; n < 16; ++n) {
-				int o = k + m;
-				int p = l + n;
-				int q = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, m, n) + 1;
-				double e = this.surfaceDepthNoise.sample((double)o * 0.0625D, (double)p * 0.0625D, 0.0625D, (double)m * 0.0625D) * 15.0D;
-				region.getBiome(mutable.set(k + m, q, l + n)).buildSurface(chunkRandom, chunk, o, p, q, e, STONE, WATER, this.getSeaLevel(), region.getSeed());
+		for(int xo = 0; xo < 16; ++xo) {
+			for(int zo = 0; zo < 16; ++zo) {
+				int x = startX + xo;
+				int z = startZ + zo;
+				int height = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, xo, zo) + 1;
+				double e = this.surfaceDepthNoise.sample((double)x * 0.0625D, (double)z * 0.0625D, 0.0625D, (double)xo * 0.0625D) * 15.0D;
+				region.getBiome(mutable.set(startX + xo, height, startZ + zo)).buildSurface(rand, chunk, x, z, height, e, STONE, WATER, this.getSeaLevel(), region.getSeed());
 			}
 		}
 
@@ -112,25 +112,36 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		ChunkPos pos = chunk.getPos();
 		int seaLevel = this.getSeaLevel();
 		BlockPos.Mutable setPos = new BlockPos.Mutable();
+		Heightmap oceanFloor = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
+		Heightmap surface = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
+		final int startX = pos.getStartX();
+		final int startZ = pos.getStartZ();
 
 		for (int x = 0; x < 16; ++x) {
-			setPos.setX(pos.getStartX() + x);
+			setPos.setX(x);
+			int totalX = startX + x;
 
 			for (int z = 0; z < 16; ++z) {
-				setPos.setZ(pos.getStartZ() + z);
+				setPos.setZ(z);
 
-				int height = Math.min(chunk.getTopY() - 1, this.calculateTerrainHeight(setPos.getX(), setPos.getZ()));
+				int height = Math.min(chunk.getTopY() - 1, this.calculateTerrainHeight(totalX, startZ + z));
 
 				for (int y = chunk.getBottomY(); y < height; ++y) {
 					setPos.setY(y);
 					chunk.setBlockState(setPos, STONE, false);
 				}
 
+				oceanFloor.trackUpdate(x, height - 1, z, STONE);
+				surface.trackUpdate(x, height - 1, z, STONE);
+
 				if (height < seaLevel) {
 					for (int y = height; y < seaLevel; ++y) {
 						chunk.setBlockState(setPos, WATER, false);
 					}
 				}
+
+				oceanFloor.trackUpdate(x, seaLevel - 1, z, WATER); // for oceanFloor probably not necessary
+				surface.trackUpdate(x, seaLevel - 1, z, WATER);
 			}
 		}
 
