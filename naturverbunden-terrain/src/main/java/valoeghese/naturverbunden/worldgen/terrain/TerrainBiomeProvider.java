@@ -76,12 +76,12 @@ public class TerrainBiomeProvider extends BiomeSource {
 		// Rainforest will be more mountainous
 		// The equivalent of future "Savanna"
 		this.terrainSubequator = new MultiNoiseTerrainType(BiomeKeys.SAVANNA, 84.0)
-				.addNoise(new Noise(gr, 2, RidgedSimplexGenerator::new), 1.0 / 120.0, 22.0)
+				.addNoise(new Noise(gr, 2, RidgedSimplexGenerator::new), 1.0 / 240.0, 22.0)
 				.addNoise(new Noise(gr, 1), 1.0 / 90.0, 12.0);
 
 		// The equivalent of future "Plains"
 		this.terrainTemperate = new MultiNoiseTerrainType(BiomeKeys.PLAINS, 80.0)
-				.addNoise(new Noise(gr, 1, RidgedSimplexGenerator::new), 1.0 / 130.0, 30.0, 12.0)
+				.addNoise(new Noise(gr, 1, RidgedSimplexGenerator::new), 1.0 / 290.0, 30.0, 12.0)
 				.addNoise(new Noise(gr, 2), 1.0 / 90.0, 25.0, 8.0);
 
 		this.terrainIceCap = new SimpleSimplexTerrainType(BiomeKeys.SNOWY_TUNDRA, gr, 2, 68.0, 1.0 / 75.0, 8.0);
@@ -119,8 +119,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 	}
 
 	private TerrainType getTerrainType(int x, int z) {
-		final double humidityFrequency = 1.0 /600.0;
-		final double chainFrequency = 1.0 / 1200.0;
+		final double humidityFrequency = 1.0 / 800.0;
+		final double chainFrequency = 1.0 / 2400.0;
 		final double chainCutoff = 0.2;
 		final double chainNormaliser = 1 / chainCutoff;
 
@@ -189,7 +189,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 				default:
 					throw new IllegalStateException("WTF");
 				}
-				
+
 				if (mountainChain > 0) {
 					// Because mountainChain edge goes from 0 to 0.5, multiply by 2.
 					return new MountainEdgeTerrainType(preliminary, this.terrainMountains, mountainChain, true);
