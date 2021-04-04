@@ -156,8 +156,10 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		double height = 0.0;
 		double totalWeight = 0.0;
 		final double maxSquareRadius = 9.0; // 3.0 * 3.0;
+		//final double riverRadOffset = 4.0;
+		//final double maxRiverSquareRadius = maxSquareRadius - riverRadOffset;
 
-		double closestRiver = Double.NaN;
+		double closestRiver = -1.0;
 
 		// Sample Relevant Voronoi in 5x5 area around the player for smoothing
 		// This is not optimised
@@ -187,7 +189,8 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 
 					// Rivers are special bunnies
 					if (type.getCategory() == Biome.Category.RIVER) {
-						if (closestRiver == Double.NaN || closestRiver > sqrDist) {
+						//sqrDist -= riverRadOffset;
+						if ((closestRiver == -1.0 || closestRiver > sqrDist) && sqrDist <= maxSquareRadius) {
 							sqrDist = closestRiver;
 						}
 					} else {
@@ -201,11 +204,21 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		// Complete the average
 		height = height / totalWeight;
 
-		if (closestRiver == Double.NaN) {
+		if (closestRiver == -1.0) {
 			return (int) height;
 		} else {
+			System.out.println("smooth");
 			final double river = 61.0; //TerrainBiomeProvider.TERRAIN_RIVER.getHeight(x, z);
-			return (int) (MathHelper.lerp(closestRiver / maxSquareRadius, river, height));
+			double progress = closestRiver / maxSquareRadius;
+			progress -= 0.25;
+			progress *= (1.0 / 0.75);
+			
+			if (progress < 0) {
+				progress = 0;
+			}
+
+			//System.out.println(progress);
+			return (int) (MathHelper.lerp(progress, river, height));
 		}
 	}
 
