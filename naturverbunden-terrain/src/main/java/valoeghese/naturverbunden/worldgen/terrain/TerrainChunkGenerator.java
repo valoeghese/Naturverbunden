@@ -195,7 +195,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		double riverGen = ((TerrainBiomeProvider) this.biomeSource).sampleRiver(x, z);
 
 		final double river = 61.0;
-		return (int) (MathHelper.lerp(riverGen, river, height));
+		return (int) (MathHelper.lerp(riverGen, height, river));
 	}
 
 	@Override

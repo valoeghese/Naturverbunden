@@ -89,7 +89,7 @@ public final class Voronoi {
 		return new Vec2d(rx, ry);
 	}
 
-	public static double sampleWorley(double x, double y, int seed) {
+	public static double sampleD1D2Worley(double x, double y, int seed) {
 		final int baseX = MathHelper.floor(x);
 		final int baseY = MathHelper.floor(y);
 		double rdist2 = 1000;
@@ -109,6 +109,8 @@ public final class Voronoi {
 				if (vdist < rdist) {
 					rdist2 = rdist;
 					rdist = vdist;
+				} else if (vdist < rdist2) {
+					rdist2 = vdist;
 				}
 			}
 		}
