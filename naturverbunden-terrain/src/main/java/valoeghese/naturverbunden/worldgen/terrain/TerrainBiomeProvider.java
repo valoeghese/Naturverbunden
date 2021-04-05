@@ -38,6 +38,7 @@ import valoeghese.naturverbunden.util.terrain.cache.LossyDoubleCache;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.Layers;
 import valoeghese.naturverbunden.worldgen.terrain.type.MountainEdgeTerrainType;
+import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
 public class TerrainBiomeProvider extends BiomeSource {
@@ -137,8 +138,9 @@ public class TerrainBiomeProvider extends BiomeSource {
 		boolean applyLiftToHumidity = mountainChain > -chainCutoff;
 		// normalised between 0 and 1
 		mountainChain = chainNormaliser * Math.max(0.0, mountainChain);
+		TerrainInfoSampler.Info terrainInfo = this.infoSampler.sample(x >> 2, z >> 2);
 
-		if (mountainChain > 0.6) {
+		if (mountainChain > 0.6 && terrainInfo.category == TerrainCategory.LAND) {
 			return this.terrain.terrainMountains;
 		} else { // Using an else block for readability
 			// Humidity from -1 to 1. Initial: -0.9 to 0.9
@@ -163,32 +165,93 @@ public class TerrainBiomeProvider extends BiomeSource {
 			humidityIncrease = Math.max(0.0, 1.0 - (humidityIncrease * humidityIncrease));
 			humidity += 0.6 * humidityIncrease; // 0-1 -> 0-0.6 and append
 
-			TerrainInfoSampler.Info terrainInfo = this.infoSampler.sample(x >> 2, z >> 2);
+			TerrainType primaryTerrain = null;
 
-			TerrainType preliminary = null;
+			if (terrainInfo.category == TerrainCategory.OCEAN) {
+				return this.terrain.terrainOcean;
+			} else if (terrainInfo.category == TerrainCategory.SMALL_BEACH) {
+				return this.terrain.terrainBeach;
+			} else if (terrainInfo.category == TerrainCategory.LARGE_BEACH) {
+				humidity += 0.1;
+				mountainChain -= 0.5;
+			}
 
 			switch (temperature) {
 			case 3:
-				preliminary = this.terrain.terrainSnowyTundra;
+				primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainSnowPlateau : this.terrain.terrainSnowyTundra;
 				break;
 			case 2:
-				preliminary = this.terrain.terrainRollingHills;
+				if (humidity > 0.35) {
+					primaryTerrain = this.terrain.terrainDeciduousForest;
+				} else if (humidity > -0.35) {
+					switch (terrainInfo.info >> 2) {
+					case 0:
+						primaryTerrain = this.terrain.terrainDeciduousForest;
+						break;
+					case 1:
+						primaryTerrain = this.terrain.terrainPlains;
+						break;
+					case 2:
+						primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainPlains : this.terrain.terrainDeciduousForest;
+						break;
+					case 3:
+						primaryTerrain = this.terrain.terrainRollingHills;
+						break;
+					}
+				} else {
+					primaryTerrain = this.terrain.terrainScrubland; // this would be tropical desert
+				}
 				break;
 			case 1:
-				preliminary = this.terrain.terrainSavannahHills;
+				if (humidity > 0.65) {
+					primaryTerrain = this.terrain.terrainJungle;
+				} else if (humidity > 0.6) {
+					primaryTerrain = this.terrain.terrainJungleEdge;
+				} else if (humidity > 0.3) {
+					primaryTerrain = this.terrain.terrainDeciduousForest;
+				} else if (humidity > -0.3) { // Chaparral would be placed between these two
+					switch (terrainInfo.info >> 2) {
+					case 0:
+						primaryTerrain = this.terrain.terrainScrubland;
+						break;
+					case 1:
+						primaryTerrain = this.terrain.terrainSavannah;
+						break;
+					case 2:
+						primaryTerrain = this.terrain.terrainSavannahHills;
+						break;
+					case 3:
+						primaryTerrain = this.terrain.terrainSavannahTerrace;
+						break;
+					}
+				}
 				break;
 			case 0:
-				preliminary = this.terrain.terrainJungle;
+				if (humidity > 0.4) {
+					primaryTerrain = this.terrain.terrainJungle;
+				} else if (humidity > 0.2) {
+					primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainJungle : this.terrain.terrainJungleEdge;
+				} else if (humidity > -0.1) {
+					primaryTerrain = this.terrain.terrainJungleEdge; // TODO a more fitting middle ground monsoon climate thing / steppe
+				} else if (humidity > -0.5) {
+					primaryTerrain = this.terrain.terrainScrubland;
+				} else {
+					primaryTerrain = this.terrain.terrainTropicalDesert;
+				}
 				break;
 			default:
 				throw new IllegalStateException("WTF");
 			}
 
+			if (primaryTerrain == null) {
+				throw new IllegalStateException("WTF 2 electric boogaloo. Humidity " + humidity + ", MountainChain " + mountainChain + ", InfoBits " + terrainInfo.info + " TerrainCategory " + terrainInfo.category.name());
+			}
+
 			if (mountainChain > 0) {
 				// Because mountainChain edge goes from 0 to 0.5, multiply by 2.
-				return new MountainEdgeTerrainType(preliminary, this.terrain.terrainMountains, mountainChain, true);
+				return new MountainEdgeTerrainType(primaryTerrain, this.terrain.terrainMountains, mountainChain, true);
 			} else {
-				return preliminary;
+				return primaryTerrain;
 			}
 		}
 	}

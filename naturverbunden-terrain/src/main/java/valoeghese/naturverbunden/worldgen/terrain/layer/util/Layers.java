@@ -31,6 +31,7 @@ import valoeghese.naturverbunden.worldgen.terrain.layer.DenoteBeachesLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.DiagonalShapeEdgeLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.HillsInformationLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.InformationLayer;
+import valoeghese.naturverbunden.worldgen.terrain.layer.IslandLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.LandOceanLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.NaiveMoreLandLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.ShapeEdgeLayer;
@@ -74,7 +75,9 @@ public class Layers {
 		for (int i = 0; i < 5; ++i) {
 			layer = ScaleLayer.NORMAL.create(cp.apply(1000L + (long)i), layer);
 
-			if (i == 1) {
+			if (i == 0) {
+				layer = IslandLayer.INSTANCE.create(cp.apply(69L), layer);
+			} if (i == 1) {
 				layer = DenoteBeachesLayer.LARGE.create(cp.apply(5L), layer);
 			} else if (i == 2) {
 				layer = DenoteBeachesLayer.SMALL.create(cp.apply(5L), layer);

@@ -46,6 +46,11 @@ public class MultiNoiseTerrainType extends TerrainType {
 		return this;
 	}
 
+	public MultiNoiseTerrainType addNoise(Noise noise, double frequency, double amplitudeHigh, double amplitudeLow, double offset) {
+		this.noises.add(new ConfiguredComplexNoise(noise, frequency, amplitudeHigh, amplitudeLow, offset));
+		return this;
+	}
+
 	private final List<ConfiguredNoise> noises = new ArrayList<>();
 	private final double baseHeight;
 
@@ -78,17 +83,24 @@ public class MultiNoiseTerrainType extends TerrainType {
 	
 	private static class ConfiguredComplexNoise extends ConfiguredNoise {
 		public ConfiguredComplexNoise(Noise noise, double frequency, double amplitudeHigh, double amplitudeLow) {
+			this(noise, frequency, amplitudeHigh, amplitudeLow, 0.0);
+		}
+
+		public ConfiguredComplexNoise(Noise noise, double frequency, double amplitudeHigh, double amplitudeLow, double offset) {
 			super(noise, frequency, 0.0);
+
 			this.amplitudeHigh = amplitudeHigh;
 			this.amplitudeLow = amplitudeLow;
+			this.offset = offset;
 		}
 
 		private final double amplitudeHigh;
 		private final double amplitudeLow;
+		private final double offset;
 		
 		@Override
 		public double sample(double x, double z) {
-			double preliminary = this.noise.sample(x * this.frequency, z * this.frequency);
+			double preliminary = this.noise.sample(x * this.frequency, z * this.frequency) + this.offset;
 			return preliminary * (preliminary < 0 ? this.amplitudeLow : this.amplitudeHigh);
 		}
 	}
