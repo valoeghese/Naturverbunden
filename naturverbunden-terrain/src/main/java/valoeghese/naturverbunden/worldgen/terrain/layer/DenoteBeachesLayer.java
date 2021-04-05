@@ -35,7 +35,7 @@ public enum DenoteBeachesLayer implements CrossSamplingLayer {
 		int tos = s >> INFO_BITS; // terms of service
 		int tow = w >> INFO_BITS; // what happens if you leave your car on private property
 
-		if (toc != 0 || 0 == ton || 0 == toe || 0 == tos || 0 == tow) {
+		if (toc != 0 && (0 == ton || 0 == toe || 0 == tos || 0 == tow)) {
 			return switchCategory(this == LARGE ? TerrainCategory.LARGE_BEACH : TerrainCategory.SMALL_BEACH, centre);
 		}
 

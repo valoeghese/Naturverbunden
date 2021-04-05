@@ -224,6 +224,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 						primaryTerrain = this.terrain.terrainSavannahTerrace;
 						break;
 					}
+				} else {
+					primaryTerrain = this.terrain.terrainTropicalDesert;
 				}
 				break;
 			case 0:
