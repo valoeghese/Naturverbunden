@@ -157,9 +157,6 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		double height = 0.0;
 		double totalWeight = 0.0;
 		final double maxSquareRadius = 9.0; // 3.0 * 3.0;
-		final double maxRiverSquareRadius = 7.5 * 7.5; // 3.0 * 3.0;
-
-		double closestRiver = -1.0;
 
 		// Sample Relevant Voronoi in 5x5 area around the player for smoothing
 		// This is not optimised
@@ -195,22 +192,10 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 
 		// Complete the average
 		height = height / totalWeight;
+		double riverGen = ((TerrainBiomeProvider) this.biomeSource).sampleRiver(x, z);
 
-		if (closestRiver == -1.0) {
-			return (int) height;
-		} else {
-			final double river = 61.0; //TerrainBiomeProvider.TERRAIN_RIVER.getHeight(x, z);
-			double progress = closestRiver / maxRiverSquareRadius;
-			//progress -= 0.25;
-			//progress *= (1.0 / 0.75);
-
-			//if (progress < 0) {
-			//	progress = 0;
-			//}
-
-			//System.out.println(progress);
-			return (int) (MathHelper.lerp(progress, river, height));
-		}
+		final double river = 61.0;
+		return (int) (MathHelper.lerp(riverGen, river, height));
 	}
 
 	@Override
