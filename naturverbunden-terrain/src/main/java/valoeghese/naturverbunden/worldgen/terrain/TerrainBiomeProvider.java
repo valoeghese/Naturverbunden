@@ -90,6 +90,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 		RiverSampler rivers = new RiverSampler(gr);
 		this.rivers = new LossyDoubleCache(512, rivers::sample);
+		this.rawMountains = new LossyDoubleCache(512, this::getChainSample);
 	}
 
 	private final long seed;
