@@ -222,7 +222,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 	public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
 		TerrainType type = this.sampleTerrainType(biomeX << 2, biomeZ << 2);
 
-		return this.biomeRegistry.get(.getBiome());
+		return this.biomeRegistry.get(type.getBiome());
 	}
 
 	// Boring Stuff
