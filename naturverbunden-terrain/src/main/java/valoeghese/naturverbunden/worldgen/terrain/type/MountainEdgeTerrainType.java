@@ -26,8 +26,8 @@ import net.minecraft.world.biome.BiomeKeys;
  * Represents a mixed mountain edge sample at a position.
  */
 public class MountainEdgeTerrainType extends ParentedTerrainType {
-	public MountainEdgeTerrainType(TerrainType mix, TerrainType mountains, double mountainousness, boolean hills) {
-		super(mountainousness > 0.3 ? (hills ? DUMMY_WOODED_MOUNTAINS : mountains) : mix);
+	public MountainEdgeTerrainType(TerrainType mix, TerrainType mountains, double mountainousness, boolean hills, boolean useHotMountainEdges) {
+		super(mountainousness > 0.3 ? (useHotMountainEdges ? DUMMY_SHATTERED_SAVANNAH_PLATEAU : (hills ? DUMMY_WOODED_MOUNTAINS : mountains)) : mix);
 
 		this.mix = mix;
 		this.mountains = mountains;
@@ -43,6 +43,7 @@ public class MountainEdgeTerrainType extends ParentedTerrainType {
 	}
 
 	private static final TerrainType DUMMY_WOODED_MOUNTAINS = new FlatTerrainType(BiomeKeys.WOODED_MOUNTAINS, 0, Biome.Category.EXTREME_HILLS);
+	private static final TerrainType DUMMY_SHATTERED_SAVANNAH_PLATEAU = new FlatTerrainType(BiomeKeys.SHATTERED_SAVANNA_PLATEAU, 0, Biome.Category.EXTREME_HILLS);
 }
 
 abstract class ParentedTerrainType extends TerrainType {
