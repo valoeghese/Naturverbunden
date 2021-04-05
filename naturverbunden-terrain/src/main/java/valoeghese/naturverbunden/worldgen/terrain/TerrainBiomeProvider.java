@@ -107,11 +107,11 @@ public class TerrainBiomeProvider extends BiomeSource {
 	}
 
 	private double getChainSample(int x, int z) {
-		final double humidityFrequency = 1.0 / 800.0;
-		final double chainFrequency = 1.0 / 2800.0;
+		final double stretchFrequency = 1.0 / 820.0;
+		final double chainFrequency = 1.0 / 3000.0;
 
 		// Chain Sample. Used for mountain chains and fake orthographic lift humidity modification
-		double chainStretch = this.mountainChainStretch.sample(x * humidityFrequency, z * humidityFrequency);
+		double chainStretch = this.mountainChainStretch.sample(x * stretchFrequency, z * stretchFrequency);
 
 		double chainSample = 0;
 
