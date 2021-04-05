@@ -156,17 +156,16 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		double height = 0.0;
 		double totalWeight = 0.0;
 		final double maxSquareRadius = 9.0; // 3.0 * 3.0;
-		//final double riverRadOffset = 4.0;
-		//final double maxRiverSquareRadius = maxSquareRadius - riverRadOffset;
+		final double maxRiverSquareRadius = 7.5 * 7.5; // 3.0 * 3.0;
 
 		double closestRiver = -1.0;
 
 		// Sample Relevant Voronoi in 5x5 area around the player for smoothing
 		// This is not optimised
 
-		final int calcX = (x >> 4);
-		final int calcZ = (z >> 4);
-		final Vec2d pos = new Vec2d((double) x * 0.0625, (double) z * 0.0625);
+		int calcX = (x >> 4);
+		int calcZ = (z >> 4);
+		Vec2d pos = new Vec2d((double) x * 0.0625, (double) z * 0.0625);
 
 		int sampleX = 0;
 		int sampleZ = 0;
@@ -188,14 +187,36 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 					TerrainType type =  ((TerrainBiomeProvider) this.biomeSource).sampleTerrainType(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0));
 
 					// Rivers are special bunnies
+					if (type.getCategory() != Biome.Category.RIVER) {
+						totalWeight += weight;
+						height += weight * type.getHeight(x, z);
+					}
+				}
+			}
+		}
+
+		// wtf sized sample for rivers
+		calcX = (x >> 2);
+		calcZ = (z >> 2);
+		pos = new Vec2d((double) x * 0.25, (double) z * 0.25);
+
+		for (int xo = -8; xo <= 8; ++xo) {
+			sampleX = xo + calcX;
+
+			for (int zo = -8; zo <= 8; ++zo) {
+				sampleZ = zo + calcZ;
+
+				Vec2d voronoi = Voronoi.sampleVoronoiGrid(sampleX, sampleZ, this.voronoiSeed);
+				double sqrDist = voronoi.squaredDist(pos);
+				double weight = maxRiverSquareRadius - sqrDist;
+
+				if (weight > 0) {
+					TerrainType type =  ((TerrainBiomeProvider) this.biomeSource).sampleTerrainType(MathHelper.floor(voronoi.getX() * 4.0), MathHelper.floor(voronoi.getY() * 4.0));
+
 					if (type.getCategory() == Biome.Category.RIVER) {
-						//sqrDist -= riverRadOffset;
 						if ((closestRiver == -1.0 || closestRiver > sqrDist) && sqrDist <= maxSquareRadius) {
 							closestRiver = sqrDist;
 						}
-					} else {
-						totalWeight += weight;
-						height += weight * type.getHeight(x, z);
 					}
 				}
 			}
@@ -207,15 +228,14 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		if (closestRiver == -1.0) {
 			return (int) height;
 		} else {
-//			System.out.println("smooth");
 			final double river = 61.0; //TerrainBiomeProvider.TERRAIN_RIVER.getHeight(x, z);
-			double progress = closestRiver / maxSquareRadius;
-			progress -= 0.25;
-			progress *= (1.0 / 0.75);
-			
-			if (progress < 0) {
-				progress = 0;
-			}
+			double progress = closestRiver / maxRiverSquareRadius;
+			//progress -= 0.25;
+			//progress *= (1.0 / 0.75);
+
+			//if (progress < 0) {
+			//	progress = 0;
+			//}
 
 			//System.out.println(progress);
 			return (int) (MathHelper.lerp(progress, river, height));
@@ -229,7 +249,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		int seaLevel = this.getSeaLevel();
 
 		if (height < seaLevel && heightmap.getBlockPredicate().test(WATER)) {
-			return seaLevel;
+			return seaLevel - 1;
 		}
 
 		return height;
