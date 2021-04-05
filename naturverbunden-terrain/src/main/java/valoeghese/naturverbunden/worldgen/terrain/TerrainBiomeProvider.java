@@ -57,7 +57,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 		this.humidityNoise = new Noise(gr, 1);
 		this.mountainChain = new Noise(gr, 1);
 		this.mountainChainStretch = new Noise(gr, 1);
-		this.tempOffset = (gr.nextDouble() - 0.5) * 6.66; // -3.33 to 3.33
+		this.tempOffset = (gr.nextDouble() - 0.5) * 6; // -3 to 3
 		this.infoSampler = Layers.build(seed);
 
 		this.terrainTypeSampler = new LossyCache<>(512, this::getTerrainType);
@@ -149,7 +149,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 				humidity += 0.3 * (chainSample > 0 ? 1 : -1); // +0.3 and -0.3. Total of 0.6 change.
 			}
 
-			// https://www.desmos.com/calculator/iab0cvwydf
+			// 
 			// This temperature ranges from 0-3, and represents HOW COLD SOMETHING IS
 			// IF YOU ARE READING THIS PLEASE NOTE THAT HIGHER VALUES ARE COLDER TEMPERATURES
 			// 0 = Equatorial (Mostly rainforest, No Deserts) - This humidity is handled below
@@ -228,5 +228,5 @@ public class TerrainBiomeProvider extends BiomeSource {
 	}
 
 	// Temperature Scale
-	private static final double TEMPERATURE_SCALE = 1.0 / 450.0;
+	private static final double TEMPERATURE_SCALE = 1.0 / 600.0;
 }

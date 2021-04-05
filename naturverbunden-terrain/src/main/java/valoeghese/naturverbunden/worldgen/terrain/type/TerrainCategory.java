@@ -22,6 +22,6 @@ package valoeghese.naturverbunden.worldgen.terrain.type;
 public enum TerrainCategory {
 	OCEAN,
 	LAND,
-	BEACH,
-	RIVER
+	LARGE_BEACH,
+	SMALL_BEACH
 }

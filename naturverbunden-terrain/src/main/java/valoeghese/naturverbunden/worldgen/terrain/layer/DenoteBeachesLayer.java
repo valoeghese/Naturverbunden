@@ -24,7 +24,8 @@ import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
 
 public enum DenoteBeachesLayer implements CrossSamplingLayer {
-	INSTANCE;
+	LARGE,
+	SMALL;
 
 	@Override
 	public int sample(LayerRandomnessSource rand, int n, int e, int s, int w, int centre) {
@@ -35,7 +36,7 @@ public enum DenoteBeachesLayer implements CrossSamplingLayer {
 		int tow = w >> INFO_BITS; // what happens if you leave your car on private property
 
 		if (toc != 0 || 0 == ton || 0 == toe || 0 == tos || 0 == tow) {
-			return switchCategory(TerrainCategory.BEACH, centre);
+			return switchCategory(this == LARGE ? TerrainCategory.LARGE_BEACH : TerrainCategory.SMALL_BEACH, centre);
 		}
 
 		return centre;
