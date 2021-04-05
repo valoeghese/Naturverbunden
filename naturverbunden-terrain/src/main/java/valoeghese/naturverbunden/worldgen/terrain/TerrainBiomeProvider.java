@@ -74,7 +74,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 			double base = rivers.sample(x, z);
 
 			// Copied From Terrain Sample (below)
-			final double chainCutoff = 0.2;
+			final double chainCutoff = 0.15;
 			final double chainNormaliser = 1 / chainCutoff;
 
 			double chainSample = this.getChainSample(x, z);
@@ -109,7 +109,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	private double getChainSample(int x, int z) {
 		final double stretchFrequency = 1.0 / 820.0;
-		final double chainFrequency = 1.0 / 3000.0;
+		final double chainFrequency = 1.0 / 4500.0;
 
 		// Chain Sample. Used for mountain chains and fake orthographic lift humidity modification
 		double chainStretch = this.mountainChainStretch.sample(x * stretchFrequency, z * stretchFrequency);
@@ -128,7 +128,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 	private TerrainType getTerrainType(int x, int z) {
 		// Don't touch mountains here without mirroring your changes in the river sampler
 		final double humidityFrequency = 1.0 / 900.0;
-		final double chainCutoff = 0.2;
+		final double chainCutoff = 0.15;
 		final double chainNormaliser = 1 / chainCutoff;
 
 		double chainSample = this.rawMountains.get(x, z);
