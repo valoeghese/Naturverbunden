@@ -140,6 +140,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 
 				if (height < seaLevel) {
 					for (int y = height; y < seaLevel; ++y) {
+						setPos.setY(y);
 						chunk.setBlockState(setPos, WATER, false);
 					}
 				}
@@ -186,38 +187,8 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				if (weight > 0) {
 					TerrainType type =  ((TerrainBiomeProvider) this.biomeSource).sampleTerrainType(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0));
 
-					// Rivers are special bunnies
-					if (type.getCategory() != Biome.Category.RIVER) {
-						totalWeight += weight;
-						height += weight * type.getHeight(x, z);
-					}
-				}
-			}
-		}
-
-		// wtf sized sample for rivers
-		calcX = (x >> 2);
-		calcZ = (z >> 2);
-		pos = new Vec2d((double) x * 0.25, (double) z * 0.25);
-
-		for (int xo = -8; xo <= 8; ++xo) {
-			sampleX = xo + calcX;
-
-			for (int zo = -8; zo <= 8; ++zo) {
-				sampleZ = zo + calcZ;
-
-				Vec2d voronoi = Voronoi.sampleVoronoiGrid(sampleX, sampleZ, this.voronoiSeed);
-				double sqrDist = voronoi.squaredDist(pos);
-				double weight = maxRiverSquareRadius - sqrDist;
-
-				if (weight > 0) {
-					TerrainType type =  ((TerrainBiomeProvider) this.biomeSource).sampleTerrainType(MathHelper.floor(voronoi.getX() * 4.0), MathHelper.floor(voronoi.getY() * 4.0));
-
-					if (type.getCategory() == Biome.Category.RIVER) {
-						if ((closestRiver == -1.0 || closestRiver > sqrDist) && sqrDist <= maxSquareRadius) {
-							closestRiver = sqrDist;
-						}
-					}
+					totalWeight += weight;
+					height += weight * type.getHeight(x, z);
 				}
 			}
 		}

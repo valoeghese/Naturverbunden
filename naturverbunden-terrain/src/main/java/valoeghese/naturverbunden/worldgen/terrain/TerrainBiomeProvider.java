@@ -32,8 +32,10 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.BiomeSource;
 import valoeghese.naturverbunden.util.terrain.Noise;
 import valoeghese.naturverbunden.util.terrain.RidgedSimplexGenerator;
+import valoeghese.naturverbunden.util.terrain.cache.DoubleGridOperator;
 import valoeghese.naturverbunden.util.terrain.cache.GridOperator;
 import valoeghese.naturverbunden.util.terrain.cache.LossyCache;
+import valoeghese.naturverbunden.util.terrain.cache.LossyDoubleCache;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.Layers;
 import valoeghese.naturverbunden.worldgen.terrain.type.FlatTerrainType;
@@ -78,16 +80,21 @@ public class TerrainBiomeProvider extends BiomeSource {
 				.addNoise(new Noise(gr, 2, RidgedSimplexGenerator::new), 1.0 / 240.0, 22.0)
 				.addNoise(new Noise(gr, 1), 1.0 / 90.0, 12.0);
 
-		// The equivalent of future "Plains"
+		// The equivalent of future "Rolling Plains"
 		this.terrainTemperate = new MultiNoiseTerrainType(BiomeKeys.PLAINS, 80.0)
 				.addNoise(new Noise(gr, 1, RidgedSimplexGenerator::new), 1.0 / 290.0, 30.0, 12.0)
 				.addNoise(new Noise(gr, 2), 1.0 / 90.0, 25.0, 8.0);
 
 		this.terrainIceCap = new SimpleSimplexTerrainType(BiomeKeys.SNOWY_TUNDRA, gr, 2, 68.0, 1.0 / 75.0, 8.0);
 		// Also snow mountain short peak areas
+
+		RiverSampler rivers = new RiverSampler(gr);
+		this.rivers = new LossyDoubleCache(512, rivers::sample);
 	}
 
 	private final long seed;
+	private final DoubleGridOperator rawMountains;
+	private final DoubleGridOperator rivers;
 	private final Noise humidityNoise;
 	private final Noise mountainChain;
 	private final Noise mountainChainStretch;
@@ -115,11 +122,9 @@ public class TerrainBiomeProvider extends BiomeSource {
 		return this.terrainTypeSampler.get(x, z);
 	}
 
-	private TerrainType getTerrainType(int x, int z) {
+	private double getChainSample(int x, int z) {
 		final double humidityFrequency = 1.0 / 800.0;
 		final double chainFrequency = 1.0 / 2800.0;
-		final double chainCutoff = 0.2;
-		final double chainNormaliser = 1 / chainCutoff;
 
 		// Chain Sample. Used for mountain chains and fake orthographic lift humidity modification
 		double chainStretch = this.mountainChainStretch.sample(x * humidityFrequency, z * humidityFrequency);
@@ -131,6 +136,16 @@ public class TerrainBiomeProvider extends BiomeSource {
 		} else {
 			chainSample = this.mountainChain.sample(x * chainFrequency, z * chainFrequency * (1.0 + 0.5 * chainStretch));
 		}
+
+		return chainSample;
+	}
+
+	private TerrainType getTerrainType(int x, int z) {
+		final double humidityFrequency = 1.0 / 800.0;
+		final double chainCutoff = 0.2;
+		final double chainNormaliser = 1 / chainCutoff;
+
+		double chainSample = this.rawMountains.get(x, z);
 
 		// mountain terrain strength.
 		double mountainChain = chainCutoff - Math.abs(chainSample);
@@ -165,36 +180,36 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 			TerrainInfoSampler.Info terrainInfo = this.infoSampler.sample(x >> 2, z >> 2);
 
-			if (mountainChain < 0.05 && terrainInfo.category == TerrainCategory.RIVER) {
-				return temperature == 3 ? this.TERRAIN_RIVER_FROZEN : this.TERRAIN_RIVER;
+			TerrainType preliminary = null;
+
+			switch (temperature) {
+			case 3:
+				preliminary = this.terrainIceCap;
+				break;
+			case 2:
+				preliminary = this.terrainTemperate;
+				break;
+			case 1:
+				preliminary = this.terrainSubequator;
+				break;
+			case 0:
+				preliminary = this.terrainEquator;
+				break;
+			default:
+				throw new IllegalStateException("WTF");
+			}
+
+			if (mountainChain > 0) {
+				// Because mountainChain edge goes from 0 to 0.5, multiply by 2.
+				return new MountainEdgeTerrainType(preliminary, this.terrainMountains, mountainChain, true);
 			} else {
-				TerrainType preliminary = null;
-
-				switch (temperature) {
-				case 3:
-					preliminary = this.terrainIceCap;
-					break;
-				case 2:
-					preliminary = this.terrainTemperate;
-					break;
-				case 1:
-					preliminary = this.terrainSubequator;
-					break;
-				case 0:
-					preliminary = this.terrainEquator;
-					break;
-				default:
-					throw new IllegalStateException("WTF");
-				}
-
-				if (mountainChain > 0) {
-					// Because mountainChain edge goes from 0 to 0.5, multiply by 2.
-					return new MountainEdgeTerrainType(preliminary, this.terrainMountains, mountainChain, true);
-				} else {
-					return preliminary;
-				}
+				return preliminary;
 			}
 		}
+	}
+
+	public double sampleRiver(int x, int z) {
+		return this.rivers.get(x, z);
 	}
 
 	private int calculateTemperature(double z) {
@@ -204,7 +219,9 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	@Override
 	public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-		return this.biomeRegistry.get(this.sampleTerrainType(biomeX << 2, biomeZ << 2).getBiome());
+		TerrainType type = this.sampleTerrainType(biomeX << 2, biomeZ << 2);
+
+		return this.biomeRegistry.get(.getBiome());
 	}
 
 	// Boring Stuff

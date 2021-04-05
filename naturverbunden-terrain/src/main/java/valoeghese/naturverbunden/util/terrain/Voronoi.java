@@ -89,6 +89,33 @@ public final class Voronoi {
 		return new Vec2d(rx, ry);
 	}
 
+	public static double sampleWorley(double x, double y, int seed) {
+		final int baseX = MathHelper.floor(x);
+		final int baseY = MathHelper.floor(y);
+		double rdist2 = 1000;
+		double rdist = 1000;
+
+		for (int xo = -1; xo <= 1; ++xo) {
+			int gridX = baseX + xo;
+
+			for (int yo = -1; yo <= 1; ++yo) {
+				int gridY = baseY + yo;
+
+				// ensure more evenly distributed
+				double vx = gridX + randomdouble(gridX, gridY, seed);
+				double vy = gridY + randomdouble(gridX, gridY, seed + 1);
+				double vdist = squaredDist(x, y, vx, vy);
+
+				if (vdist < rdist) {
+					rdist2 = rdist;
+					rdist = vdist;
+				}
+			}
+		}
+
+		return rdist2 - rdist;
+	}
+
 	public static Vec2d sampleManhattanVoronoi(double x, double y, int seed) {
 		final int baseX = MathHelper.floor(x);
 		final int baseY = MathHelper.floor(y);
