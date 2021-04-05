@@ -38,6 +38,12 @@ public enum DenoteBeachesLayer implements CrossSamplingLayer {
 		if (toc != 0 && (0 == ton || 0 == toe || 0 == tos || 0 == tow)) {
 			return switchCategory(this == LARGE ? TerrainCategory.LARGE_BEACH : TerrainCategory.SMALL_BEACH, centre);
 		}
+		
+		if (this == SMALL) {
+			if (toc == 0 && (0 != ton || 0 != toe || 0 != tos || 0 != tow)) {
+				return switchCategory(TerrainCategory.SMALL_BEACH, centre);
+			}
+		}
 
 		return centre;
 	}

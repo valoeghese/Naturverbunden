@@ -63,11 +63,12 @@ public class TerrainTypes {
 				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 240.0, 22.0)
 				.addNoise(new Noise(seed, 1), 1.0 / 90.0, 12.0);
 
-		this.terrainSavannahTerrace = new TerracedTerrainType(BiomeKeys.SHATTERED_SAVANNA, seed, 4, 1.0 / 360.0, 72.0, 16.0, new Noise(seed, 2));
+		this.terrainSavannahTerrace = new TerracedTerrainType(BiomeKeys.SHATTERED_SAVANNA, seed, 4, 1.0 / 270.0, 72.0, 16.0, new Noise(seed, 2));
 
 		this.terrainScrubland = this.terrainSavannah; // temp
 
 		this.terrainSnowPlateau = new SimpleSimplexTerrainType(BiomeKeys.SNOWY_MOUNTAINS, seed, 2, 98.0, 1.0 / 80.0, 12.0);
+		this.terrainSnowySpikes = new SimpleSimplexTerrainType(BiomeKeys.ICE_SPIKES, seed, 2, 68.0, 1.0 / 75.0, 8.0);
 		this.terrainSnowyTundra = new SimpleSimplexTerrainType(BiomeKeys.SNOWY_TUNDRA, seed, 2, 68.0, 1.0 / 75.0, 8.0);
 
 		this.terrainTropicalDesert = new MultiNoiseTerrainType(BiomeKeys.DESERT, 78.0)
@@ -103,5 +104,6 @@ public class TerrainTypes {
 	// Temperatish Wettish
 	// Ice Cap
 	final TerrainType terrainSnowPlateau;
+	final TerrainType terrainSnowySpikes;
 	final TerrainType terrainSnowyTundra;
 }

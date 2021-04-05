@@ -32,6 +32,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.gen.placer.BlockPlacer;
 import net.minecraft.world.gen.placer.BlockPlacerType;
+import valoeghese.naturverbunden.Naturverbunden;
 import valoeghese.naturverbunden.block.primitive.ItemBlockEntity;
 import valoeghese.naturverbunden.core.NVBFeatureUtils;
 
@@ -46,7 +47,12 @@ public class ItemBlockPlacer extends BlockPlacer {
 	public void generate(WorldAccess world, BlockPos pos, BlockState state, Random random) {
 		world.setBlockState(pos, state, 2);
 		ItemBlockEntity entity = (ItemBlockEntity) world.getBlockEntity(pos);
-		entity.setItemWorldgen(this.item);
+
+		if (entity == null) {
+			Naturverbunden.LOGGER.warn("THERES A DAMN NULL ITEM ENTITY AT " + pos);
+		} else {
+			entity.setItemWorldgen(this.item);
+		}
 	}
 
 	@Override

@@ -47,9 +47,15 @@ public class TerracedTerrainType extends TerrainType {
 
 	@Override
 	public double getHeight(int x, int z) {
-		// \operatorname{floor}\left(k\left|x\right|\right)\left\{-1\le x\le1\right\}
-		double layer = this.separation * Math.floor(this.layers * Math.abs(this.noise.sample(x * this.frequency, z * this.frequency)));
-		double hills = this.separation * 0.333 * this.additional.sample(x * this.frequency * 4, z * this.frequency * 4);
+		// OLD: \operatorname{floor}\left(k\left|x\right|\right)\left\{-1\le x\le1\right\}
+		//double layer = this.separation * Math.floor(this.layers * Math.abs(this.noise.sample(x * this.frequency, z * this.frequency)));
+		
+		// NEW: \min\left(k,\operatorname{floor}\left(\left|1.5kx\right|\right)\right)\left\{-1\le x\le1\right\}
+		double layer = this.separation * Math.min(
+				this.layers,
+				Math.floor(1.5 * this.layers * Math.abs(this.noise.sample(x * this.frequency, z * this.frequency)))
+				);
+		double hills = this.separation * 0.4 * this.additional.sample(x * this.frequency * 3, z * this.frequency * 3);
 		return hills + this.baseHeight + layer;
 	}
 }

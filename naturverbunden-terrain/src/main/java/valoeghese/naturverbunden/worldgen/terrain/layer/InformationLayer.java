@@ -35,7 +35,7 @@ public enum InformationLayer implements IdentitySamplingLayer {
 	@Override
 	public int sample(LayerRandomnessSource context, int value) {
 		value <<= this.bits; // shift the existing data over to make space
-		value |= context.nextInt(0b11 >> (2 - this.bits)); // Add relevant bits pseudorandomly in the new space
+		value |= context.nextInt(1 + (0b11 >> (2 - this.bits))); // Add relevant bits pseudorandomly in the new space
 		return value; // return the resultant value containing the old and new information
 	}
 }

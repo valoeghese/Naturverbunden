@@ -82,7 +82,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 			// normalised between 0 and 1
 			mountainChain = chainNormaliser * Math.max(0.0, mountainChain);
 			// =====
-			return Math.max(base - 2 * mountainChain, 0.0);
+			return Math.max(base - 3 * mountainChain, 0.0);
 		});
 		this.rawMountains = new LossyDoubleCache(512, this::getChainSample);
 	}
@@ -117,9 +117,9 @@ public class TerrainBiomeProvider extends BiomeSource {
 		double chainSample = 0;
 
 		if (chainStretch >= 0) {
-			chainSample = this.mountainChain.sample(x * chainFrequency * (1.0 - 0.5 * chainStretch), z * chainFrequency);
+			chainSample = this.mountainChain.sample(x * chainFrequency * (1.0 - 0.33 * chainStretch), z * chainFrequency);
 		} else {
-			chainSample = this.mountainChain.sample(x * chainFrequency, z * chainFrequency * (1.0 + 0.5 * chainStretch));
+			chainSample = this.mountainChain.sample(x * chainFrequency, z * chainFrequency * (1.0 + 0.33 * chainStretch));
 		}
 
 		return chainSample;
@@ -127,7 +127,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	private TerrainType getTerrainType(int x, int z) {
 		// Don't touch mountains here without mirroring your changes in the river sampler
-		final double humidityFrequency = 1.0 / 800.0;
+		final double humidityFrequency = 1.0 / 900.0;
 		final double chainCutoff = 0.2;
 		final double chainNormaliser = 1 / chainCutoff;
 
@@ -148,7 +148,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 			// Fake Orthographic Lift and Rain Shadow
 			if (applyLiftToHumidity) {
-				humidity += 0.3 * (chainSample > 0 ? 1 : -1); // +0.3 and -0.3. Total of 0.6 change.
+				humidity += 0.35 * (chainSample > 0 ? 1 : -1); // +0.35 and -0.35. Total of 0.7 change.
 			}
 
 			// 
@@ -272,7 +272,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 		TerrainType type = this.sampleTerrainType(biomeX << 2, biomeZ << 2);
 		double rivers = this.sampleRiver(biomeX << 2, biomeZ << 2);
 
-		if (rivers > 0.5) {
+		if (type.getCategory() != Biome.Category.OCEAN && rivers > 0.7) {
 			// TODO put river type as a parameter of the gen type
 			return this.biomeRegistry.get(type.getCategory() == Biome.Category.ICY ? BiomeKeys.FROZEN_RIVER : BiomeKeys.RIVER);
 		}
