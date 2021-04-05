@@ -31,7 +31,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.BiomeSource;
 import valoeghese.naturverbunden.util.terrain.Noise;
-import valoeghese.naturverbunden.util.terrain.RidgedSimplexGenerator;
 import valoeghese.naturverbunden.util.terrain.cache.DoubleGridOperator;
 import valoeghese.naturverbunden.util.terrain.cache.GridOperator;
 import valoeghese.naturverbunden.util.terrain.cache.LossyCache;
@@ -39,9 +38,6 @@ import valoeghese.naturverbunden.util.terrain.cache.LossyDoubleCache;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.Layers;
 import valoeghese.naturverbunden.worldgen.terrain.type.MountainEdgeTerrainType;
-import valoeghese.naturverbunden.worldgen.terrain.type.MountainsTerrainType;
-import valoeghese.naturverbunden.worldgen.terrain.type.MultiNoiseTerrainType;
-import valoeghese.naturverbunden.worldgen.terrain.type.SimpleSimplexTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
 public class TerrainBiomeProvider extends BiomeSource {
@@ -68,24 +64,10 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 		// Terrain Types
 		gr.setSeed(seed + 1);
-		this.terrainMountains = new MountainsTerrainType(gr);
 
-		// The equivalent of future "Jungle"
-		this.terrainEquator = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, gr, 1, 70.0, 1.0 / 100.0, 10.0);
-		// Rainforest will be more mountainous
-		// The equivalent of future "Savanna"
-		this.terrainSubequator = new MultiNoiseTerrainType(BiomeKeys.SAVANNA, 84.0)
-				.addNoise(new Noise(gr, 2, RidgedSimplexGenerator::new), 1.0 / 240.0, 22.0)
-				.addNoise(new Noise(gr, 1), 1.0 / 90.0, 12.0);
+		this.terrain = new TerrainTypes(gr);
 
-		// The equivalent of future "Rolling Plains"
-		this.terrainTemperate = new MultiNoiseTerrainType(BiomeKeys.PLAINS, 80.0)
-				.addNoise(new Noise(gr, 1, RidgedSimplexGenerator::new), 1.0 / 290.0, 30.0, 12.0)
-				.addNoise(new Noise(gr, 2), 1.0 / 90.0, 25.0, 8.0);
-
-		this.terrainIceCap = new SimpleSimplexTerrainType(BiomeKeys.SNOWY_TUNDRA, gr, 2, 68.0, 1.0 / 75.0, 8.0);
-		// Also snow mountain short peak areas
-
+		gr.setSeed(seed + 2);
 		RiverSampler rivers = new RiverSampler(gr);
 		this.rivers = new LossyDoubleCache(512, (x, z) -> {
 			double base = rivers.sample(x, z);
@@ -116,17 +98,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	private final Registry<Biome> biomeRegistry;
 
-	// Special
-	private final TerrainType terrainMountains;
-
-	// Ocean
-
-	// Normal Land
-	// In Development: these are temporary
-	private final TerrainType terrainEquator;
-	private final TerrainType terrainSubequator;
-	private final TerrainType terrainTemperate;
-	private final TerrainType terrainIceCap;
+	private final TerrainTypes terrain;
 
 	// Terrain
 
@@ -167,7 +139,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 		mountainChain = chainNormaliser * Math.max(0.0, mountainChain);
 
 		if (mountainChain > 0.6) {
-			return this.terrainMountains;
+			return this.terrain.terrainMountains;
 		} else { // Using an else block for readability
 			// Humidity from -1 to 1. Initial: -0.9 to 0.9
 			double humidity = this.humidityNoise.sample(x * humidityFrequency, z * humidityFrequency) * 0.9; // cannot get more extreme climate values without additional stuff below
@@ -197,16 +169,16 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 			switch (temperature) {
 			case 3:
-				preliminary = this.terrainIceCap;
+				preliminary = this.terrain.terrainSnowyTundra;
 				break;
 			case 2:
-				preliminary = this.terrainTemperate;
+				preliminary = this.terrain.terrainRollingHills;
 				break;
 			case 1:
-				preliminary = this.terrainSubequator;
+				preliminary = this.terrain.terrainSavannahHills;
 				break;
 			case 0:
-				preliminary = this.terrainEquator;
+				preliminary = this.terrain.terrainJungle;
 				break;
 			default:
 				throw new IllegalStateException("WTF");
@@ -214,7 +186,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 			if (mountainChain > 0) {
 				// Because mountainChain edge goes from 0 to 0.5, multiply by 2.
-				return new MountainEdgeTerrainType(preliminary, this.terrainMountains, mountainChain, true);
+				return new MountainEdgeTerrainType(preliminary, this.terrain.terrainMountains, mountainChain, true);
 			} else {
 				return preliminary;
 			}
