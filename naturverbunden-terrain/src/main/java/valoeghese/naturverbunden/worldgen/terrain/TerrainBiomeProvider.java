@@ -38,12 +38,10 @@ import valoeghese.naturverbunden.util.terrain.cache.LossyCache;
 import valoeghese.naturverbunden.util.terrain.cache.LossyDoubleCache;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.Layers;
-import valoeghese.naturverbunden.worldgen.terrain.type.FlatTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.MountainEdgeTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.MountainsTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.MultiNoiseTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.SimpleSimplexTerrainType;
-import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
 public class TerrainBiomeProvider extends BiomeSource {
@@ -89,7 +87,20 @@ public class TerrainBiomeProvider extends BiomeSource {
 		// Also snow mountain short peak areas
 
 		RiverSampler rivers = new RiverSampler(gr);
-		this.rivers = new LossyDoubleCache(512, rivers::sample);
+		this.rivers = new LossyDoubleCache(512, (x, z) -> {
+			double base = rivers.sample(x, z);
+
+			// Copied From Terrain Sample (below)
+			final double chainCutoff = 0.2;
+			final double chainNormaliser = 1 / chainCutoff;
+
+			double chainSample = this.getChainSample(x, z);
+			double mountainChain = chainCutoff - Math.abs(chainSample);
+			// normalised between 0 and 1
+			mountainChain = chainNormaliser * Math.max(0.0, mountainChain);
+			// =====
+			return Math.max(base - 2 * mountainChain, 0.0);
+		});
 		this.rawMountains = new LossyDoubleCache(512, this::getChainSample);
 	}
 
@@ -142,6 +153,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 	}
 
 	private TerrainType getTerrainType(int x, int z) {
+		// Don't touch mountains here without mirroring your changes in the river sampler
 		final double humidityFrequency = 1.0 / 800.0;
 		final double chainCutoff = 0.2;
 		final double chainNormaliser = 1 / chainCutoff;
@@ -154,7 +166,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 		// normalised between 0 and 1
 		mountainChain = chainNormaliser * Math.max(0.0, mountainChain);
 
-		if (mountainChain > 0.5) {
+		if (mountainChain > 0.6) {
 			return this.terrainMountains;
 		} else { // Using an else block for readability
 			// Humidity from -1 to 1. Initial: -0.9 to 0.9
@@ -221,6 +233,12 @@ public class TerrainBiomeProvider extends BiomeSource {
 	@Override
 	public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
 		TerrainType type = this.sampleTerrainType(biomeX << 2, biomeZ << 2);
+		double rivers = this.sampleRiver(biomeX << 2, biomeZ << 2);
+
+		if (rivers > 0.5) {
+			// TODO put river type as a parameter of the gen type
+			return this.biomeRegistry.get(type.getCategory() == Biome.Category.ICY ? BiomeKeys.FROZEN_RIVER : BiomeKeys.RIVER);
+		}
 
 		return this.biomeRegistry.get(type.getBiome());
 	}
@@ -236,10 +254,6 @@ public class TerrainBiomeProvider extends BiomeSource {
 	public BiomeSource withSeed(long seed) {
 		return new TerrainBiomeProvider(this.biomeRegistry, seed);
 	}
-
-	// River
-	public static final TerrainType TERRAIN_RIVER = new FlatTerrainType(BiomeKeys.RIVER, 61.0, Biome.Category.RIVER);
-	private static final TerrainType TERRAIN_RIVER_FROZEN = new FlatTerrainType(BiomeKeys.FROZEN_RIVER, 61.0, Biome.Category.RIVER);
 
 	// Temperature Scale
 	private static final double TEMPERATURE_SCALE = 1.0 / 450.0;

@@ -27,7 +27,7 @@ import net.minecraft.world.biome.BiomeKeys;
  */
 public class MountainEdgeTerrainType extends ParentedTerrainType {
 	public MountainEdgeTerrainType(TerrainType mix, TerrainType mountains, double mountainousness, boolean hills) {
-		super(mountainousness > 0.2 ? (hills ? DUMMY_WOODED_MOUNTAINS : mountains) : mix);
+		super(mountainousness > 0.3 ? (hills ? DUMMY_WOODED_MOUNTAINS : mountains) : mix);
 
 		this.mix = mix;
 		this.mountains = mountains;
