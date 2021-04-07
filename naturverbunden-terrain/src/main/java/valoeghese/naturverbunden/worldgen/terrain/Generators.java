@@ -56,22 +56,27 @@ public class Generators {
 				pos.setX(xo + startX);
 
 				for (int zo = -rad; zo < rad; ++zo) {
-					pos.setX(zo + startZ);
+					pos.setZ(zo + startZ);
 
 					for (int yo = -rad; yo < rad; ++yo) {
-						pos.setX(yo + startY);
+						pos.setY(yo + startY);
 
 						if (xo * xo + zo * zo + yo * yo <= rad * rad) {
 							if (!world.isOutOfHeightLimit(pos)) {
 								if (rand.nextInt(squaresApprox) < amount) {
-									BlockState currentState = world.getBlockState(pos);
-
-									for (Target target : config.targets) {
-										if (target.target.test(currentState, rand)) {
-											this.setBlockState(world, pos, target.state);
-											amount--;
-											break;
+									try {
+										BlockState currentState = world.getBlockState(pos);
+										
+										for (Target target : config.targets) {
+											if (target.target.test(currentState, rand)) {
+												this.setBlockState(world, pos, target.state);
+												amount--;
+												break;
+											}
 										}
+									} catch (Exception e) {
+										System.out.println(pos);
+										throw new RuntimeException(e);
 									}
 								}
 							}

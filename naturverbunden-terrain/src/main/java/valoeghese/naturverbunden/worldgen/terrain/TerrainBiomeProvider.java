@@ -127,7 +127,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	private TerrainType getTerrainType(int x, int z) {
 		// Don't touch mountains here without mirroring your changes in the river sampler
-		final double humidityFrequency = 1.0 / 900.0;
+		final double humidityFrequency = 1.0 / 920.0;
 		final double chainCutoff = 0.15;
 		final double chainNormaliser = 1 / chainCutoff;
 
