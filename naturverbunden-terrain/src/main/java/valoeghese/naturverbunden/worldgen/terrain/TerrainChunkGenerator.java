@@ -129,10 +129,11 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				setPos.setZ(z);
 
 				int height = Math.min(chunk.getTopY() - 1, this.terrainHeightSampler.sample(totalX, startZ + z)); // this.terrainHeightSampler.sample(totalX, startZ + z)
+				int grimstoneHeight = MathHelper.floor(3 * MathHelper.sin(x * 0.01f) + 3 * MathHelper.sin(z * 0.01f));
 
 				for (int y = chunk.getBottomY(); y < height; ++y) {
 					setPos.setY(y);
-					chunk.setBlockState(setPos, STONE, false);
+					chunk.setBlockState(setPos, y < grimstoneHeight ? GRIMSTONE : STONE, false);
 				}
 
 				oceanFloor.trackUpdate(x, height - 1, z, STONE);
@@ -270,6 +271,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 			ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(chunkGenerator -> () -> chunkGenerator.settings))
 	.apply(instance, TerrainChunkGenerator::new));
 
+	public static final BlockState GRIMSTONE = Blocks.DEEPSLATE.getDefaultState();
 	public static final BlockState STONE = Blocks.STONE.getDefaultState();
 	public static final BlockState AIR = Blocks.AIR.getDefaultState();
 	public static final BlockState WATER = Blocks.WATER.getDefaultState();
