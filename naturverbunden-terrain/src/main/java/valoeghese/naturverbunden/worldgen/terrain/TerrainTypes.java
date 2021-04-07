@@ -63,7 +63,7 @@ public class TerrainTypes {
 				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 240.0, 22.0)
 				.addNoise(new Noise(seed, 1), 1.0 / 90.0, 12.0);
 
-		this.terrainSavannahTerrace = new TerracedTerrainType(BiomeKeys.SHATTERED_SAVANNA, seed, 4, 1.0 / 270.0, 72.0, 16.0, new Noise(seed, 2));
+		this.terrainSavannahTerrace = new TerracedTerrainType(BiomeKeys.SHATTERED_SAVANNA, seed, 4, 1.0 / 270.0, 72.0, 12.0, new Noise(seed, 2));
 
 		this.terrainScrubland = this.terrainSavannah; // temp
 

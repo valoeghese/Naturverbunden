@@ -55,7 +55,7 @@ public class TerracedTerrainType extends TerrainType {
 				this.layers,
 				Math.floor(1.5 * this.layers * Math.abs(this.noise.sample(x * this.frequency, z * this.frequency)))
 				);
-		double hills = this.separation * 0.4 * this.additional.sample(x * this.frequency * 3, z * this.frequency * 3);
+		double hills = this.separation * 0.333 * this.additional.sample(x * this.frequency * 3, z * this.frequency * 3);
 		return hills + this.baseHeight + layer;
 	}
 }
