@@ -35,11 +35,8 @@ public class Generators {
 	public static final Generator<OreFeatureConfig> ORE = new Generator<OreFeatureConfig>() {
 		@Override
 		public boolean generate(WorldAccess world, BlockPos origin, Random rand, OreFeatureConfig config) {
-			// I literally did all this, https://www.desmos.com/calculator/tiqi230gm8, just to realise it was related to the area of a circle smh
-			// Overengineering go brrr
-			// Now just using the volume of a sphere floored
 			// Related to this https://www.desmos.com/calculator/bq6kptsyno
-			// Only can really fit the ores by size=4
+			// Only can really fit the ores by size>=4
 
 			BlockPos.Mutable pos = new BlockPos.Mutable();
 			final int minAmount = config.size / 2;
