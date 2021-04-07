@@ -48,7 +48,7 @@ public class MixinOreFeature {
 			// I literally did all this, https://www.desmos.com/calculator/tiqi230gm8, just to realise it was related to the area of a circle smh
 			// Overengineering go brrr
 			// Now just using the volume of a sphere floored
-			// Related to this https://www.desmos.com/calculator/bw03axt5l0
+			// Related to this https://www.desmos.com/calculator/bq6kptsyno
 			// Only can really fit the ores by size=4
 
 			final int minAmount = config.size / 2;
