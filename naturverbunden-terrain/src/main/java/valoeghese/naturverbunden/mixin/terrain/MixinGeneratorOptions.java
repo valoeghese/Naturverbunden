@@ -33,6 +33,7 @@ import valoeghese.naturverbunden.worldgen.terrain.TerrainChunkGenerator;
 
 /**
  * @reason Mess with default generator type.
+ * TODO server stuff for fromProperties
  */
 @Mixin(GeneratorOptions.class)
 public abstract class MixinGeneratorOptions {

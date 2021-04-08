@@ -258,7 +258,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 						primaryTerrain = this.terrain.terrainScrubland;
 						break;
 					case 1:
-						primaryTerrain = this.terrain.terrainSavannah;
+						primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainSavannahPlateau : this.terrain.terrainSavannah;
 						break;
 					case 2:
 						primaryTerrain = this.terrain.terrainSavannahHills;

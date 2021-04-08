@@ -144,11 +144,15 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		}
 
 		Perlerper cavess = new Perlerper(this.getWorldHeight(), startX, this.getMinimumY(), startZ, (x, y, z) -> {
+			final double extraDistrustLevel = 10.0; // Perlerp is not trustworthy
+
 			int xpos = x << 2; // 0 to 16 bc raw val is 0-4 (range:5)
 			int zpos = z << 2;
 			int ypos = (y << 3) - 64;
+			int height = heights[(xpos * 17) + zpos];
+			double extraDistrust = (1.0 / 20.0) * (height - ypos);
 
-			return this.noiseCaves.sample(startX + xpos, ypos, startZ + zpos, this.getApparentRockDensity(heights[(xpos * 17) + zpos], ypos));
+			return MathHelper.clamp(extraDistrust, 0.0, 1.0) * extraDistrustLevel + this.noiseCaves.sample(startX + xpos, ypos, startZ + zpos, this.getApparentRockDensity(height, ypos));
 		});
 
 		for (int x = 0; x < 16; ++x) {
@@ -166,7 +170,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				for (int y = chunk.getBottomY(); y < height; ++y) {
 					state = y < grimstoneHeight ? GRIMSTONE : STONE;
 
-					if (y > -64 && (y < height - 1 || height > seaLevel + 1) && cavess.sample(x, y, z) < 0) {
+					if (y > -64 && (y < height - 1 || height > seaLevel + 1) && cavess.sample(x, y, z) < 0.0) {
 						state = CAVE_AIR;
 					}
 
@@ -221,7 +225,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 
 				// this is kept square-weighted because sqrt is a trash not pog not based operation and is slower than the hare from aesop's fables
 				if (weight > 0) {
-					TerrainType type =  ((TerrainBiomeProvider) this.biomeSource).sampleTerrainType(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0));
+					TerrainType type = ((TerrainBiomeProvider) this.biomeSource).sampleTerrainType(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0));
 
 					totalWeight += weight;
 					height += weight * type.getHeight(x, z);
@@ -252,6 +256,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
+		// TODO should I implement cave stuff here too
 		BlockState[] states = new BlockState[world.getHeight()];
 		int height = this.terrainHeightSampler.sample(x, z);
 
