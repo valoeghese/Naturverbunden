@@ -47,6 +47,7 @@ public class TerrainTypes {
 		this.terrainMountains = new MountainsTerrainType(seed);
 
 		this.terrainOcean = new SimpleSimplexTerrainType(BiomeKeys.OCEAN, seed, 2, 50.0, 1.0 / 80.0, 12.0);
+		this.terrainDeepOcean = new SimpleSimplexTerrainType(BiomeKeys.DEEP_OCEAN, seed, 2, 38.0, 1.0 / 102.0, 15.0);
 
 		this.terrainPlains = new MultiNoiseTerrainType(BiomeKeys.PLAINS, 76.0)
 				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 450.0, 15.0, 8.0)
@@ -86,6 +87,7 @@ public class TerrainTypes {
 
 	// Ocean
 	final TerrainType terrainOcean;
+	final TerrainType terrainDeepOcean;
 
 	// Hottish Wettish
 	final TerrainType terrainJungle;

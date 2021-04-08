@@ -168,7 +168,12 @@ public class TerrainBiomeProvider extends BiomeSource {
 			TerrainType primaryTerrain = null;
 
 			if (terrainInfo.category == TerrainCategory.OCEAN) {
-				return this.terrain.terrainOcean;
+				boolean i5 = this.infoSampler.sample(x >> 2, z >> 2).category == TerrainCategory.OCEAN;
+				boolean _09 = this.infoSampler.sample(x >> 2, z >> 2).category == TerrainCategory.OCEAN;
+				boolean vc = this.infoSampler.sample(x >> 2, z >> 2).category == TerrainCategory.OCEAN;
+				boolean b = this.infoSampler.sample(x >> 2, z >> 2).category == TerrainCategory.OCEAN;
+
+				return i5 && _09 && vc && b ? this.terrain.terrainDeepOcean : this.terrain.terrainOcean;
 			} else if (terrainInfo.category == TerrainCategory.SMALL_BEACH) {
 				return temperature < 0 ? this.terrain.terrainBeachFrozen : this.terrain.terrainBeach;
 			} else if (terrainInfo.category == TerrainCategory.LARGE_BEACH) {

@@ -23,10 +23,6 @@ import net.minecraft.world.biome.layer.type.DiagonalCrossSamplingLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
 
-/**
- * Increase Edge Curvature layer 2 electric boogaloo.
- * @implNote https://github.com/valoeghese/FractalBiomeGeneration/blob/master/src/tk/valoeghese/world/gen/fractal/FractalShapeEdge.java
- */
 public enum IslandLayer implements DiagonalCrossSamplingLayer {
 	INSTANCE;
 

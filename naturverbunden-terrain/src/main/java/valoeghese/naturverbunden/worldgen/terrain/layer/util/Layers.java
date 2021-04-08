@@ -36,6 +36,7 @@ import valoeghese.naturverbunden.worldgen.terrain.layer.LandOceanLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.NaiveMoreLandLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.ShapeEdgeLayer;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
+import valoeghese.naturverbunden.worldgen.terrain.layer.WiseMoreLandLayer;
 
 public class Layers {
 	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> stack(long seed, ParentedLayer layer, LayerFactory<T> parent, int count, LongFunction<C> cp) {
@@ -58,7 +59,7 @@ public class Layers {
 		layer = ScaleLayer.NORMAL.create(cp.apply(1000L), layer);
 
 		layer = ShapeEdgeLayer.INSTANCE.create(cp.apply(3L), layer);
-		layer = NaiveMoreLandLayer.INSTANCE.create(cp.apply(51L), layer);
+		layer = WiseMoreLandLayer.INSTANCE.create(cp.apply(51L), layer);
 		layer = DiagonalShapeEdgeLayer.INSTANCE.create(cp.apply(4L), layer);
 
 		// Information

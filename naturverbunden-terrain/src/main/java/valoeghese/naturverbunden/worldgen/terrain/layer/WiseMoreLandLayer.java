@@ -19,14 +19,27 @@
 
 package valoeghese.naturverbunden.worldgen.terrain.layer;
 
-import net.minecraft.world.biome.layer.type.InitLayer;
+import net.minecraft.world.biome.layer.type.DiagonalCrossSamplingLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
-public enum LandOceanLayer implements InitLayer {
+/**
+ * Remove too much ocean layer 2 electric boogaloo
+ */
+public enum WiseMoreLandLayer implements DiagonalCrossSamplingLayer {
 	INSTANCE;
 
 	@Override
-	public int sample(LayerRandomnessSource rand, int x, int z) {
-		return x == 0 && z == 0 ? 1 : (rand.nextInt(5) == 0 ? 1 : 0); // Land 0b1 or Ocean 0b0
+	public int sample(LayerRandomnessSource random, int sw, int se, int nw, int ne, int centre) {
+		int c = centre;
+		int e1 = ne;
+		int e2 = se;
+		int e3 = sw;
+		int e4 = nw;
+
+		if (c == 0 && 0 == e1 && 0 == e2 && 0 == e3 && 0 == e4 && random.nextInt(3) == 0) {
+			return 1;
+		}
+
+		return centre;
 	}
 }

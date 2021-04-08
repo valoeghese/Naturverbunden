@@ -152,13 +152,15 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		});
 
 		for (int x = 0; x < 16; ++x) {
+			int totalX = startX + x;
 			setPos.setX(x);
 
 			for (int z = 0; z < 16; ++z) {
+				int totalZ = startZ + z;
 				setPos.setZ(z);
 
 				int height = heights[(x * 17) + z];
-				int grimstoneHeight = MathHelper.floor(3 * MathHelper.sin(x * 0.01f) + 3 * MathHelper.sin(z * 0.01f));
+				int grimstoneHeight = MathHelper.floor(3 * MathHelper.sin(totalX * 0.01f) + 3 * MathHelper.sin(totalZ * 0.01f));
 				BlockState state;
 
 				for (int y = chunk.getBottomY(); y < height; ++y) {
