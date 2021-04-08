@@ -168,14 +168,15 @@ public class TerrainBiomeProvider extends BiomeSource {
 			TerrainType primaryTerrain = null;
 
 			if (terrainInfo.category == TerrainCategory.OCEAN) {
-				boolean i5 = this.infoSampler.sample(x >> 2, z >> 2).category == TerrainCategory.OCEAN;
-				boolean _09 = this.infoSampler.sample(x >> 2, z >> 2).category == TerrainCategory.OCEAN;
-				boolean vc = this.infoSampler.sample(x >> 2, z >> 2).category == TerrainCategory.OCEAN;
-				boolean b = this.infoSampler.sample(x >> 2, z >> 2).category == TerrainCategory.OCEAN;
+				final int deepCheckDist = 8;
+				boolean i5 = this.infoSampler.sample((x >> 2) + deepCheckDist, (z >> 2) + deepCheckDist).category == TerrainCategory.OCEAN;
+				boolean _09 = this.infoSampler.sample((x >> 2) + deepCheckDist, (z >> 2) - deepCheckDist).category == TerrainCategory.OCEAN;
+				boolean vc = this.infoSampler.sample((x >> 2) - deepCheckDist, (z >> 2) + deepCheckDist).category == TerrainCategory.OCEAN;
+				boolean b = this.infoSampler.sample((x >> 2) - deepCheckDist, (z >> 2) - deepCheckDist).category == TerrainCategory.OCEAN;
 
 				return i5 && _09 && vc && b ? this.terrain.terrainDeepOcean : this.terrain.terrainOcean;
 			} else if (terrainInfo.category == TerrainCategory.SMALL_BEACH) {
-				return temperature < 0 ? this.terrain.terrainBeachFrozen : this.terrain.terrainBeach;
+				return temperature == 3 ? this.terrain.terrainBeachFrozen : this.terrain.terrainBeach;
 			} else if (terrainInfo.category == TerrainCategory.LARGE_BEACH) {
 				humidity += 0.1;
 				mountainChain -= 0.5;
@@ -183,12 +184,34 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 			switch (temperature) {
 			case 3:
-				primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainSnowPlateau : this.terrain.terrainSnowyTundra;
+				switch (terrainInfo.info >> 2) {
+				case 0:
+					// I originally meant for spikes to be a hill but honestly might be better this way. We'll see.
+					// TODO Snowy Taiga
+					primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainSnowPlateau : this.terrain.terrainSnowySpikes;
+					break;
+				case 1:
+					if (humidity > 0.2) {
+						primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainSnowPlateau : this.terrain.terrainSnowySpikes;
+					} else {
+						primaryTerrain = this.terrain.terrainTaigaSnowy;
+					}
+					break;
+				case 2:
+					if (humidity > -0.1) {
+						primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainSnowPlateau : this.terrain.terrainSnowySpikes;
+					} else {
+						primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainTaigaSnowy : this.terrain.terrainSnowyTundra;
+					}
+					break;
+				default:
+					primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainSnowPlateau : this.terrain.terrainSnowyTundra;
+				}
 				break;
 			case 2:
 				if (humidity > 0.35) {
 					primaryTerrain = this.terrain.terrainDeciduousForest;
-				} else if (humidity > -0.35) {
+				} else if (humidity > 0) {
 					switch (terrainInfo.info >> 2) {
 					case 0:
 						primaryTerrain = this.terrain.terrainDeciduousForest;
@@ -197,14 +220,29 @@ public class TerrainBiomeProvider extends BiomeSource {
 						primaryTerrain = this.terrain.terrainPlains;
 						break;
 					case 2:
-						primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainPlains : this.terrain.terrainDeciduousForest;
+						primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainDeciduousForest : this.terrain.terrainPlains;
+						break;
+					case 3:
+						primaryTerrain = this.terrain.terrainRollingHills;
+						break;
+					}
+				} else if (humidity > -0.35) {
+					switch (terrainInfo.info >> 2) {
+					case 0:
+						primaryTerrain = this.terrain.terrainTaiga;
+						break;
+					case 1:
+						primaryTerrain = this.terrain.terrainPlains;
+						break;
+					case 2:
+						primaryTerrain = this.terrain.terrainTaigaGiant;
 						break;
 					case 3:
 						primaryTerrain = this.terrain.terrainRollingHills;
 						break;
 					}
 				} else {
-					primaryTerrain = this.terrain.terrainScrubland; // this would be tropical desert
+					primaryTerrain = this.terrain.terrainScrubland; // this would be temperate desert
 				}
 				break;
 			case 1:

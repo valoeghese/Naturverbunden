@@ -134,17 +134,17 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		int[] heights = new int[17 * 17];
 
 		for (int x = 0; x < 17; ++x) {
-			int totalX = x == 16 ? startX + (5 << 2) : startX + x;
+			int totalX = startX + x;
 
 			for (int z = 0; z < 17; ++z) {
-				int totalZ = z == 16 ? startZ + (5 << 2) : startZ + z;
+				int totalZ = startZ + z;
 
 				heights[(x * 17) + z] = Math.min(chunk.getTopY() - 1, this.terrainHeightSampler.sample(totalX, totalZ));
 			}
 		}
 
 		Perlerper cavess = new Perlerper(this.getWorldHeight(), startX, this.getMinimumY(), startZ, (x, y, z) -> {
-			int xpos = x << 2;
+			int xpos = x << 2; // 0 to 16 bc raw val is 0-4 (range:5)
 			int zpos = z << 2;
 			int ypos = (y << 3) - 64;
 

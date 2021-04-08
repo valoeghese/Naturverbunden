@@ -21,6 +21,7 @@ package valoeghese.naturverbunden.worldgen.terrain;
 
 import java.util.Random;
 
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import valoeghese.naturverbunden.util.terrain.Noise;
@@ -36,6 +37,7 @@ public class TerrainTypes {
 	public TerrainTypes(Random seed) {
 		this.terrainBeach = new FlatTerrainType(BiomeKeys.BEACH, 64.0, Biome.Category.BEACH);
 		this.terrainBeachFrozen = new FlatTerrainType(BiomeKeys.SNOWY_BEACH, 64.0, Biome.Category.BEACH);
+		this.terrainBayou = new SimpleSimplexTerrainType(BiomeKeys.SWAMP, seed, 2, 61.0, 1.0 / 80.0, 8.0);
 
 		this.terrainDeciduousForest = new SimpleSimplexTerrainType(BiomeKeys.FOREST, seed, 3, 80.0, 1.0 / 140.0, 12.0);
 
@@ -73,6 +75,10 @@ public class TerrainTypes {
 		this.terrainSnowySpikes = new SimpleSimplexTerrainType(BiomeKeys.ICE_SPIKES, seed, 2, 68.0, 1.0 / 75.0, 8.0);
 		this.terrainSnowyTundra = new SimpleSimplexTerrainType(BiomeKeys.SNOWY_TUNDRA, seed, 2, 68.0, 1.0 / 75.0, 8.0);
 
+		this.terrainTaiga = createTaiga(BiomeKeys.TAIGA, seed);
+		this.terrainTaigaGiant = createTaiga(BiomeKeys.GIANT_TREE_TAIGA, seed);
+		this.terrainTaigaSnowy = createTaiga(BiomeKeys.SNOWY_TAIGA, seed);
+
 		this.terrainTropicalDesert = new MultiNoiseTerrainType(BiomeKeys.DESERT, 78.0)
 				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 410.0, 30.0, 12.0)
 				.addNoise(new Noise(seed, 2), 1.0 / 60.0, 2.5)
@@ -101,13 +107,24 @@ public class TerrainTypes {
 	final TerrainType terrainTropicalDesert;
 
 	// Temperatish Dryish
-	final TerrainType terrainDeciduousForest;
 	final TerrainType terrainRollingHills;
+	final TerrainType terrainTaiga;
+	final TerrainType terrainTaigaGiant;
 	final TerrainType terrainPlains;
 
 	// Temperatish Wettish
+	final TerrainType terrainBayou;
+	final TerrainType terrainDeciduousForest;
+
 	// Ice Cap
 	final TerrainType terrainSnowPlateau;
 	final TerrainType terrainSnowySpikes;
 	final TerrainType terrainSnowyTundra;
+	final TerrainType terrainTaigaSnowy;
+
+	private static TerrainType createTaiga(RegistryKey<Biome> biome, Random seed) {
+		return new MultiNoiseTerrainType(biome, 76.0)
+				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 390.0, 30.0, 12.0)
+				.addNoise(new Noise(seed, 2), 1.0 / 120.0, 25.0, 8.0);
+	}
 }
