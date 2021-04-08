@@ -3,4 +3,5 @@ version = getSubprojectVersion(project)
 
 dependencies {
 	compile project(path: ':naturverbunden-core')
+	compile project(path: ':naturverbunden-terrain')
 }
