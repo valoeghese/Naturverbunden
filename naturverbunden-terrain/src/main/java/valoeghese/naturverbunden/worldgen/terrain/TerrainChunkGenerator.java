@@ -116,7 +116,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		//this.buildBedrock(chunk, chunkRandom);
 	}
 
-	private double getCaveDensity(int height, int y) {
+	private double getApparentRockDensity(int height, int y) {
 		final double magicDensityConstant = 12.75/3.0;
 		final double distrustLevel = 4.0;
 		return magicDensityConstant * (height - y) - distrustLevel; // gradient -magicDensityConstant, offset magicDensityConstant * height - distrustLevel.
@@ -148,7 +148,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 			int zpos = z << 2;
 			int ypos = (y << 3) - 64;
 
-			return this.noiseCaves.sample(startX + xpos, ypos, startZ + zpos, this.getCaveDensity(heights[(xpos * 17) + zpos], ypos));
+			return this.noiseCaves.sample(startX + xpos, ypos, startZ + zpos, this.getApparentRockDensity(heights[(xpos * 17) + zpos], ypos));
 		});
 
 		for (int x = 0; x < 16; ++x) {
