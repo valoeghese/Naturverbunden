@@ -45,12 +45,14 @@ import net.minecraft.world.biome.layer.util.LayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
+import net.minecraft.world.gen.NoiseCaveSampler;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import valoeghese.naturverbunden.util.terrain.Vec2d;
 import valoeghese.naturverbunden.util.terrain.Voronoi;
+import valoeghese.naturverbunden.worldgen.Perlerper;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.FleißigArea;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
@@ -64,10 +66,12 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		this.surfaceDepthNoise = new OctaveSimplexNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
 
 		if (biomeSource instanceof TerrainBiomeProvider) {
-			this.terrainHeightSampler = new FleißigArea(512, this::calculateTerrainHeight);
+			this.terrainHeightSampler = new FleißigArea(1024, this::calculateTerrainHeight);
 		} else {
 			throw new IllegalStateException("biome provider of a TerrainChunkGenerator must be a TerrainBiomeProvider");
 		}
+
+		this.noiseCaves = new NoiseCaveSampler(new ChunkRandom(seed - 1), this.settings.getGenerationShapeConfig().getMinimumY());
 	}
 
 	private final long seed;
@@ -75,6 +79,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 	private final ChunkGeneratorSettings settings;
 	private final NoiseSampler surfaceDepthNoise;
 	private final LayerSampler terrainHeightSampler;
+	private final NoiseCaveSampler noiseCaves;
 
 	@Override
 	protected Codec<? extends ChunkGenerator> getCodec() {
@@ -111,6 +116,11 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		//this.buildBedrock(chunk, chunkRandom);
 	}
 
+	private double getCaveDensity(int height, int y) {
+		final double magicDensityConstant = 17.0 / 3.0; // 12.75/3.0 if I want to make it based on h - 40 instead
+		return magicDensityConstant * (height - y); // gradient -magicDensityConstant, offset magicDensityConstant * height.
+	}
+
 	@Override
 	public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {
 		ChunkPos pos = chunk.getPos();
@@ -120,20 +130,45 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		Heightmap surface = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
 		final int startX = pos.getStartX();
 		final int startZ = pos.getStartZ();
+		int[] heights = new int[17 * 17];
+
+		for (int x = 0; x < 17; ++x) {
+			int totalX = x == 17 ? startX + (5 << 2) : startX + x;
+
+			for (int z = 0; z < 17; ++z) {
+				int totalZ = z == 17 ? startZ + (5 << 2) : startZ + z;
+
+				heights[(x * 17) + z] = Math.min(chunk.getTopY() - 1, this.terrainHeightSampler.sample(totalX, totalZ));
+			}
+		}
+
+		Perlerper cavess = new Perlerper(this.getWorldHeight(), startX, this.getMinimumY(), startZ, (x, y, z) -> {
+			int xpos = x << 2;
+			int zpos = z << 2;
+			int ypos = (y << 3) - 64;
+
+			return this.noiseCaves.sample(startX + xpos, ypos, startZ + zpos, this.getCaveDensity(heights[(xpos * 17) + zpos], ypos));
+		});
 
 		for (int x = 0; x < 16; ++x) {
 			setPos.setX(x);
-			int totalX = startX + x;
 
 			for (int z = 0; z < 16; ++z) {
 				setPos.setZ(z);
 
-				int height = Math.min(chunk.getTopY() - 1, this.terrainHeightSampler.sample(totalX, startZ + z)); // this.terrainHeightSampler.sample(totalX, startZ + z)
+				int height = heights[(x * 17) + z];
 				int grimstoneHeight = MathHelper.floor(3 * MathHelper.sin(x * 0.01f) + 3 * MathHelper.sin(z * 0.01f));
+				BlockState state;
 
 				for (int y = chunk.getBottomY(); y < height; ++y) {
+					state = y < grimstoneHeight ? GRIMSTONE : STONE;
+
+					if (cavess.sample(x, y, z) < 0) {
+						state = CAVE_AIR;
+					}
+
 					setPos.setY(y);
-					chunk.setBlockState(setPos, y < grimstoneHeight ? GRIMSTONE : STONE, false);
+					chunk.setBlockState(setPos, state, false);
 				}
 
 				oceanFloor.trackUpdate(x, height - 1, z, STONE);
@@ -274,6 +309,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 	public static final BlockState GRIMSTONE = Blocks.DEEPSLATE.getDefaultState();
 	public static final BlockState STONE = Blocks.STONE.getDefaultState();
 	public static final BlockState AIR = Blocks.AIR.getDefaultState();
+	public static final BlockState CAVE_AIR = Blocks.CAVE_AIR.getDefaultState();
 	public static final BlockState WATER = Blocks.WATER.getDefaultState();
 
 }
