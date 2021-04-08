@@ -35,6 +35,7 @@ import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 public class TerrainTypes {
 	public TerrainTypes(Random seed) {
 		this.terrainBeach = new FlatTerrainType(BiomeKeys.BEACH, 64.0, Biome.Category.BEACH);
+		this.terrainBeachFrozen = new FlatTerrainType(BiomeKeys.SNOWY_BEACH, 64.0, Biome.Category.BEACH);
 
 		this.terrainDeciduousForest = new SimpleSimplexTerrainType(BiomeKeys.FOREST, seed, 3, 80.0, 1.0 / 140.0, 12.0);
 
@@ -81,6 +82,7 @@ public class TerrainTypes {
 	// Special
 	final TerrainType terrainMountains;
 	final TerrainType terrainBeach;
+	final TerrainType terrainBeachFrozen;
 
 	// Ocean
 	final TerrainType terrainOcean;

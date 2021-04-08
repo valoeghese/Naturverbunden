@@ -170,7 +170,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 			if (terrainInfo.category == TerrainCategory.OCEAN) {
 				return this.terrain.terrainOcean;
 			} else if (terrainInfo.category == TerrainCategory.SMALL_BEACH) {
-				return this.terrain.terrainBeach;
+				return temperature < 0 ? this.terrain.terrainBeachFrozen : this.terrain.terrainBeach;
 			} else if (terrainInfo.category == TerrainCategory.LARGE_BEACH) {
 				humidity += 0.1;
 				mountainChain -= 0.5;

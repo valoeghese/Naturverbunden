@@ -117,8 +117,9 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 	}
 
 	private double getCaveDensity(int height, int y) {
-		final double magicDensityConstant = 17.0 / 3.0; // 12.75/3.0 if I want to make it based on h - 40 instead
-		return magicDensityConstant * (height - y); // gradient -magicDensityConstant, offset magicDensityConstant * height.
+		final double magicDensityConstant = 12.75/3.0;
+		final double distrustLevel = 4.0;
+		return magicDensityConstant * (height - y) - distrustLevel; // gradient -magicDensityConstant, offset magicDensityConstant * height - distrustLevel.
 	}
 
 	@Override
@@ -133,10 +134,10 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		int[] heights = new int[17 * 17];
 
 		for (int x = 0; x < 17; ++x) {
-			int totalX = x == 17 ? startX + (5 << 2) : startX + x;
+			int totalX = x == 16 ? startX + (5 << 2) : startX + x;
 
 			for (int z = 0; z < 17; ++z) {
-				int totalZ = z == 17 ? startZ + (5 << 2) : startZ + z;
+				int totalZ = z == 16 ? startZ + (5 << 2) : startZ + z;
 
 				heights[(x * 17) + z] = Math.min(chunk.getTopY() - 1, this.terrainHeightSampler.sample(totalX, totalZ));
 			}
@@ -163,7 +164,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				for (int y = chunk.getBottomY(); y < height; ++y) {
 					state = y < grimstoneHeight ? GRIMSTONE : STONE;
 
-					if (cavess.sample(x, y, z) < 0) {
+					if (y > -64 && (y < height - 1 || height > seaLevel + 1) && cavess.sample(x, y, z) < 0) {
 						state = CAVE_AIR;
 					}
 

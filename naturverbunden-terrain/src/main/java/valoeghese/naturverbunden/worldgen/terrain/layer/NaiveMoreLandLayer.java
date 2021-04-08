@@ -27,6 +27,6 @@ public enum NaiveMoreLandLayer implements IdentitySamplingLayer {
 
 	@Override
 	public int sample(LayerRandomnessSource context, int value) {
-		return value == 0 ? (context.nextInt(6) == 0 ? 1 : 0)	 : value;
+		return value == 0 ? (context.nextInt(5) == 0 ? 1 : 0) : value;
 	}
 }

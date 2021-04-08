@@ -40,10 +40,10 @@ public class Perlerper {
 	private final int miny;
 
 	public double sample(int x, int y, int z) {
-		y += this.miny;
-		int locX = x >> 2;
-				int locY = y >> 3;
-		int locZ = z >> 3;
+		y -= this.miny;
+		int locX = (x >> 2);
+		int locY = (y >> 3);
+		int locZ = (z >> 2);
 
 		double p000 = this.values[locX][locY][locZ];
 		double p001 = this.values[locX][locY][locZ + 1];
