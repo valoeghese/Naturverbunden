@@ -46,7 +46,7 @@ public enum HillsInformationLayer implements CrossSamplingLayer {
 			similarity++;
 		}
 		
-		if (similarity > 3 && context.nextInt(3) == 0) {
+		if (similarity >= 3 && context.nextInt(3) == 0) {
 			value |= 1;
 		}
 		

@@ -144,13 +144,13 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		}
 
 		Perlerper cavess = new Perlerper(this.getWorldHeight(), startX, this.getMinimumY(), startZ, (x, y, z) -> {
-			final double extraDistrustLevel = 10.0; // Perlerp is not trustworthy
+			final double extraDistrustLevel = 20.0; // Perlerp is not trustworthy
 
 			int xpos = x << 2; // 0 to 16 bc raw val is 0-4 (range:5)
 			int zpos = z << 2;
 			int ypos = (y << 3) - 64;
 			int height = heights[(xpos * 17) + zpos];
-			double extraDistrust = (1.0 / 20.0) * (height - ypos);
+			double extraDistrust = (1.0 / 20.0) * (height + ypos);
 
 			return MathHelper.clamp(extraDistrust, 0.0, 1.0) * extraDistrustLevel + this.noiseCaves.sample(startX + xpos, ypos, startZ + zpos, this.getApparentRockDensity(height, ypos));
 		});

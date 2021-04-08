@@ -48,6 +48,7 @@ public class TerrainTypes {
 
 		this.terrainMountains = new MountainsTerrainType(seed);
 
+		// TODO warm ocean, frozen ocean, u.s.w
 		this.terrainOcean = new SimpleSimplexTerrainType(BiomeKeys.OCEAN, seed, 2, 50.0, 1.0 / 80.0, 12.0);
 		this.terrainDeepOcean = new SimpleSimplexTerrainType(BiomeKeys.DEEP_OCEAN, seed, 2, 38.0, 1.0 / 102.0, 15.0);
 
@@ -63,7 +64,7 @@ public class TerrainTypes {
 				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 520.0, 22.0)
 				.addNoise(new Noise(seed, 1), 1.0 / 90.0, 6.0);
 
-		this.terrainSavannahPlateau = new SimpleSimplexTerrainType(BiomeKeys.SAVANNA_PLATEAU, seed, 2, 38.0, 1.0 / 82.0, 9.0);
+		this.terrainSavannahPlateau = new SimpleSimplexTerrainType(BiomeKeys.SAVANNA_PLATEAU, seed, 2, 118.0, 1.0 / 82.0, 9.0);
 
 		this.terrainSavannahHills = new MultiNoiseTerrainType(BiomeKeys.SAVANNA, 84.0)
 				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 240.0, 22.0)
