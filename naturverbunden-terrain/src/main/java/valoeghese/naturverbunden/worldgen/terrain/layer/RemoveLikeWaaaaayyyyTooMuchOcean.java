@@ -25,7 +25,7 @@ import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 /**
  * Remove too much ocean layer 2 electric boogaloo
  */
-public enum WiseMoreLandLayer implements DiagonalCrossSamplingLayer {
+public enum RemoveLikeWaaaaayyyyTooMuchOcean implements DiagonalCrossSamplingLayer {
 	INSTANCE;
 
 	@Override
@@ -36,7 +36,7 @@ public enum WiseMoreLandLayer implements DiagonalCrossSamplingLayer {
 		int e3 = sw;
 		int e4 = nw;
 
-		if (c == 0 && 0 == e1 && 0 == e2 && 0 == e3 && 0 == e4 && random.nextInt(3) == 0) {
+		if (c == 0 && 0 == e1 && 0 == e2 && 0 == e3 && 0 == e4 && random.nextInt(2) == 0) {
 			return 1;
 		}
 
