@@ -24,7 +24,8 @@ import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
 public enum InformationLayer implements IdentitySamplingLayer {
 	ONE_BIT(1),
-	TWO_BIT(2);
+	TWO_BIT(2),
+	THREE_BIT(3);
 
 	private InformationLayer(int bits) {
 		this.bits = bits;
@@ -35,7 +36,7 @@ public enum InformationLayer implements IdentitySamplingLayer {
 	@Override
 	public int sample(LayerRandomnessSource context, int value) {
 		value <<= this.bits; // shift the existing data over to make space
-		value |= context.nextInt(1 + (0b11 >> (2 - this.bits))); // Add relevant bits pseudorandomly in the new space
+		value |= context.nextInt(1 + (0b111 >> (3 - this.bits))); // Add relevant bits pseudorandomly in the new space
 		return value; // return the resultant value containing the old and new information
 	}
 }

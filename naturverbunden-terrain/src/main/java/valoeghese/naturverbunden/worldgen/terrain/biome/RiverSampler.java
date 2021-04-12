@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden.worldgen.terrain;
+package valoeghese.naturverbunden.worldgen.terrain.biome;
 
 import java.util.Random;
 

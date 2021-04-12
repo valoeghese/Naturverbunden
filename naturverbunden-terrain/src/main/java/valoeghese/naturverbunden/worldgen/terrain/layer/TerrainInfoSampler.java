@@ -53,7 +53,7 @@ public class TerrainInfoSampler {
 
 		// Update this if you mess with terrain gen
 		public boolean isHills() {
-			return (this.info & 0b0010) == 0b0010;
+			return (this.info & 0b00010) == 0b00010;
 		}
 	}
 }

@@ -64,12 +64,12 @@ public class Layers {
 
 		// Information
 		layer = stack(1000L, ScaleLayer.NORMAL, layer, 2, cp);
-		layer = InformationLayer.TWO_BIT.create(cp.apply(100L), layer); // 2 bit
+		layer = InformationLayer.THREE_BIT.create(cp.apply(100L), layer); // 3 bit
 
 		layer = ScaleLayer.NORMAL.create(cp.apply(1000L), layer);
 		layer = HillsInformationLayer.INSTANCE.create(cp.apply(101L), layer); // 1 bit
 		layer = ScaleLayer.NORMAL.create(cp.apply(1001L), layer);
-		layer = InformationLayer.ONE_BIT.create(cp.apply(102L), layer); // 2 bit
+		layer = HillsInformationLayer.INSTANCE.create(cp.apply(102L), layer); // 1 bit
 
 		// Scale
 

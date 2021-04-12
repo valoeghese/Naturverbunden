@@ -53,6 +53,7 @@ import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import valoeghese.naturverbunden.util.terrain.Vec2d;
 import valoeghese.naturverbunden.util.terrain.Voronoi;
 import valoeghese.naturverbunden.worldgen.Perlerper;
+import valoeghese.naturverbunden.worldgen.terrain.biome.TerrainBiomeProvider;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.FleißigArea;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 

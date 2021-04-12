@@ -24,7 +24,6 @@ import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import valoeghese.naturverbunden.Naturverbunden;
 import valoeghese.naturverbunden.mechanics.health.PlayerStats;
 
 public class HealthModule implements EntityComponentInitializer {

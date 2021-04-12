@@ -53,6 +53,6 @@ public enum DenoteBeachesLayer implements CrossSamplingLayer {
 	}
 
 	// Assuming 4 bits of information after the initial type data
-	static int INFO_BITS = 4;
-	static int INFO_MASK = 0b1111;
+	static int INFO_BITS = 5;
+	static int INFO_MASK = 0b11111;
 }

@@ -17,22 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden.worldgen.terrain;
+package valoeghese.naturverbunden.core;
 
-public class NaturverbundenBiomes {
-	// Lots of these will be vanilla biomes
-	// But in some cases I may need to add my own
+public final class NVBMathUtils {
+	private NVBMathUtils() {
+	}
 
-	// Mountains				- Mountain Chain Gen. Also Moor
-	// Plains; Forest			- Vanilla Style
-	// Scrubland				- I described this biome somewhere already. Should I use a greyer sky?
-	// Ice Cap					- Vanilla's Ice Bioems and frozen ocean
-	// Boreal Forest 			- (aspen and pines) 
-	// Rainforest				- Like jungle but less dense. Also a TBO redwood edition, and a hardened clay edition
-	// Caldera					- Important source for some minerals
-	// Swampland:				- bayou (like tbo), marshland (reeds)
-	// Savanna					- Savanna. Savanna. Savanna.
-	// Desert					- Hot, Temperate, Outback
+	public static boolean isPowerOfTwo(int i) {
+		return (i & (i - 1)) == 0;
+	}
 
-	// Ocean types and Rivers and Shield
+	public static int log2p2(int powerOfTwo) {
+		// TODO try get an O(1) algorithm. Perhaps abusing the existance of the not operator.
+		int res = 0;
+		while ((powerOfTwo >>= 1) > 0) ++res;
+		return res;
+	}
 }

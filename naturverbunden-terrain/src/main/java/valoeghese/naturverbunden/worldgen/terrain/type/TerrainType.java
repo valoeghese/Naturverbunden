@@ -30,7 +30,12 @@ import net.minecraft.world.biome.Biome;
  */
 public abstract class TerrainType {
 	protected TerrainType(RegistryKey<Biome> biome, @Nullable Biome.Category category) {
+		this(biome, category, 1.0);
+	}
+
+	protected TerrainType(RegistryKey<Biome> biome, @Nullable Biome.Category category, double shapeWeight) {
 		this.biome = biome;
+		this.shapeWeight = shapeWeight;
 
 		if (category == null) {
 			Biome builtin = BuiltinRegistries.BIOME.get(biome);
@@ -47,6 +52,9 @@ public abstract class TerrainType {
 
 	private final RegistryKey<Biome> biome;
 	private final Biome.Category category;
+	private final double shapeWeight;
+	public TerrainType largeHills = this;
+	public TerrainType smallHills = this;
 
 	public final RegistryKey<Biome> getBiome() {
 		return this.biome;
@@ -54,6 +62,10 @@ public abstract class TerrainType {
 
 	public final Biome.Category getCategory() {
 		return this.category;
+	}
+
+	public final double getShapeWeight() {
+		return this.shapeWeight;
 	}
 
 	public abstract double getHeight(int x, int z);
