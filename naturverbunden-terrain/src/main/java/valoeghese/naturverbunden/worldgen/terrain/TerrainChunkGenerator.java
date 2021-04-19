@@ -109,8 +109,9 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				int x = startX + xo;
 				int z = startZ + zo;
 				int height = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, xo, zo) + 1;
-				double e = this.surfaceDepthNoise.sample((double)x * 0.0625D, (double)z * 0.0625D, 0.0625D, (double)xo * 0.0625D) * 15.0D;
-				region.getBiome(mutable.set(startX + xo, height, startZ + zo)).buildSurface(rand, chunk, x, z, height, e, STONE, WATER, this.getSeaLevel(), region.getSeed());
+				double noise = this.surfaceDepthNoise.sample((double)x * 0.0625D, (double)z * 0.0625D, 0.0625D, (double)xo * 0.0625D) * 15.0D;
+				int minSurfaceLevel = this.settings.getMinSurfaceLevel();
+				region.getBiome(mutable.set(startX + xo, height, startZ + zo)).buildSurface(rand, chunk, x, z, height, noise, STONE, WATER, this.getSeaLevel(), minSurfaceLevel, region.getSeed());
 			}
 		}
 

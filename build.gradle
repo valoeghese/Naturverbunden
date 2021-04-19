@@ -1,10 +1,10 @@
 plugins {
 	id "java"
-	id "fabric-loom" version "0.6-SNAPSHOT" apply false
+	id "fabric-loom" version "0.5.43" apply false
 	id "maven-publish"
 }
 
-apply plugin: "fabric-loom"
+//apply plugin: "fabric-loom"
 
 if(rootProject.file("private.gradle").exists()) { //Publishing details
 	apply from: "private.gradle"

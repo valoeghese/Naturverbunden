@@ -40,7 +40,7 @@ public class NVBFeatureUtils {
 	}
 
 	protected static RegistryKey<ConfiguredFeature<?, ?>> key(String name) {
-		return RegistryKey.of(Registry.CONFIGURED_FEATURE_WORLDGEN, Naturverbunden.id(name));
+		return RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, Naturverbunden.id(name));
 	}
 
 	protected static ConfiguredFeature<?, ?> createFrequentPatch(RegistryKey<ConfiguredFeature<?, ?>> key, int frequency, BlockState state, BlockPlacer placer) {
