@@ -102,7 +102,7 @@ public class VanillaTerrainTypes {
 	final TerrainType terrainMountains;
 	final TerrainType terrainBeach;
 	final TerrainType terrainBeachFrozen;
-	public TerrainType terrainBeachStone;
+	final TerrainType terrainBeachStone;
 
 	// Ocean
 	final TerrainType terrainOcean;

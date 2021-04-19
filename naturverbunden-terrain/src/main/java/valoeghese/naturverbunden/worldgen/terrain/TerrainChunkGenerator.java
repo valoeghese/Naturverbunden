@@ -170,6 +170,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				BlockState state;
 
 				for (int y = chunk.getBottomY(); y < height; ++y) {
+					System.out.println(chunk.getBottomY());
 					state = y < grimstoneHeight ? GRIMSTONE : STONE;
 
 					if (y > -64 && (y < height - 1 || height > seaLevel + 1) && cavess.sample(x, y, z) < 0.0) {
