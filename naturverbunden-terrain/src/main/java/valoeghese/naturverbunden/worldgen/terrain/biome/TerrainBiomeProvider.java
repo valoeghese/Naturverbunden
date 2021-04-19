@@ -189,7 +189,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 			if (mountainChain > 0) {
 				// Because mountainChain edge goes from 0 to 0.5, multiply by 2.
-				return new MountainEdgeTerrainType(primaryTerrain, this.terrain.terrainMountains, mountainChain, terrainInfo.isLargeHills(), temperature < 2 && humidity < 0.4);
+				return new MountainEdgeTerrainType(primaryTerrain, this.terrain.terrainMountains, mountainChain, terrainInfo.isLargeHills(), temperature < 2 && humidity < 0.0);
 			} else {
 				return primaryTerrain;
 			}
