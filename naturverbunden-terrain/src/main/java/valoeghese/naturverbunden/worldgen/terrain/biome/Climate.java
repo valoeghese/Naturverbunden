@@ -22,6 +22,7 @@ package valoeghese.naturverbunden.worldgen.terrain.biome;
 import java.util.Arrays;
 
 import valoeghese.naturverbunden.core.NVBMathUtils;
+import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
 public final class Climate {
@@ -52,19 +53,14 @@ public final class Climate {
 
 	public final TerrainType[] types;
 
-	public TerrainType get(int info) {
-		// First 3 bits: Info
-		TerrainType result = this.types[info & 0b11100];
+	public TerrainType get(TerrainInfoSampler.Info info) {
+		TerrainType result = this.types[info.getInfo()];
 
-		if ((info & 0b00010) > 0) {
+		if (info.isLargeHills()) {
 			result = result.largeHills;
 		}
 
-		if ((info & 0b00001) > 0) {
-			result = result.smallHills;
-		}
-
-		return result;
+		return info.isSmallHills() ? result.smallHills : result;
 	}
 
 	/**

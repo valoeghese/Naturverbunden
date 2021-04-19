@@ -19,9 +19,6 @@
 
 package valoeghese.naturverbunden.worldgen.terrain.biome;
 
-import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
-import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
-
 public final class Climates {
 	public Climates(VanillaTerrainTypes types) {
 		// Lower values = higher temperature, lower humidity
@@ -34,8 +31,7 @@ public final class Climates {
 		TROPICAL_SEMI_ARID = new Climate(types.terrainPlains); // Steppe
 		MEDITERRANEAN = new Climate(types.terrainPlains, types.terrainBayou, types.terrainRollingHills, types.terrainDeciduousForest); // Mediterranean climate. Spain, Italy, West coast of US
 		OCEANIC = new Climate(types.terrainDeciduousForest, types.terrainBayou, types.terrainRoofedForest, types.terrainTaigaGiant); // Think: New Zealand, England, Ireland
-		HUMID_SUBTROPICAL = new Climate(types.terrainRoofedForest, types.terrainRoofedForest, types.terrainRoofedForest, types.terrainBayou,
-				types.terrainBambooJungle, types.terrainBambooJungle, types.terrainBambooJungle, types.terrainBambooJungle); // Think: southeast china, florida
+		HUMID_SUBTROPICAL = new Climate(types.terrainRoofedForest, types.terrainBambooJungle); // Think: southeast china, florida
 
 		COLD_DESERT = TROPICAL_DESERT; // Deserts further from equator due to rain shadows etc
 		COLD_SEMI_ARID = TROPICAL_SEMI_ARID; // Similar to above but steppes. Eurasian Steppe, and parts of North America.
@@ -88,14 +84,8 @@ public final class Climates {
 
 	private final Climate[] CLIMATES;
 
-	public TerrainType sample(int temperature, double humidityRaw, TerrainInfoSampler.Info info) {
-		TerrainType base = CLIMATES[5 * temperature + getHumidity(humidityRaw)].get(info.getInfo());
-
-		if (info.isLargeHills()) {
-			base = base.largeHills;
-		}
-
-		return info.isSmallHills() ? base.smallHills : base;
+	public Climate sample(int temperature, double humidityRaw) {
+		return CLIMATES[5 * temperature + getHumidity(humidityRaw)];
 	}
 
 	/**

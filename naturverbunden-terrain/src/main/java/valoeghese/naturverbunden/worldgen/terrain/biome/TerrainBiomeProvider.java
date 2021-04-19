@@ -182,7 +182,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 				mountainChain -= 0.5;
 			}
 
-			TerrainType primaryTerrain = this.climates.sample(temperature, humidity, terrainInfo);
+			TerrainType primaryTerrain = this.climates.sample(temperature, humidity).get(terrainInfo);
 
 			if (primaryTerrain == null) {
 				throw new IllegalStateException("WTF 2 electric boogaloo. Humidity " + humidity + ", MountainChain " + mountainChain + ", InfoBits " + terrainInfo.info + " TerrainCategory " + terrainInfo.category.name());
