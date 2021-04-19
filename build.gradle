@@ -21,10 +21,10 @@ dependencies {
 	implementation project(":naturverbunden-terrain")
 	
 	afterEvaluate {
-		include project(":naturverbunden-core")
-		include project(":naturverbunden-health")
-		include project(":naturverbunden-primitive")
-		include project(":naturverbunden-terrain")
+		include project("naturverbunden-core:")
+		include project("naturverbunden-health:")
+		include project("naturverbunden-primitive:")
+		include project("naturverbunden-terrain:")
 	}
 }
 
