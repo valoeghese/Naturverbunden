@@ -4,7 +4,7 @@ plugins {
 	id "maven-publish"
 }
 
-//apply plugin: "fabric-loom"
+apply plugin: "fabric-loom"
 
 if(rootProject.file("private.gradle").exists()) { //Publishing details
 	apply from: "private.gradle"
@@ -16,16 +16,16 @@ def getSubprojectVersion(project) {
 
 dependencies {
 	implementation project(":naturverbunden-core")
-	//include project(":naturverbunden-core")
-	
 	implementation project(":naturverbunden-health")
-	//include project(":naturverbunden-health")
-	
 	implementation project(":naturverbunden-primitive")
-	//include project(":naturverbunden-primitive")
-	
 	implementation project(":naturverbunden-terrain")
-	//include project(":naturverbunden-terrain")
+	
+	afterEvaluate {
+		include project(":naturverbunden-core")
+		include project(":naturverbunden-health")
+		include project(":naturverbunden-primitive")
+		include project(":naturverbunden-terrain")
+	}
 }
 
 allprojects {

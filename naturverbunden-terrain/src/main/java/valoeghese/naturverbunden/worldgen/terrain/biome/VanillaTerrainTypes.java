@@ -37,6 +37,7 @@ public class VanillaTerrainTypes {
 	public VanillaTerrainTypes(Random seed) {
 		this.terrainBeach = new FlatTerrainType(BiomeKeys.BEACH, 64.0, Biome.Category.BEACH);
 		this.terrainBeachFrozen = new FlatTerrainType(BiomeKeys.SNOWY_BEACH, 64.0, Biome.Category.BEACH);
+		this.terrainBeachStone = new FlatTerrainType(BiomeKeys.STONE_SHORE, 64.0, Biome.Category.BEACH);
 		this.terrainBayou = new SimpleSimplexTerrainType(BiomeKeys.SWAMP, seed, 2, 61.0, 1.0 / 80.0, 8.0);
 
 		this.terrainDeciduousForest = new SimpleSimplexTerrainType(BiomeKeys.FOREST, seed, 3, 80.0, 1.0 / 140.0, 12.0);
@@ -101,6 +102,7 @@ public class VanillaTerrainTypes {
 	final TerrainType terrainMountains;
 	final TerrainType terrainBeach;
 	final TerrainType terrainBeachFrozen;
+	public TerrainType terrainBeachStone;
 
 	// Ocean
 	final TerrainType terrainOcean;

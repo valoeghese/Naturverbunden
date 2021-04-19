@@ -146,8 +146,9 @@ public class TerrainBiomeProvider extends BiomeSource {
 		if (mountainChain > 0.6 && terrainInfo.category == TerrainCategory.LAND) {
 			return this.terrain.terrainMountains;
 		} else { // Using an else block for readability
-			// Humidity from -1 to 1. Initial: -0.9 to 0.9
-			double humidity = this.humidityNoise.sample(x * humidityFrequency, z * humidityFrequency) * 0.9; // cannot get more extreme climate values without additional stuff below
+			boolean stoneBeach = mountainChain > 0;
+			// Humidity from -1 to 1
+			double humidity = this.humidityNoise.sample(x * humidityFrequency, z * humidityFrequency); // cannot get more extreme climate values without additional stuff below
 
 			// Fake Orthographic Lift and Rain Shadow
 			if (applyLiftToHumidity) {
@@ -175,7 +176,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 				return i5 && _09 && vc && b ? this.terrain.terrainDeepOcean : this.terrain.terrainOcean;
 			} else if (terrainInfo.category == TerrainCategory.SMALL_BEACH) {
-				return temperature == 3 ? this.terrain.terrainBeachFrozen : this.terrain.terrainBeach;
+				return stoneBeach ? this.terrain.terrainBeachStone : (temperature > 3 ? this.terrain.terrainBeachFrozen : this.terrain.terrainBeach);
 			} else if (terrainInfo.category == TerrainCategory.LARGE_BEACH) {
 				humidity += 0.1;
 				mountainChain -= 0.5;
