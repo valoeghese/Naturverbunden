@@ -26,7 +26,7 @@ public final class Climates {
 	public Climates(VanillaTerrainTypes types) {
 		// Lower values = higher temperature, lower humidity
 		// Sorted temperature * 5 + humidity
-		TROPICAL_RAINFOREST = new Climate(types.terrainJungle, types.terrainJungleWithBamboo); // tropical rainforest
+		TROPICAL_RAINFOREST = new Climate(types.terrainJungle, types.terrainJungleMtns, types.terrainJungleWithBamboo, types.terrainJungleWithBamboo); // tropical rainforest
 		TROPICAL_MONSOON = new Climate(types.terrainJungleEdge); // tropical monsoon. think: florida.
 		TROPICAL_WET_AND_DRY = new Climate(types.terrainSavannah, types.terrainSavannah, types.terrainSavannahHills, types.terrainSavannahTerrace); // Savannahs
 
@@ -44,8 +44,8 @@ public final class Climates {
 		SUBARCTIC_DRY = new Climate(types.terrainPlains);
 		HEMIBOREAL = new Climate(types.terrainTaiga, types.terrainBirchForest);
 		SUBARCTIC_HUMID = new Climate(types.terrainTaiga, types.terrainTaiga, types.terrainTaiga, types.terrainTaigaGiant);
-	
-		ARCTIC_ICE_CAP = new Climate(types.terrainOceanFrozen);
+
+		ARCTIC_ICE_CAP = new Climate(types.oceanFrozen.shallow);
 		ARCTIC_TUNDRA = new Climate(types.terrainSnowyTundra, types.terrainSnowyTundra, types.terrainSnowyTundra, types.terrainSnowySpikes);
 
 		CLIMATES = new Climate[]

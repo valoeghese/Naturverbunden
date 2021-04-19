@@ -46,7 +46,10 @@ public class VanillaTerrainTypes {
 		this.terrainRoofedForest = new SimpleSimplexTerrainType(BiomeKeys.DARK_FOREST, seed, 3, 80.0, 1.0 / 140.0, 12.0);
 
 		this.terrainJungle = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, seed, 1, 70.0, 1.0 / 100.0, 10.0);
-		this.terrainJungleWithBamboo = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, seed, 1, 70.0, 1.0 / 100.0, 10.0);
+		this.terrainJungleHills = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, seed, 1, 90.0, 1.0 / 120.0, 15.0);
+		this.terrainJungleWithBamboo = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, seed, 1, 70.0, 1.0 / 100.0, 10.0);		
+		this.terrainJungleMtns = new MultiNoiseTerrainType(BiomeKeys.MODIFIED_JUNGLE, 97.0)
+				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 380.0, 34.0);
 		this.terrainBambooJungle = new SimpleSimplexTerrainType(BiomeKeys.BAMBOO_JUNGLE, seed, 1, 70.0, 1.0 / 100.0, 10.0);
 		this.terrainJungleEdge = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE_EDGE, seed, 2, 72.0, 1.0 / 120.0, 15.0);
 
@@ -54,10 +57,18 @@ public class VanillaTerrainTypes {
 
 		this.terrainMountains = new MountainsTerrainType(seed);
 
-		// TODO warm ocean, frozen ocean, u.s.w
-		this.terrainOcean = new SimpleSimplexTerrainType(BiomeKeys.OCEAN, seed, 2, 50.0, 1.0 / 80.0, 12.0);
-		this.terrainOceanFrozen = new SimpleSimplexTerrainType(BiomeKeys.FROZEN_OCEAN, seed, 2, 50.0, 1.0 / 80.0, 12.0);
-		this.terrainDeepOcean = new SimpleSimplexTerrainType(BiomeKeys.DEEP_OCEAN, seed, 2, 38.0, 1.0 / 102.0, 15.0);
+		// TODO make this code less cursed
+		long seedoc = seed.nextLong();
+		Random oceanRand = new Random(seedoc);
+		this.oceanWarm = new OceanEntry(BiomeKeys.WARM_OCEAN, BiomeKeys.DEEP_WARM_OCEAN, oceanRand);
+		oceanRand.setSeed(seedoc);
+		this.oceanLukewarm = new OceanEntry(BiomeKeys.LUKEWARM_OCEAN, BiomeKeys.DEEP_LUKEWARM_OCEAN, oceanRand);
+		oceanRand.setSeed(seedoc);
+		this.oceanTemperate = new OceanEntry(BiomeKeys.OCEAN, BiomeKeys.DEEP_OCEAN, oceanRand);
+		oceanRand.setSeed(seedoc);
+		this.oceanCool = new OceanEntry(BiomeKeys.COLD_OCEAN, BiomeKeys.DEEP_COLD_OCEAN, oceanRand);
+		oceanRand.setSeed(seedoc);
+		this.oceanFrozen = new OceanEntry(BiomeKeys.FROZEN_OCEAN, BiomeKeys.DEEP_FROZEN_OCEAN, oceanRand);
 
 		this.terrainPlains = new MultiNoiseTerrainType(BiomeKeys.PLAINS, 76.0)
 				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 450.0, 15.0, 8.0)
@@ -92,14 +103,21 @@ public class VanillaTerrainTypes {
 				.addNoise(new Noise(seed, 2), 1.0 / 60.0, 2.5)
 				.addNoise(new Noise(seed, 1), 1.0 / 150.0, 22.0, 0.0, -0.4); // idk might remove this last one
 
-		this.terrainJungleMtns = new MultiNoiseTerrainType(BiomeKeys.MODIFIED_JUNGLE, 97.0)
-				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 380.0, 34.0);
-
 		this.terrainSnowyTundra.largeHills = this.terrainTaigaSnowy;
 		this.terrainSnowyTundra.smallHills = this.terrainSnowPlateau;
 
 		this.terrainSavannah.largeHills = this.terrainSavannahPlateau;
 		this.terrainJungleWithBamboo.largeHills = this.terrainBambooJungle;
+		this.terrainJungle.largeHills = this.terrainJungleHills;
+		this.terrainJungleWithBamboo.smallHills = this.terrainJungleHills;
+
+		this.oceans = new OceanEntry[] {
+				this.oceanWarm,
+				this.oceanLukewarm,
+				this.oceanTemperate,
+				this.oceanCool,
+				this.oceanFrozen
+		};
 	}
 
 	// Special
@@ -109,12 +127,15 @@ public class VanillaTerrainTypes {
 	final TerrainType terrainBeachStone;
 
 	// Ocean
-	final TerrainType terrainOcean;
-	final TerrainType terrainOceanFrozen;
-	final TerrainType terrainDeepOcean;
+	final OceanEntry oceanWarm;
+	final OceanEntry oceanLukewarm;
+	final OceanEntry oceanTemperate;
+	final OceanEntry oceanCool;
+	final OceanEntry oceanFrozen;
 
 	// Hottish Wettish
 	final TerrainType terrainJungle;
+	final TerrainType terrainJungleHills;
 	final TerrainType terrainJungleMtns;
 	final TerrainType terrainJungleWithBamboo;
 	final TerrainType terrainBambooJungle;
@@ -145,9 +166,25 @@ public class VanillaTerrainTypes {
 	final TerrainType terrainSnowyTundra;
 	final TerrainType terrainTaigaSnowy;
 
+	private final OceanEntry[] oceans;
+
+	OceanEntry getOcean(int temperature) {
+		return oceans[temperature];
+	}
+
 	private static TerrainType createTaiga(RegistryKey<Biome> biome, Random seed) {
 		return new MultiNoiseTerrainType(biome, 76.0)
 				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 390.0, 30.0, 12.0)
 				.addNoise(new Noise(seed, 2), 1.0 / 120.0, 25.0, 8.0);
+	}
+
+	public static class OceanEntry {
+		private OceanEntry(RegistryKey<Biome> shallow, RegistryKey<Biome> deep, Random seed) {
+			this.deep = new SimpleSimplexTerrainType(deep, seed, 2, 38.0, 1.0 / 102.0, 15.0);
+			this.shallow = new SimpleSimplexTerrainType(shallow, seed, 2, 50.0, 1.0 / 80.0, 12.0);
+		}
+
+		public final TerrainType deep;
+		public final TerrainType shallow;
 	}
 }

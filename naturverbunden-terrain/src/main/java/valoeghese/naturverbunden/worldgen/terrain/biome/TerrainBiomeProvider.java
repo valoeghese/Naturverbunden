@@ -174,7 +174,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 				boolean vc = this.infoSampler.sample((x >> 2) - deepCheckDist, (z >> 2) + deepCheckDist).category == TerrainCategory.OCEAN;
 				boolean b = this.infoSampler.sample((x >> 2) - deepCheckDist, (z >> 2) - deepCheckDist).category == TerrainCategory.OCEAN;
 
-				return i5 && _09 && vc && b ? this.terrain.terrainDeepOcean : this.terrain.terrainOcean;
+				return i5 && _09 && vc && b ? this.terrain.getOcean(temperature).deep : this.terrain.getOcean(temperature).shallow;
 			} else if (terrainInfo.category == TerrainCategory.SMALL_BEACH) {
 				return stoneBeach ? this.terrain.terrainBeachStone : (temperature > 3 ? this.terrain.terrainBeachFrozen : this.terrain.terrainBeach);
 			} else if (terrainInfo.category == TerrainCategory.LARGE_BEACH) {
