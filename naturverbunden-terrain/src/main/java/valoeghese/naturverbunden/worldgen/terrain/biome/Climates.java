@@ -59,9 +59,9 @@ public final class Climates {
 	}
 	
 	// Equatorial
-	public final Climate TROPICAL_WET_AND_DRY; // As
+	public final Climate TROPICAL_WET_AND_DRY; // As, Aw
 	public final Climate TROPICAL_MONSOON; // Am
-	public final Climate TROPICAL_RAINFOREST; // Ar
+	public final Climate TROPICAL_RAINFOREST; // Af
 	
 	// Subtropical
 	public final Climate TROPICAL_DESERT; // BWh
