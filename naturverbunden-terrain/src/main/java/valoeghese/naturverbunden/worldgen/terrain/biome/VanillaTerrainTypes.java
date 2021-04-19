@@ -92,6 +92,9 @@ public class VanillaTerrainTypes {
 				.addNoise(new Noise(seed, 2), 1.0 / 60.0, 2.5)
 				.addNoise(new Noise(seed, 1), 1.0 / 150.0, 22.0, 0.0, -0.4); // idk might remove this last one
 
+		this.terrainJungleMtns = new MultiNoiseTerrainType(BiomeKeys.MODIFIED_JUNGLE, 97.0)
+				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 380.0, 34.0);
+
 		this.terrainSnowyTundra.largeHills = this.terrainTaigaSnowy;
 		this.terrainSnowyTundra.smallHills = this.terrainSnowPlateau;
 
@@ -112,6 +115,7 @@ public class VanillaTerrainTypes {
 
 	// Hottish Wettish
 	final TerrainType terrainJungle;
+	final TerrainType terrainJungleMtns;
 	final TerrainType terrainJungleWithBamboo;
 	final TerrainType terrainBambooJungle;
 	final TerrainType terrainJungleEdge;
