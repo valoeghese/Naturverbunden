@@ -145,7 +145,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 			}
 		}
 
-		Perlerper cavess = new Perlerper(this.getWorldHeight(), startX, chunk.getBottomY(), startZ, (x, y, z) -> {
+		/*Perlerper cavess = new Perlerper(this.getWorldHeight(), startX, chunk.getBottomY(), startZ, (x, y, z) -> {
 			final double extraDistrustLevel = 20.0; // Perlerp is not trustworthy
 
 			int xpos = x << 2; // 0 to 16 bc raw val is 0-4 (range:5)
@@ -155,7 +155,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 			double extraDistrust = (1.0 / 20.0) * (height + ypos);
 
 			return MathHelper.clamp(extraDistrust, 0.0, 1.0) * extraDistrustLevel + this.noiseCaves.sample(startX + xpos, ypos, startZ + zpos, this.getApparentRockDensity(height, ypos));
-		});
+		});*/
 
 		for (int x = 0; x < 16; ++x) {
 			int totalX = startX + x;
@@ -173,9 +173,9 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 					try {
 						state = y < grimstoneHeight ? GRIMSTONE : STONE;
 
-						if (y > -64 && (y < height - 1 || height > seaLevel + 1) && cavess.sample(x, y, z) < 0.0) {
-							state = CAVE_AIR;
-						}
+						//if (y > -64 && (y < height - 1 || height > seaLevel + 1) && cavess.sample(x, y, z) < 0.0) {
+						//	state = CAVE_AIR;
+						//}
 
 						setPos.setY(y);
 						chunk.setBlockState(setPos, state, false);

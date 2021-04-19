@@ -34,6 +34,7 @@ import valoeghese.naturverbunden.worldgen.terrain.type.TerracedTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
 public class VanillaTerrainTypes {
+	// 1580589449715291311
 	public VanillaTerrainTypes(Random seed) {
 		this.terrainBeach = new FlatTerrainType(BiomeKeys.BEACH, 64.0, Biome.Category.BEACH);
 		this.terrainBeachFrozen = new FlatTerrainType(BiomeKeys.SNOWY_BEACH, 64.0, Biome.Category.BEACH);
