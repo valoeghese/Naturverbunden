@@ -84,7 +84,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 			// normalised between 0 and 1
 			mountainChain = chainNormaliser * Math.max(0.0, mountainChain);
 			// =====
-			return Math.max(base - 4 * mountainChain, 0.0);
+			return Math.max(base - 7 * mountainChain, 0.0);
 		});
 		this.rawMountains = new LossyDoubleCache(512, this::getChainSample);
 	}

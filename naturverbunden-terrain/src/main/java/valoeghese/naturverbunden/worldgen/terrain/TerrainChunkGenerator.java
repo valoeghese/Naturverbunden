@@ -57,6 +57,7 @@ import valoeghese.naturverbunden.worldgen.terrain.biome.TerrainBiomeProvider;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.FleißigArea;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
+// TODO rivers carve through tall terrain
 public class TerrainChunkGenerator extends ChunkGenerator {
 	public TerrainChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings) {
 		super(biomeSource, biomeSource, settings.get().getStructuresConfig(), seed);

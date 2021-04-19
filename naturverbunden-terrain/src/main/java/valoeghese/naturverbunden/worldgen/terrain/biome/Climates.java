@@ -27,14 +27,15 @@ public final class Climates {
 		// Lower values = higher temperature, lower humidity
 		// Sorted temperature * 5 + humidity
 		TROPICAL_RAINFOREST = new Climate(types.terrainJungle, types.terrainJungleMtns, types.terrainJungleWithBamboo, types.terrainJungleWithBamboo); // tropical rainforest
-		TROPICAL_MONSOON = new Climate(types.terrainJungleEdge); // tropical monsoon. think: florida.
+		TROPICAL_MONSOON = new Climate(types.terrainJungleEdge, types.terrainJungleEdge, types.terrainJungleEdge, types.terrainBayou); // tropical monsoon. think: florida.
 		TROPICAL_WET_AND_DRY = new Climate(types.terrainSavannah, types.terrainSavannah, types.terrainSavannahHills, types.terrainSavannahTerrace); // Savannahs
 
 		TROPICAL_DESERT = new Climate(types.terrainTropicalDesert); // Hot Deserts, like sahara
 		TROPICAL_SEMI_ARID = new Climate(types.terrainPlains); // Steppe
 		MEDITERRANEAN = new Climate(types.terrainPlains, types.terrainBayou, types.terrainRollingHills, types.terrainDeciduousForest); // Mediterranean climate. Spain, Italy, West coast of US
 		OCEANIC = new Climate(types.terrainDeciduousForest, types.terrainBayou, types.terrainRoofedForest, types.terrainTaigaGiant); // Think: New Zealand, England, Ireland
-		HUMID_SUBTROPICAL = new Climate(types.terrainRoofedForest, types.terrainBambooJungle); // Think: southeast china, florida
+		HUMID_SUBTROPICAL = new Climate(types.terrainRoofedForest, types.terrainRoofedForest, types.terrainRoofedForest, types.terrainBayou,
+				types.terrainBambooJungle, types.terrainBambooJungle, types.terrainBambooJungle, types.terrainBambooJungle); // Think: southeast china, florida
 
 		COLD_DESERT = TROPICAL_DESERT; // Deserts further from equator due to rain shadows etc
 		COLD_SEMI_ARID = TROPICAL_SEMI_ARID; // Similar to above but steppes. Eurasian Steppe, and parts of North America.
