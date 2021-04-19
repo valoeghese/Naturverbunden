@@ -241,5 +241,5 @@ public class TerrainBiomeProvider extends BiomeSource {
 	}
 
 	// Temperature Scale
-	private static final double TEMPERATURE_CELL_SIZE = 1.0 / 600.0;
+	private static final double TEMPERATURE_CELL_SIZE = 1.0 / 900.0;
 }
