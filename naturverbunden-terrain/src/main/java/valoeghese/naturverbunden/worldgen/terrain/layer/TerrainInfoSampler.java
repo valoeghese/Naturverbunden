@@ -52,8 +52,17 @@ public class TerrainInfoSampler {
 		public final int info;
 
 		// Update this if you mess with terrain gen
-		public boolean isHills() {
+
+		public int getInfo() {
+			return this.info >> 2;
+		}
+
+		public boolean isLargeHills() {
 			return (this.info & 0b00010) == 0b00010;
+		}
+
+		public boolean isSmallHills() {
+			return (this.info & 0b00001) == 0b00001;
 		}
 	}
 }

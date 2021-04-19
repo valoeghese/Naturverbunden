@@ -30,6 +30,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.BiomeSource;
+import valoeghese.naturverbunden.core.NVBMathUtils;
 import valoeghese.naturverbunden.util.terrain.Noise;
 import valoeghese.naturverbunden.util.terrain.cache.DoubleGridOperator;
 import valoeghese.naturverbunden.util.terrain.cache.GridOperator;
@@ -66,7 +67,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 		// Terrain Types
 		gr.setSeed(seed + 1);
 
-		this.terrain = new TerrainTypes(gr);
+		this.terrain = new VanillaTerrainTypes(gr);
+		this.climates = new Climates(this.terrain);
 
 		gr.setSeed(seed + 2);
 		RiverSampler rivers = new RiverSampler(gr);
@@ -99,7 +101,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	private final Registry<Biome> biomeRegistry;
 
-	private final TerrainTypes terrain;
+	private final VanillaTerrainTypes terrain;
+	private final Climates climates;
 
 	// Terrain
 
@@ -152,20 +155,16 @@ public class TerrainBiomeProvider extends BiomeSource {
 			}
 
 			// 
-			// This temperature ranges from 0-3, and represents HOW COLD SOMETHING IS
+			// This temperature ranges from 0-4, and represents HOW COLD SOMETHING IS
 			// IF YOU ARE READING THIS PLEASE NOTE THAT HIGHER VALUES ARE COLDER TEMPERATURES
-			// 0 = Equatorial (Mostly rainforest, No Deserts) - This humidity is handled below
-			// 1 = Subtropical (Mostly Deserts, Medditeranean, Savannah)
-			// 2 = Temperate (More cool stuff, boreal, deciduous, temperate rainforest, grasslands, moors)
-			// 3 = Polar (Snow stuff)
+
 			int temperature = calculateTemperature(z + 80 * MathHelper.sin(0.01f * x));
 
-			// Equatorial Humidity Increase due to rising air in hadley cells. Value from 0 to 0.6
-			double humidityIncrease = Math.abs(2 * (z * TEMPERATURE_SCALE + this.tempOffset));
-			humidityIncrease = Math.max(0.0, 1.0 - (humidityIncrease * humidityIncrease));
-			humidity += 0.6 * humidityIncrease; // 0-1 -> 0-0.6 and append
-
-			TerrainType primaryTerrain = null;
+			// Humidity Increases and Decreases due to high and low pressure from circulation cells.
+			// We simplify the code and thus it's like there are more circulation cells here than on earth
+			// But it's fiiiiiiiine
+			double humidityIncrease = calculateHumidityIncrease(z);
+			humidity += humidityIncrease;
 
 			if (terrainInfo.category == TerrainCategory.OCEAN) {
 				final int deepCheckDist = 8;
@@ -182,111 +181,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 				mountainChain -= 0.5;
 			}
 
-			switch (temperature) {
-			case 3:
-				switch (terrainInfo.info >> 2) {
-				case 0:
-					// I originally meant for spikes to be a hill but honestly might be better this way. We'll see.
-					// TODO Snowy Taiga
-					primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainSnowPlateau : this.terrain.terrainSnowySpikes;
-					break;
-				case 1:
-					if (humidity > 0.2) {
-						primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainSnowPlateau : this.terrain.terrainSnowySpikes;
-					} else {
-						primaryTerrain = this.terrain.terrainTaigaSnowy;
-					}
-					break;
-				case 2:
-					if (humidity > -0.1) {
-						primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainSnowPlateau : this.terrain.terrainSnowySpikes;
-					} else {
-						primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainTaigaSnowy : this.terrain.terrainSnowyTundra;
-					}
-					break;
-				default:
-					primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainSnowPlateau : this.terrain.terrainSnowyTundra;
-				}
-				break;
-			case 2:
-				if (humidity > 0.35) {
-					primaryTerrain = this.terrain.terrainDeciduousForest;
-				} else if (humidity > 0) {
-					switch (terrainInfo.info >> 2) {
-					case 0:
-						primaryTerrain = this.terrain.terrainDeciduousForest;
-						break;
-					case 1:
-						primaryTerrain = this.terrain.terrainPlains;
-						break;
-					case 2:
-						primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainDeciduousForest : this.terrain.terrainPlains;
-						break;
-					case 3:
-						primaryTerrain = this.terrain.terrainRollingHills;
-						break;
-					}
-				} else if (humidity > -0.35) {
-					switch (terrainInfo.info >> 2) {
-					case 0:
-						primaryTerrain = this.terrain.terrainTaiga;
-						break;
-					case 1:
-						primaryTerrain = this.terrain.terrainPlains;
-						break;
-					case 2:
-						primaryTerrain = this.terrain.terrainTaigaGiant;
-						break;
-					case 3:
-						primaryTerrain = this.terrain.terrainRollingHills;
-						break;
-					}
-				} else {
-					primaryTerrain = this.terrain.terrainScrubland; // this would be temperate desert
-				}
-				break;
-			case 1:
-				if (humidity > 0.65) {
-					primaryTerrain = this.terrain.terrainJungle;
-				} else if (humidity > 0.6) {
-					primaryTerrain = this.terrain.terrainJungleEdge;
-				} else if (humidity > 0.3) {
-					primaryTerrain = this.terrain.terrainDeciduousForest;
-				} else if (humidity > -0.3) { // Chaparral would be placed between these two
-					switch (terrainInfo.info >> 2) {
-					case 0:
-						primaryTerrain = this.terrain.terrainScrubland;
-						break;
-					case 1:
-						primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainSavannahPlateau : this.terrain.terrainSavannah;
-						break;
-					case 2:
-						primaryTerrain = this.terrain.terrainSavannahHills;
-						break;
-					case 3:
-						primaryTerrain = this.terrain.terrainSavannahTerrace;
-						break;
-					}
-				} else {
-					primaryTerrain = this.terrain.terrainTropicalDesert;
-				}
-				break;
-			case 0:
-				if (humidity > 0.4) {
-					primaryTerrain = this.terrain.terrainJungle;
-				} else if (humidity > 0.2) {
-					primaryTerrain = terrainInfo.isHills() ? this.terrain.terrainJungle : this.terrain.terrainJungleEdge;
-				} else if (humidity > -0.1) {
-					primaryTerrain = this.terrain.terrainJungleEdge; // TODO a more fitting middle ground monsoon climate thing / steppe
-				} else if (humidity > -0.5) {
-					primaryTerrain = this.terrain.terrainScrubland;
-				} else {
-					primaryTerrain = this.terrain.terrainTropicalDesert;
-				}
-				break;
-			default:
-				throw new IllegalStateException("WTF");
-			}
+			TerrainType primaryTerrain = this.climates.sample(temperature, humidity, terrainInfo);
 
 			if (primaryTerrain == null) {
 				throw new IllegalStateException("WTF 2 electric boogaloo. Humidity " + humidity + ", MountainChain " + mountainChain + ", InfoBits " + terrainInfo.info + " TerrainCategory " + terrainInfo.category.name());
@@ -294,7 +189,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 			if (mountainChain > 0) {
 				// Because mountainChain edge goes from 0 to 0.5, multiply by 2.
-				return new MountainEdgeTerrainType(primaryTerrain, this.terrain.terrainMountains, mountainChain, terrainInfo.isHills(), temperature < 2 && humidity < 0.4);
+				return new MountainEdgeTerrainType(primaryTerrain, this.terrain.terrainMountains, mountainChain, terrainInfo.isLargeHills(), temperature < 2 && humidity < 0.4);
 			} else {
 				return primaryTerrain;
 			}
@@ -305,9 +200,19 @@ public class TerrainBiomeProvider extends BiomeSource {
 		return this.rivers.get(x, z);
 	}
 
+	// https://www.desmos.com/calculator/1pprr73tpn
+
 	private int calculateTemperature(double z) {
-		double rawVal = Math.abs(z * TEMPERATURE_SCALE + this.tempOffset) + 0.5;
-		return Math.min(3, MathHelper.floor(rawVal));
+		z = Math.abs(this.tempOffset + z / TEMPERATURE_CELL_SIZE);
+		z = Math.min(z, 4) + 0.5;
+		return (int) z;
+	}
+
+	private double calculateHumidityIncrease(double z) {
+		z = Math.abs(this.tempOffset + z / TEMPERATURE_CELL_SIZE);
+		z = Math.min(z, 5);
+		z = NVBMathUtils.tri(z) - 0.5;
+		return 0.8 * z;
 	}
 
 	@Override
@@ -336,5 +241,5 @@ public class TerrainBiomeProvider extends BiomeSource {
 	}
 
 	// Temperature Scale
-	private static final double TEMPERATURE_SCALE = 1.0 / 600.0;
+	private static final double TEMPERATURE_CELL_SIZE = 1.0 / 600.0;
 }

@@ -30,9 +30,13 @@ public final class Climate {
 		Arrays.fill(this.types, terrainType);
 	}
 
-	Climate(TerrainType[] terrainTypes) {
+	Climate(TerrainType... terrainTypes) {
+		this.types = new TerrainType[8];
+		this.setTypes(terrainTypes);
+	}
+
+	public void setTypes(TerrainType... terrainTypes) {
 		if (NVBMathUtils.isPowerOfTwo(terrainTypes.length) && terrainTypes.length <= 8) {
-			this.types = new TerrainType[8];
 			int amountToUse = 8 / terrainTypes.length;
 
 			int start = 0;
@@ -78,7 +82,7 @@ public final class Climate {
 			start = next;
 			next += amountToUse;
 		}
-		
+
 		for (int i : result) System.out.println(i);
 	}
 }

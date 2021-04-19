@@ -33,15 +33,19 @@ import valoeghese.naturverbunden.worldgen.terrain.type.SimpleSimplexTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerracedTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
-public class TerrainTypes {
-	public TerrainTypes(Random seed) {
+public class VanillaTerrainTypes {
+	public VanillaTerrainTypes(Random seed) {
 		this.terrainBeach = new FlatTerrainType(BiomeKeys.BEACH, 64.0, Biome.Category.BEACH);
 		this.terrainBeachFrozen = new FlatTerrainType(BiomeKeys.SNOWY_BEACH, 64.0, Biome.Category.BEACH);
 		this.terrainBayou = new SimpleSimplexTerrainType(BiomeKeys.SWAMP, seed, 2, 61.0, 1.0 / 80.0, 8.0);
 
 		this.terrainDeciduousForest = new SimpleSimplexTerrainType(BiomeKeys.FOREST, seed, 3, 80.0, 1.0 / 140.0, 12.0);
+		this.terrainBirchForest = new SimpleSimplexTerrainType(BiomeKeys.BIRCH_FOREST, seed, 3, 80.0, 1.0 / 140.0, 12.0);
+		this.terrainRoofedForest = new SimpleSimplexTerrainType(BiomeKeys.DARK_FOREST, seed, 3, 80.0, 1.0 / 140.0, 12.0);
 
 		this.terrainJungle = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, seed, 1, 70.0, 1.0 / 100.0, 10.0);
+		this.terrainJungleWithBamboo = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, seed, 1, 70.0, 1.0 / 100.0, 10.0);
+		this.terrainBambooJungle = new SimpleSimplexTerrainType(BiomeKeys.BAMBOO_JUNGLE, seed, 1, 70.0, 1.0 / 100.0, 10.0);
 		this.terrainJungleEdge = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE_EDGE, seed, 2, 72.0, 1.0 / 120.0, 15.0);
 
 		// Rainforest will be more mountainous
@@ -50,6 +54,7 @@ public class TerrainTypes {
 
 		// TODO warm ocean, frozen ocean, u.s.w
 		this.terrainOcean = new SimpleSimplexTerrainType(BiomeKeys.OCEAN, seed, 2, 50.0, 1.0 / 80.0, 12.0);
+		this.terrainOceanFrozen = new SimpleSimplexTerrainType(BiomeKeys.FROZEN_OCEAN, seed, 2, 50.0, 1.0 / 80.0, 12.0);
 		this.terrainDeepOcean = new SimpleSimplexTerrainType(BiomeKeys.DEEP_OCEAN, seed, 2, 38.0, 1.0 / 102.0, 15.0);
 
 		this.terrainPlains = new MultiNoiseTerrainType(BiomeKeys.PLAINS, 76.0)
@@ -72,8 +77,6 @@ public class TerrainTypes {
 
 		this.terrainSavannahTerrace = new TerracedTerrainType(BiomeKeys.SHATTERED_SAVANNA, seed, 4, 1.0 / 270.0, 72.0, 12.0, new Noise(seed, 2));
 
-		this.terrainScrubland = this.terrainSavannah; // temp
-
 		this.terrainSnowPlateau = new SimpleSimplexTerrainType(BiomeKeys.SNOWY_MOUNTAINS, seed, 2, 98.0, 1.0 / 80.0, 12.0);
 		this.terrainSnowySpikes = new SimpleSimplexTerrainType(BiomeKeys.ICE_SPIKES, seed, 2, 68.0, 1.0 / 75.0, 8.0);
 		this.terrainSnowyTundra = new SimpleSimplexTerrainType(BiomeKeys.SNOWY_TUNDRA, seed, 2, 68.0, 1.0 / 75.0, 8.0);
@@ -87,6 +90,11 @@ public class TerrainTypes {
 				.addNoise(new Noise(seed, 2), 1.0 / 60.0, 2.5)
 				.addNoise(new Noise(seed, 1), 1.0 / 150.0, 22.0, 0.0, -0.4); // idk might remove this last one
 
+		this.terrainSnowyTundra.largeHills = this.terrainTaigaSnowy;
+		this.terrainSnowyTundra.smallHills = this.terrainSnowPlateau;
+
+		this.terrainSavannah.largeHills = this.terrainSavannahPlateau;
+		this.terrainJungleWithBamboo.largeHills = this.terrainBambooJungle;
 	}
 
 	// Special
@@ -96,10 +104,13 @@ public class TerrainTypes {
 
 	// Ocean
 	final TerrainType terrainOcean;
+	final TerrainType terrainOceanFrozen;
 	final TerrainType terrainDeepOcean;
 
 	// Hottish Wettish
 	final TerrainType terrainJungle;
+	final TerrainType terrainJungleWithBamboo;
+	final TerrainType terrainBambooJungle;
 	final TerrainType terrainJungleEdge;
 
 	// Hottish Dryish
@@ -107,7 +118,6 @@ public class TerrainTypes {
 	final TerrainType terrainSavannahHills;
 	final TerrainType terrainSavannahTerrace;
 	final TerrainType terrainSavannahPlateau;
-	final TerrainType terrainScrubland;
 	final TerrainType terrainTropicalDesert;
 
 	// Temperatish Dryish
@@ -118,7 +128,9 @@ public class TerrainTypes {
 
 	// Temperatish Wettish
 	final TerrainType terrainBayou;
+	final TerrainType terrainRoofedForest;
 	final TerrainType terrainDeciduousForest;
+	final TerrainType terrainBirchForest;
 
 	// Ice Cap
 	final TerrainType terrainSnowPlateau;

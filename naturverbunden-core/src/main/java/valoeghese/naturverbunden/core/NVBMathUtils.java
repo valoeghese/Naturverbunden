@@ -23,14 +23,28 @@ public final class NVBMathUtils {
 	private NVBMathUtils() {
 	}
 
+	/**
+	 * @return whether the input number is a power of two.
+	 */
 	public static boolean isPowerOfTwo(int i) {
 		return (i & (i - 1)) == 0;
 	}
 
+	/**
+	 * @return the base2 log of the given power of two.
+	 */
 	public static int log2p2(int powerOfTwo) {
-		// TODO try get an O(1) algorithm. Perhaps abusing the existance of the not operator.
+		// TODO try get an O(1) algorithm. Perhaps abusing the existance of the unary not operator.
 		int res = 0;
 		while ((powerOfTwo >>= 1) > 0) ++res;
 		return res;
 	}
+
+	/**
+	 * Triangle wave with period 2 and amplitude 0.5 in the range [0,1].
+	 */
+	public static double tri(double d) {
+		return Math.abs((d % 2) - 1);
+	}
 }
+
