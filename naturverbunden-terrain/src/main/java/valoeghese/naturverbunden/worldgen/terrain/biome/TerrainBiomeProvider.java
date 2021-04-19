@@ -213,7 +213,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 		z = Math.abs(this.tempOffset + z / TEMPERATURE_CELL_SIZE);
 		z = Math.min(z, 5);
 		z = NVBMathUtils.tri(z) - 0.5;
-		return 0.8 * z;
+		return 0.5 * z;
 	}
 
 	@Override

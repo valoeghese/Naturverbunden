@@ -145,7 +145,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 			}
 		}
 
-		Perlerper cavess = new Perlerper(this.getWorldHeight(), startX, this.getMinimumY(), startZ, (x, y, z) -> {
+		Perlerper cavess = new Perlerper(this.getWorldHeight(), startX, chunk.getBottomY(), startZ, (x, y, z) -> {
 			final double extraDistrustLevel = 20.0; // Perlerp is not trustworthy
 
 			int xpos = x << 2; // 0 to 16 bc raw val is 0-4 (range:5)
@@ -170,15 +170,21 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				BlockState state;
 
 				for (int y = chunk.getBottomY(); y < height; ++y) {
-					System.out.println(chunk.getBottomY());
-					state = y < grimstoneHeight ? GRIMSTONE : STONE;
+					try {
+						state = y < grimstoneHeight ? GRIMSTONE : STONE;
 
-					if (y > -64 && (y < height - 1 || height > seaLevel + 1) && cavess.sample(x, y, z) < 0.0) {
-						state = CAVE_AIR;
+						if (y > -64 && (y < height - 1 || height > seaLevel + 1) && cavess.sample(x, y, z) < 0.0) {
+							state = CAVE_AIR;
+						}
+
+						setPos.setY(y);
+						chunk.setBlockState(setPos, state, false);
+					} catch (RuntimeException e) {
+						System.out.println("e" + this.getWorldHeight());
+						System.out.println("r" + this.getMinimumY());
+						System.out.println(chunk.getBottomY());
+						throw e;
 					}
-
-					setPos.setY(y);
-					chunk.setBlockState(setPos, state, false);
 				}
 
 				oceanFloor.trackUpdate(x, height - 1, z, STONE);
