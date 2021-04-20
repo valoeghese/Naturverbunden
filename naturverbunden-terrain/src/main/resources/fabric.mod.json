@@ -19,7 +19,7 @@
       "valoeghese.naturverbunden.TerrainModule"
     ],
     "client": [
-      "valoeghese.naturverbunden.client.TerrainModuleClient"
+      "valoeghese.naturverbunden.client.terrain.TerrainModuleClient"
     ]
   },
 
