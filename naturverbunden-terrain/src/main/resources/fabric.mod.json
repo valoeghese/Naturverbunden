@@ -9,7 +9,7 @@
     "Mekal \"Valoeghese\" Covic"
   ],
 
-  "icon": "assets/nvb-terrain/icon.png",
+  "icon": "assets/nvb_terrain/icon.png",
   "license": "LGPLv3",
   
   "environment": "*",
