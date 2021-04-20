@@ -3,7 +3,8 @@
   "package": "valoeghese.naturverbunden.mixin.primitive",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinItem"
+    "MixinItem",
+    "MixinPlayerEntity"
   ],
   "client": [
   ],
