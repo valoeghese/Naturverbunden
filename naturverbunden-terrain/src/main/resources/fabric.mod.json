@@ -17,6 +17,9 @@
   "entrypoints": {
     "main": [
       "valoeghese.naturverbunden.TerrainModule"
+    ],
+    "client": [
+      "valoeghese.naturverbunden.client.TerrainModuleClient"
     ]
   },
 
