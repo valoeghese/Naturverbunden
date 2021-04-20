@@ -33,6 +33,7 @@ public class Noise {
 	public Noise(Random random, int octaves, Function<Random, OpenSimplexGenerator> constructor) {
 		this.samplers = new OpenSimplexGenerator[octaves];
 		this.clamp = 1D / (1D - (1D / Math.pow(2, octaves))); // I came up with this algorithm like a year ago I can't remember how but it probably works
+		this.clamp *= 0.5; // Multiply everything by 0.5 because we are doubling the amplitude of everything compared to the original algorithm. 0.5(2f(x) + 2g(x)) = f(x) + g(x).
 
 		for (int i = 0; i < octaves; ++i) {
 			this.samplers[i] = constructor.apply(random);
@@ -43,7 +44,8 @@ public class Noise {
 	private double clamp;
 
 	public double sample(double x, double y) {
-		double amplFreq = 0.5D;
+		double amplFreq = 1.0D; // was 0.5D in my original algorithm.
+
 		double result = 0;
 		for (OpenSimplexGenerator sampler : this.samplers) {
 			result += (amplFreq * sampler.sample(x / amplFreq, y / amplFreq));

@@ -111,8 +111,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 	}
 
 	private double getChainSample(int x, int z) {
-		final double stretchFrequency = 1.0 / 1620.0;
-		final double chainFrequency = 1.0 / 6090.0;
+		final double stretchFrequency = 1.0 / 810.0;
+		final double chainFrequency = 1.0 / 3045.0; // 6090 / 2
 
 		// Chain Sample. Used for mountain chains and fake orthographic lift humidity modification
 		double chainStretch = this.mountainChainStretch.sample(x * stretchFrequency, z * stretchFrequency);
@@ -130,7 +130,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	private TerrainType getTerrainType(int x, int z) {
 		// Don't touch mountains here without mirroring your changes in the river sampler
-		final double humidityFrequency = 1.0 / 1769.0;
+		final double humidityFrequency = 1.0 / 1069.0;
 		final double chainCutoff = 0.17;
 		final double chainNormaliser = 1 / chainCutoff;
 
@@ -190,7 +190,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 			if (mountainChain > 0) {
 				// Because mountainChain edge goes from 0 to 0.5, multiply by 2.
-				return new MountainEdgeTerrainType(primaryTerrain, this.terrain.terrainMountains, mountainChain * (1.0 / 0.6), terrainInfo.isLargeHills(), temperature < 2 && humidity < 0.0);
+				return new MountainEdgeTerrainType(primaryTerrain, this.terrain.terrainMountains, mountainChain * (1.0 / 0.6), terrainInfo.isLargeHills(), (temperature < 2 && humidity < 0.0) || (temperature == 2 && humidity < -0.34));
 			} else {
 				return primaryTerrain;
 			}
@@ -213,7 +213,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 		z = Math.abs(this.tempOffset + z / TEMPERATURE_CELL_SIZE);
 		z = Math.min(z, 5);
 		z = NVBMathUtils.tri(z) - 0.5;
-		return 0.8 * z;
+		return 0.6 * z;
 	}
 
 	@Override

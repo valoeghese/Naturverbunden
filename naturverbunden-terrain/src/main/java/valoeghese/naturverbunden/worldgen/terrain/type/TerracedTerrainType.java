@@ -32,7 +32,7 @@ public class TerracedTerrainType extends TerrainType {
 
 		this.baseHeight = baseHeight;
 		this.layers = layers;
-		this.frequency = frequency;
+		this.frequency = frequency * 2;
 		this.separation = separation;
 		this.noise = new OpenSimplexGenerator(seed);
 		this.additional = additional;

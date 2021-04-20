@@ -36,7 +36,7 @@ public class RiverSampler {
 	private final int voronoiSeed;
 
 	public double sample(int rx, int rz) {
-		final double cutoff = 0.16 + 0.03 * this.offsetX.sample(rx * 0.008 + 1, rz * 0.0081);
+		final double cutoff = 0.16 + 0.022 * this.offsetX.sample(rx * 0.008 + 1, rz * 0.0081);
 		final double normaliser = 1 / cutoff;
 
 		double scalex = rx * 0.002;
