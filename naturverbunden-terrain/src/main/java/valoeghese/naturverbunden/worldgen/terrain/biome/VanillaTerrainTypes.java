@@ -45,9 +45,10 @@ public class VanillaTerrainTypes {
 		this.terrainBirchForest = new SimpleSimplexTerrainType(BiomeKeys.BIRCH_FOREST, seed, 3, 80.0, 1.0 / 140.0, 12.0);
 		this.terrainRoofedForest = new SimpleSimplexTerrainType(BiomeKeys.DARK_FOREST, seed, 3, 80.0, 1.0 / 140.0, 12.0);
 
-		this.terrainJungle = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, seed, 1, 70.0, 1.0 / 100.0, 10.0);
+		this.terrainJungle = createJungle(seed);
+		this.terrainJungleWithHills = createJungle(seed);
+		this.terrainJungleWithBamboo = createJungle(seed);	
 		this.terrainJungleHills = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE_HILLS, seed, 1, 90.0, 1.0 / 120.0, 15.0);
-		this.terrainJungleWithBamboo = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, seed, 1, 70.0, 1.0 / 100.0, 10.0);		
 		this.terrainJungleMtns = new MultiNoiseTerrainType(BiomeKeys.MODIFIED_JUNGLE, 97.0)
 				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 380.0, 34.0);
 		this.terrainBambooJungle = new SimpleSimplexTerrainType(BiomeKeys.BAMBOO_JUNGLE, seed, 1, 70.0, 1.0 / 100.0, 10.0);
@@ -108,8 +109,9 @@ public class VanillaTerrainTypes {
 
 		this.terrainSavannah.largeHills = this.terrainSavannahPlateau;
 		this.terrainJungleWithBamboo.largeHills = this.terrainBambooJungle;
-		this.terrainJungle.largeHills = this.terrainJungleHills;
+		this.terrainJungleWithHills.largeHills = this.terrainJungleHills;
 		this.terrainJungleWithBamboo.smallHills = this.terrainJungleHills;
+		this.terrainJungleMtns.smallHills = this.terrainBambooJungle;
 
 		this.oceans = new OceanEntry[] {
 				this.oceanWarm,
@@ -135,6 +137,7 @@ public class VanillaTerrainTypes {
 
 	// Hottish Wettish
 	final TerrainType terrainJungle;
+	final TerrainType terrainJungleWithHills;
 	final TerrainType terrainJungleHills;
 	final TerrainType terrainJungleMtns;
 	final TerrainType terrainJungleWithBamboo;
@@ -170,6 +173,10 @@ public class VanillaTerrainTypes {
 
 	OceanEntry getOcean(int temperature) {
 		return oceans[temperature];
+	}
+
+	private static TerrainType createJungle(Random seed) {
+		return new SimpleSimplexTerrainType(BiomeKeys.JUNGLE, seed, 1, 70.0, 1.0 / 100.0, 10.0);
 	}
 
 	private static TerrainType createTaiga(RegistryKey<Biome> biome, Random seed) {

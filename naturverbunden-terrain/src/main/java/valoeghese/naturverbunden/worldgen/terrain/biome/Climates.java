@@ -23,8 +23,8 @@ public final class Climates {
 	public Climates(VanillaTerrainTypes types) {
 		// Lower values = higher temperature, lower humidity
 		// Sorted temperature * 5 + humidity
-		TROPICAL_RAINFOREST = new Climate(types.terrainJungle, types.terrainJungleMtns, types.terrainJungleWithBamboo, types.terrainJungleWithBamboo); // tropical rainforest
-		TROPICAL_MONSOON = new Climate(types.terrainJungleEdge, types.terrainJungleEdge, types.terrainJungleEdge, types.terrainBayou); // tropical monsoon. think: florida.
+		TROPICAL_RAINFOREST = new Climate(types.terrainJungle, types.terrainJungleMtns, types.terrainJungleWithHills, types.terrainJungleWithBamboo); // tropical rainforest
+		TROPICAL_MONSOON = new Climate(types.terrainJungleEdge); // tropical monsoon. think: florida. I'd add bayou to this but the grass colour doesn't blend nice
 		TROPICAL_WET_AND_DRY = new Climate(types.terrainSavannah, types.terrainSavannah, types.terrainSavannahHills, types.terrainSavannahTerrace); // Savannahs
 
 		TROPICAL_DESERT = new Climate(types.terrainTropicalDesert); // Hot Deserts, like sahara
