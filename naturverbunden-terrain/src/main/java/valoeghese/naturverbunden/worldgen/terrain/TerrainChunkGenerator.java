@@ -52,7 +52,6 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import valoeghese.naturverbunden.util.terrain.Vec2d;
 import valoeghese.naturverbunden.util.terrain.Voronoi;
-import valoeghese.naturverbunden.worldgen.Perlerper;
 import valoeghese.naturverbunden.worldgen.terrain.biome.TerrainBiomeProvider;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.FleißigArea;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
@@ -134,15 +133,23 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		Heightmap surface = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
 		final int startX = pos.getStartX();
 		final int startZ = pos.getStartZ();
+
+		// @Reason: CC Compat
 		int[] heights = new int[17 * 17];
+		int[] trueHeights = new int[16 * 16];
 
 		for (int x = 0; x < 17; ++x) {
 			int totalX = startX + x;
 
 			for (int z = 0; z < 17; ++z) {
 				int totalZ = startZ + z;
+				int sample = this.terrainHeightSampler.sample(totalX, totalZ);
 
-				heights[(x * 17) + z] = Math.min(chunk.getTopY() - 1, this.terrainHeightSampler.sample(totalX, totalZ));
+				if (z < 16 && x < 16) {
+					trueHeights[(x * 16) + z] = sample;
+				}
+
+				heights[(x * 17) + z] = Math.min(chunk.getTopY() - 1, sample);
 			}
 		}
 
@@ -191,8 +198,12 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				oceanFloor.trackUpdate(x, height - 1, z, STONE);
 				surface.trackUpdate(x, height - 1, z, STONE);
 
-				if (height < seaLevel) {
-					for (int y = height; y < seaLevel; ++y) {
+				int trueHeight = trueHeights[(x * 16) + z];
+
+				if (trueHeight < seaLevel && height < chunk.getTopY()) { // Second Check @Reason: CC Compat
+					int cap = Math.min(seaLevel, chunk.getTopY()); // @Reason CC Compat
+
+					for (int y = height; y < cap; ++y) {
 						setPos.setY(y);
 						chunk.setBlockState(setPos, WATER, false);
 					}
