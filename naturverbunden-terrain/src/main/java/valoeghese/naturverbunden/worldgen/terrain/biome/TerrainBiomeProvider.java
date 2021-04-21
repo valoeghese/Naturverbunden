@@ -74,7 +74,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 		RiverSampler rivers = new RiverSampler(gr);
 		this.rawMountains = new LossyDoubleCache(512, this::getChainSample);
 
-		this.rivers = new LossyDoubleCache(512, (x, z) -> Math.max(rivers.sample(x, z) - 7 * this.getMtnChainVal(x, z), 0.0));
+		this.rivers = new LossyDoubleCache(512, rivers::sample);
 	}
 
 	private final long seed;

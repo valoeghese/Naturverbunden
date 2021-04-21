@@ -257,8 +257,9 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		// Complete the average
 		height = height / totalWeight;
 		double riverGen = ((TerrainBiomeProvider) this.biomeSource).sampleRiver(x, z);
+		double mtnChainForRivers = Math.min(1.0, (2.5 * ((TerrainBiomeProvider) this.biomeSource).getMtnChainVal(x, z)));
 
-		final double river = 61.0;
+		final double river = 61.0 * (1.0 - mtnChainForRivers) + height * mtnChainForRivers;
 		return (int) (MathHelper.lerp(riverGen, height, river));
 	}
 
