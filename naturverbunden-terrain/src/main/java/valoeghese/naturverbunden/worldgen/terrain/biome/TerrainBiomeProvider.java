@@ -74,20 +74,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 		RiverSampler rivers = new RiverSampler(gr);
 		this.rawMountains = new LossyDoubleCache(512, this::getChainSample);
 
-		this.rivers = new LossyDoubleCache(512, (x, z) -> {
-			double base = rivers.sample(x, z);
-
-			// Copied From Terrain Sample (below)
-			final double chainCutoff = 0.17;
-			final double chainNormaliser = 1 / chainCutoff;
-
-			double chainSample = this.rawMountains.get(x, z);
-			double mountainChain = chainCutoff - Math.abs(chainSample);
-			// normalised between 0 and 1
-			mountainChain = chainNormaliser * Math.max(0.0, mountainChain);
-			// =====
-			return Math.max(base - 7 * mountainChain, 0.0);
-		});
+		this.rivers = new LossyDoubleCache(512, (x, z) -> Math.max(rivers.sample(x, z) - 7 * this.getMtnChainVal(x, z), 0.0));
 	}
 
 	private final long seed;
@@ -129,19 +116,25 @@ public class TerrainBiomeProvider extends BiomeSource {
 		return chainSample;
 	}
 
+	public double getMtnChainVal(int x, int z) {
+		// Copied From Terrain Sample (below)
+		double chainSample = this.rawMountains.get(x, z);
+		double rawMountainChain = CHAIN_CUTOFF - Math.abs(chainSample);
+		// normalised between 0 and 1
+		return CHAIN_NORMALISER * Math.max(0.0, rawMountainChain);
+	}
+
 	private TerrainType getTerrainType(int x, int z) {
 		// Don't touch mountains here without mirroring your changes in the river sampler
 		final double humidityFrequency = 1.0 / 1069.0;
-		final double chainCutoff = 0.17;
-		final double chainNormaliser = 1 / chainCutoff;
 
 		double chainSample = this.rawMountains.get(x, z);
 
 		// mountain terrain strength.
-		double mountainChain = chainCutoff - Math.abs(chainSample);
-		boolean applyLiftToHumidity = mountainChain > -chainCutoff;
+		double mountainChain = CHAIN_CUTOFF - Math.abs(chainSample);
+		boolean applyLiftToHumidity = mountainChain > -CHAIN_CUTOFF;
 		// normalised between 0 and 1
-		mountainChain = chainNormaliser * Math.max(0.0, mountainChain);
+		mountainChain = CHAIN_NORMALISER * Math.max(0.0, mountainChain);
 		TerrainInfoSampler.Info terrainInfo = this.infoSampler.sample(x >> 2, z >> 2);
 
 		if (mountainChain > 0.6 && terrainInfo.category == TerrainCategory.LAND) {
@@ -245,4 +238,6 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	// Temperature Scale
 	private static final double TEMPERATURE_CELL_SIZE = 900.0;
+	private static final double CHAIN_CUTOFF = 0.17;
+	private static final double CHAIN_NORMALISER = 1 / CHAIN_CUTOFF;
 }
