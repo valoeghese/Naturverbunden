@@ -24,10 +24,19 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.sound.BlockSoundGroup;
 import valoeghese.naturverbunden.core.NVBBlockUtils;
 
 public class PrimitiveBlocks extends NVBBlockUtils {
+	public static final AbstractBlock.Settings createGasSettings() {
+		return AbstractBlock.Settings.of(Material.AIR)
+				.noCollision()
+				.dropsNothing()
+				.air();
+	}
+
 	public static final Block ITEM_BLOCK = register("item_block", AbstractBlock.Settings.of(Material.DECORATION)
 			.strength(-1.0f, 0.4f)
 			.noCollision()
@@ -36,6 +45,8 @@ public class PrimitiveBlocks extends NVBBlockUtils {
 			.suffocates(NVBBlockUtils::never)
 			.blockVision(NVBBlockUtils::never)
 			.sounds(BlockSoundGroup.STONE), ItemBlock::new);
+
+	public static final Block HYDROGEN_SULFIDE = register("hydrogen_sulfide", createGasSettings(), settings -> new GasBlock(settings, null, () -> new StatusEffectInstance(StatusEffects.NAUSEA, 20 * 4)));
 
 	public static final BlockEntityType<ItemBlockEntity> ITEM_BLOCK_ENTITY = create("item_block", FabricBlockEntityTypeBuilder.create(ItemBlockEntity::new, ITEM_BLOCK));
 

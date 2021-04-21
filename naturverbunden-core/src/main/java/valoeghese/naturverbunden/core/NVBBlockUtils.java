@@ -37,7 +37,7 @@ import net.minecraft.world.BlockView;
 import valoeghese.naturverbunden.Naturverbunden;
 
 public class NVBBlockUtils {
-	protected static Block register(String id, AbstractBlock.Settings settings, Function<AbstractBlock.Settings, Block> blockifier) {
+	protected static <T extends Block> T register(String id, AbstractBlock.Settings settings, Function<AbstractBlock.Settings, T> blockifier) {
 		return Registry.register(Registry.BLOCK, Naturverbunden.id(id), blockifier.apply(settings));
 	}
 
