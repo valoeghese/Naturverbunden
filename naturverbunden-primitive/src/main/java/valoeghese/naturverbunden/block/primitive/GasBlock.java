@@ -34,6 +34,7 @@ import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
 public class GasBlock extends AirBlock implements BooleanFunction<StatusEffectInstance> {
 	public GasBlock(Settings settings, @Nullable Supplier<StatusEffectInstance> effectStrong, Supplier<StatusEffectInstance> effectWeak) {
@@ -50,6 +51,11 @@ public class GasBlock extends AirBlock implements BooleanFunction<StatusEffectIn
 	@Override
 	protected void appendProperties(Builder<Block, BlockState> builder) {
 		builder.add(CONCENTRATION);
+	}
+
+	@Override
+	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+		world.getBlockTickScheduler().schedule(pos, this, 30);
 	}
 
 	@Override

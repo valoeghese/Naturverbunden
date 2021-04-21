@@ -34,11 +34,7 @@ public class PrimitiveBlocks extends NVBBlockUtils {
 		return AbstractBlock.Settings.of(Material.AIR)
 				.noCollision()
 				.dropsNothing()
-				.nonOpaque()
-				.strength(-1.0f, 69696969.0f)
-				.solidBlock(NVBBlockUtils::never)
-				.suffocates(NVBBlockUtils::never)
-				.blockVision(NVBBlockUtils::never);
+				.air();
 	}
 
 	public static final Block ITEM_BLOCK = register("item_block", AbstractBlock.Settings.of(Material.DECORATION)

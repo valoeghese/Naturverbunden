@@ -4,7 +4,11 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinItem",
-    "MixinPlayerEntity"
+    "MixinPlayerEntity",
+    "gastick.MixinChunkSerializer",
+    "gastick.MixinProtoChunk",
+    "gastick.MixinReadOnlyChunk",
+    "gastick.MixinServerWorld"
   ],
   "client": [
   ],
