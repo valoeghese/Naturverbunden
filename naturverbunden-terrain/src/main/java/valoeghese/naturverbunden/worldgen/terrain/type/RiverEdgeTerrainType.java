@@ -19,9 +19,12 @@
 
 package valoeghese.naturverbunden.worldgen.terrain.type;
 
-public class RiverEdgeTerrainType extends ParentedTerrainType {
-	public RiverEdgeTerrainType(TerrainType original, double river, double bias) {
-		super(original);
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+
+public class RiverEdgeTerrainType extends TerrainType {
+	public RiverEdgeTerrainType(TerrainType original, RegistryKey<Biome> biome, double river, double bias) {
+		super(biome, original.getCategory());
 
 		this.original = original;
 		this.river = river;

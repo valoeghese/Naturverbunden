@@ -189,12 +189,12 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 			double riverGen = this.sampleRiver(x, z);
 
-			if (riverGen > -0.17) {
-				riverGen = (1 / -0.17) * Math.min(riverGen, 0.0); // Normalise 0-1 with clamp and bias.
-				riverGen *= riverGen;
+			if (riverGen > -0.145) {
+				riverGen = (1 / -0.145) * Math.min(riverGen, 0.0); // Normalise 0-1 with clamp and bias.
 				riverGen = 1.0 - riverGen;
+				riverGen *= riverGen;
 
-				primaryTerrain = new RiverEdgeTerrainType(primaryTerrain, TerrainChunkGenerator.RIVER_HEIGHT + 5, riverGen);
+				primaryTerrain = new RiverEdgeTerrainType(primaryTerrain, primaryTerrain.getCategory() == Biome.Category.DESERT && riverGen > 0.5 ? BiomeKeys.RIVER : primaryTerrain.getBiome(), TerrainChunkGenerator.RIVER_HEIGHT + 6, riverGen);
 			}
 
 			if (mountainChain > 0) {
@@ -231,7 +231,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 		double rivers = this.sampleRiver(biomeX << 2, biomeZ << 2);
 		Biome.Category category = type.getCategory();
 
-		if (category != Biome.Category.EXTREME_HILLS && category != Biome.Category.OCEAN && category != Biome.Category.JUNGLE && rivers > 0.7) {
+		if (category != Biome.Category.EXTREME_HILLS && category != Biome.Category.OCEAN && category != Biome.Category.RIVER && category != Biome.Category.JUNGLE && rivers > 0.7) {
 			// TODO put river type as a parameter of the gen type
 			return this.biomeRegistry.get(type.getCategory() == Biome.Category.ICY ? BiomeKeys.FROZEN_RIVER : BiomeKeys.RIVER);
 		}
