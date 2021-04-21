@@ -21,6 +21,7 @@ package valoeghese.naturverbunden;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.registry.Registry;
+import valoeghese.naturverbunden.core.NVBToggles;
 import valoeghese.naturverbunden.worldgen.terrain.TerrainChunkGenerator;
 import valoeghese.naturverbunden.worldgen.terrain.biome.TerrainBiomeProvider;
 
@@ -29,6 +30,7 @@ public class TerrainModule implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Naturverbunden.LOGGER.info("[Terrain] Initialising!");
+		NVBToggles.cutePuppies = true;
 
 		Registry.register(Registry.CHUNK_GENERATOR, Naturverbunden.id("overworld"), TerrainChunkGenerator.CODEC);
 		Registry.register(Registry.BIOME_SOURCE, Naturverbunden.id("overworld"), TerrainBiomeProvider.CODEC);
