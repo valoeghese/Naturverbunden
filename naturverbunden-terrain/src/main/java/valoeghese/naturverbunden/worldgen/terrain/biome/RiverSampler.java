@@ -36,7 +36,7 @@ public class RiverSampler {
 	private final int voronoiSeed;
 
 	public double sample(int rx, int rz) {
-		final double cutoff = 0.17 + 0.022 * this.offsetX.sample(rx * 0.0008 + 1, rz * 0.00081);
+		final double cutoff = 0.16 + 0.022 * this.offsetX.sample(rx * 0.0008 + 1, rz * 0.00081);
 		final double normaliser = 1 / cutoff;
 
 		double scalex = rx * 0.0012;
@@ -48,10 +48,6 @@ public class RiverSampler {
 		double worley = Voronoi.sampleD1D2Worley(x, z, this.voronoiSeed);
 		worley = cutoff - worley;
 
-		if (worley > 0) {
-			return normaliser * worley;
-		} else {
-			return 0;
-		}
+		return normaliser * worley;
 	}
 }

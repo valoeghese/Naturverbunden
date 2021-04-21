@@ -36,9 +36,11 @@ import valoeghese.naturverbunden.util.terrain.cache.DoubleGridOperator;
 import valoeghese.naturverbunden.util.terrain.cache.GridOperator;
 import valoeghese.naturverbunden.util.terrain.cache.LossyCache;
 import valoeghese.naturverbunden.util.terrain.cache.LossyDoubleCache;
+import valoeghese.naturverbunden.worldgen.terrain.TerrainChunkGenerator;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.Layers;
 import valoeghese.naturverbunden.worldgen.terrain.type.MountainEdgeTerrainType;
+import valoeghese.naturverbunden.worldgen.terrain.type.RiverEdgeTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
@@ -124,6 +126,9 @@ public class TerrainBiomeProvider extends BiomeSource {
 		return CHAIN_NORMALISER * Math.max(0.0, rawMountainChain);
 	}
 
+	/**
+	 * Handles all terrain types except river edge and river terrain.
+	 */
 	private TerrainType getTerrainType(int x, int z) {
 		// Don't touch mountains here without mirroring your changes in the river sampler
 		final double humidityFrequency = 1.0 / 1069.0;
@@ -180,6 +185,16 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 			if (primaryTerrain == null) {
 				throw new IllegalStateException("WTF 2 electric boogaloo. Humidity " + humidity + ", MountainChain " + mountainChain + ", InfoBits " + terrainInfo.info + " TerrainCategory " + terrainInfo.category.name());
+			}
+
+			double riverGen = this.sampleRiver(x, z);
+
+			if (riverGen > -0.17) {
+				riverGen = (1 / -0.17) * Math.min(riverGen, 0.0); // Normalise 0-1 with clamp and bias.
+				riverGen *= riverGen;
+				riverGen = 1.0 - riverGen;
+
+				primaryTerrain = new RiverEdgeTerrainType(primaryTerrain, TerrainChunkGenerator.RIVER_HEIGHT + 5, riverGen);
 			}
 
 			if (mountainChain > 0) {

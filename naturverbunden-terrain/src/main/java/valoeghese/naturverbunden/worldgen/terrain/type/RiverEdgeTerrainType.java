@@ -20,7 +20,7 @@
 package valoeghese.naturverbunden.worldgen.terrain.type;
 
 public class RiverEdgeTerrainType extends ParentedTerrainType {
-	protected RiverEdgeTerrainType(TerrainType original, TerrainType river, double bias) {
+	public RiverEdgeTerrainType(TerrainType original, double river, double bias) {
 		super(original);
 
 		this.original = original;
@@ -29,11 +29,11 @@ public class RiverEdgeTerrainType extends ParentedTerrainType {
 	}
 
 	private final TerrainType original;
-	private final TerrainType river;
+	private final double river;
 	private final double bias;
 
 	@Override
 	public double getHeight(int x, int z) {
-		return this.river.getHeight(x, z) * this.bias + this.original.getHeight(x, z) * (1.0 - this.bias);
+		return this.river * this.bias + this.original.getHeight(x, z) * (1.0 - this.bias);
 	}
 }
