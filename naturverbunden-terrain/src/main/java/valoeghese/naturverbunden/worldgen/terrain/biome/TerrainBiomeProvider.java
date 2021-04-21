@@ -72,6 +72,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 		gr.setSeed(seed + 2);
 		RiverSampler rivers = new RiverSampler(gr);
+		this.rawMountains = new LossyDoubleCache(512, this::getChainSample);
+
 		this.rivers = new LossyDoubleCache(512, (x, z) -> {
 			double base = rivers.sample(x, z);
 
@@ -79,14 +81,13 @@ public class TerrainBiomeProvider extends BiomeSource {
 			final double chainCutoff = 0.17;
 			final double chainNormaliser = 1 / chainCutoff;
 
-			double chainSample = this.getChainSample(x, z);
+			double chainSample = this.rawMountains.get(x, z);
 			double mountainChain = chainCutoff - Math.abs(chainSample);
 			// normalised between 0 and 1
 			mountainChain = chainNormaliser * Math.max(0.0, mountainChain);
 			// =====
 			return Math.max(base - 7 * mountainChain, 0.0);
 		});
-		this.rawMountains = new LossyDoubleCache(512, this::getChainSample);
 	}
 
 	private final long seed;
