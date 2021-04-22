@@ -107,7 +107,7 @@ public class PrimitiveWorldgen extends NVBWorldgenUtils {
 
 					DefaultBiomeFeatures.addExtraMountainTrees(builder);
 					DefaultBiomeFeatures.addDefaultFlowers(builder);
-					DefaultBiomeFeatures.addDefaultGrass(builder);
+					DefaultBiomeFeatures.addForestGrass(builder);
 					DefaultBiomeFeatures.addDefaultMushrooms(builder);
 					DefaultBiomeFeatures.addDefaultVegetation(builder);
 
