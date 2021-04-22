@@ -258,11 +258,11 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 
 		// Complete the average
 		height = height / totalWeight;
-		riverFadeModifier = height / riverFadeModifier;
+		riverFadeModifier = riverFadeModifier / totalWeight;
 
 		double riverGen = ((TerrainBiomeProvider) this.biomeSource).sampleRiver(x, z);
 		riverGen = Math.max(riverGen, 0.0);
-		double mtnChainForRivers = riverFadeModifier + Math.min(1.0, (2.5 * ((TerrainBiomeProvider) this.biomeSource).getMtnChainVal(x, z)));
+		double mtnChainForRivers = Math.min(1.0, riverFadeModifier + (2.5 * ((TerrainBiomeProvider) this.biomeSource).getMtnChainVal(x, z)));
 
 		final double river = RIVER_HEIGHT * (1.0 - mtnChainForRivers) + height * mtnChainForRivers;
 		return (int) (MathHelper.lerp(riverGen, height, river));
