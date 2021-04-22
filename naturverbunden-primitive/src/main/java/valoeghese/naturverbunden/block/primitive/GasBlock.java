@@ -21,14 +21,11 @@ package valoeghese.naturverbunden.block.primitive;
 
 import java.util.Random;
 import java.util.function.IntFunction;
-import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
-
-import net.fabricmc.fabric.api.util.BooleanFunction;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.server.world.ServerWorld;
@@ -54,12 +51,15 @@ public class GasBlock extends AirBlock implements IntFunction<StatusEffectInstan
 
 	@Override
 	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
-		world.getBlockTickScheduler().schedule(pos, this, 20 * 3);
+		world.getBlockTickScheduler().schedule(pos, this, 50);
 	}
 
 	@Override
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		int level = state.get(CONCENTRATION);
+
+		// Level to not replace
+		int ignoreLevel = 0;
 
 		// Sinking
 		if (pos.getY() > world.getBottomY()) {
@@ -69,6 +69,7 @@ public class GasBlock extends AirBlock implements IntFunction<StatusEffectInstan
 			if (existing.isAir()) {
 				if (!(existing.getBlock() instanceof GasBlock) || existing.get(CONCENTRATION) < level) {
 					world.setBlockState(down, state); // set below to this concentration
+					ignoreLevel = level;
 
 					if (--level > 0) {
 						state = state.with(CONCENTRATION, level);
@@ -80,6 +81,11 @@ public class GasBlock extends AirBlock implements IntFunction<StatusEffectInstan
 
 		// Diffusing
 		if (--level > 0) { // If the decremented level is greater than 0.
+			if (ignoreLevel == 0) {
+				// Don't replace things that are already at this level.
+				ignoreLevel = level;
+			}
+
 			// Change to the state we want to set
 			state = state.with(CONCENTRATION, level);
 
@@ -96,7 +102,7 @@ public class GasBlock extends AirBlock implements IntFunction<StatusEffectInstan
 						boolean isGas = existingBlock instanceof GasBlock;
 
 						if (isGas) {
-							if (existing.get(CONCENTRATION) >= level) {
+							if (existing.get(CONCENTRATION) >= ignoreLevel) {
 								continue;
 							}
 						}
@@ -106,7 +112,7 @@ public class GasBlock extends AirBlock implements IntFunction<StatusEffectInstan
 				}
 			}
 
-			world.getBlockTickScheduler().schedule(pos, this, 20 * 3);
+			world.getBlockTickScheduler().schedule(pos, this, 50);
 		}
 	}
 
