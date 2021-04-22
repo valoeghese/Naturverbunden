@@ -45,7 +45,7 @@ public class RiverSampler {
 		double x = scalex + 0.5 * this.offsetX.sample(scalex * 2, scalez * 2);
 		double z = scalez + 0.5 * this.offsetZ.sample(scalex * 2, scalez * 2);
 
-		double worley = Voronoi.sampleD1D2Worley(x, z, this.voronoiSeed);
+		double worley = Voronoi.sampleD1D2SquaredWorley(x, z, this.voronoiSeed);
 		worley = cutoff - worley;
 
 		return normaliser * worley;

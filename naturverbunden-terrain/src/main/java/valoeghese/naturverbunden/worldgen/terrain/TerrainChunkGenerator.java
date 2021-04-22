@@ -220,6 +220,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 	private int calculateTerrainHeight(int x, int z) {
 		double height = 0.0;
 		double totalWeight = 0.0;
+		double riverFadeModifier = 0.0; // for non-mountains to specify river fades
 		final double maxSquareRadius = 9.0; // 3.0 * 3.0;
 
 		// Sample Relevant Voronoi in 5x5 area around the player for smoothing
@@ -250,15 +251,18 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 
 					totalWeight += weight;
 					height += weight * type.getHeight(x, z);
+					riverFadeModifier += weight * type.riverFadeModifier(x, z);
 				}
 			}
 		}
 
 		// Complete the average
 		height = height / totalWeight;
+		riverFadeModifier = height / riverFadeModifier;
+
 		double riverGen = ((TerrainBiomeProvider) this.biomeSource).sampleRiver(x, z);
 		riverGen = Math.max(riverGen, 0.0);
-		double mtnChainForRivers = Math.min(1.0, (2.5 * ((TerrainBiomeProvider) this.biomeSource).getMtnChainVal(x, z)));
+		double mtnChainForRivers = riverFadeModifier + Math.min(1.0, (2.5 * ((TerrainBiomeProvider) this.biomeSource).getMtnChainVal(x, z)));
 
 		final double river = RIVER_HEIGHT * (1.0 - mtnChainForRivers) + height * mtnChainForRivers;
 		return (int) (MathHelper.lerp(riverGen, height, river));

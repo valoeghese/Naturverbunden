@@ -1,6 +1,6 @@
 {
     "parent": "block/cube_all",
     "textures": {
-        "all": "nvb:block/deinoococcus_covered_rock"
+        "all": "nvb:block/deinococcus_covered_rock"
     }
 }

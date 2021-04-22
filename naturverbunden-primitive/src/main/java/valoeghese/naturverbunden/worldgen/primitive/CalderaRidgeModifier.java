@@ -41,35 +41,42 @@ public class CalderaRidgeModifier implements TerrainTypeModifier {
 		this.seed = Voronoi.seedFromLong(seed - 10);
 
 		Random rand = new Random(seed);
-		this.terrainHotSpringsRidge = new MultiNoiseTerrainType(BiomeKeys.MOUNTAINS, 130.0)
-				.addNoise(new Noise(rand, 2, RidgedSimplexGenerator::new), MountainsTerrainType.FREQUENCY * 0.5, 25.0);
+		this.terrainHotSpringsRidge = new MultiNoiseTerrainType(BiomeKeys.MOUNTAINS, 145.0)
+				.addNoise(new Noise(rand, 2, RidgedSimplexGenerator::new), MountainsTerrainType.FREQUENCY * 0.5, 35.0);
 
 		this.terrainHotSprings = new HotspringsTerrainType(rand);
 	}
-	
+
 	private final int seed;
 	private final TerrainType terrainHotSpringsRidge;
 	private final TerrainType terrainHotSprings;
 
 	@Override
 	public TerrainType apply(TerrainType original, TerrainBiomeProvider source, int x, int z, Properties properties, Info info) {
-		double voronoi = Voronoi.sampleD1Worley(x * FREQUENCY, z * FREQUENCY, this.seed);
+		double voronoi = Voronoi.sampleD1SquaredWorley(x * FREQUENCY, z * FREQUENCY, this.seed);
 
-		if (voronoi < 0.1) {
+		if (voronoi < 0.03) {
 			return this.terrainHotSprings;
-		} else if (voronoi < 0.15) {
-			voronoi = (1.0 / 0.05) * (voronoi - 0.1);
-			return new EdgeTerrainType(this.terrainHotSpringsRidge, original, voronoi, voronoi > 0.8 ? original : this.terrainHotSpringsRidge);
+		} else if (voronoi < 0.05) {
+			voronoi = (1.0 / 0.02) * (voronoi - 0.02);
+			final double riverFade = 1.0 - voronoi;
+
+			return new EdgeTerrainType(this.terrainHotSpringsRidge, original, voronoi, voronoi > 0.7 ? original : this.terrainHotSpringsRidge) {
+				@Override
+				public double riverFadeModifier(int x, int z) {
+					return riverFade;
+				}
+			};
 		} else {
 			return original;
 		}
 	}
 
-	private static final double FREQUENCY = 1 / 4200.0;
-	
+	private static final double FREQUENCY = 1 / 2400.0;
+
 	private static class HotspringsTerrainType extends SimpleSimplexTerrainType {
 		HotspringsTerrainType(Random rand) {
-			super(PrimitiveWorldgen.HOT_SPRINGS_KEY, rand, 2, 106.0, 1.0 / 100.0, 6.0);
+			super(PrimitiveWorldgen.HOT_SPRINGS_KEY, rand, 2, 106.0, 1.0 / 104.0, 6.0);
 			this.lakes = new OpenSimplexGenerator(rand);
 		}
 
@@ -80,12 +87,17 @@ public class CalderaRidgeModifier implements TerrainTypeModifier {
 			double height = super.getHeight(x, z);
 			double lakeNoise = lakes.sample(x * LAKES_FREQUENCY, z * LAKES_FREQUENCY);
 
-			if (lakeNoise > 0.3) {
-				lakeNoise = (lakeNoise - 0.3) * (1.0 / (0.866 - 0.3));
-				height -= lakeNoise * 12.0;
+			if (lakeNoise > 0.25) {
+				lakeNoise = (lakeNoise - 0.25) * (1.0 / (0.866 - 0.25));
+				height -= lakeNoise * 14.0;
 			}
 
 			return height;
+		}
+
+		@Override
+		public double riverFadeModifier(int x, int z) {
+			return 1.0;
 		}
 
 		private static final double LAKES_FREQUENCY = 1.0 / 60.0;

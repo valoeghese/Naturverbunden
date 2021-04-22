@@ -76,7 +76,7 @@ public class PrimitiveWorldgen extends NVBWorldgenUtils {
 	private static void registerBiomes() {
 		register(HOT_SPRINGS_KEY, new Biome.Builder()
 				.precipitation(Biome.Precipitation.NONE)
-				.category(Biome.Category.FOREST)
+				.category(Biome.Category.EXTREME_HILLS)
 				.depth(2.0f)
 				.scale(0.125f)
 				.temperature(0.6f)
@@ -84,7 +84,7 @@ public class PrimitiveWorldgen extends NVBWorldgenUtils {
 				.effects(new BiomeEffects.Builder()
 						.waterColor(0x3F76E4)
 						.waterFogColor(0x050533)
-						.fogColor(0x12638463)
+						.fogColor(0xC0D8FF)
 						.skyColor(getSkyColor(0.6F))
 						.moodSound(BiomeMoodSound.CAVE)
 						.build())

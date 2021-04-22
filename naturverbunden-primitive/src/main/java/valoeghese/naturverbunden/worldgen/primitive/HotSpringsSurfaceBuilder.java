@@ -22,6 +22,7 @@ package valoeghese.naturverbunden.worldgen.primitive;
 import java.util.Random;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
@@ -43,6 +44,15 @@ public class HotSpringsSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfi
 			SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, HS_3_CONFIG);
 		} else {
 			SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, HS_1_CONFIG);
+		}
+
+		if (height < MODIFIED_SEA_LEVEL) {
+			BlockPos.Mutable pos = new BlockPos.Mutable().set(x & 0xF, 0, z & 0xF);
+
+			for (int i = MODIFIED_SEA_LEVEL - 1; i >= height; --i) {
+				pos.setY(i);
+				chunk.setBlockState(pos, defaultFluid, false);
+			}
 		}
 	}
 

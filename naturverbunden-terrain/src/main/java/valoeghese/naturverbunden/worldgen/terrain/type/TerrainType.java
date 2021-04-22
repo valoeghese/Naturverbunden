@@ -68,5 +68,12 @@ public abstract class TerrainType {
 		return this.shapeWeight;
 	}
 
+	/**
+	 * Weight on fading out rivers. 0.0 expresses intent for terrain with rivers, whereas 1.0 expresses intent to have no rivers.
+	 */
+	public double riverFadeModifier(int x, int z) {
+		return 0.0;
+	}
+
 	public abstract double getHeight(int x, int z);
 }
