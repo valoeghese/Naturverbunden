@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "": [
+            { "model": "nvb:block/deinochococcus_covered_rock" },
+            { "model": "nvb:block/deinochococcus_covered_rock_mirrored" },
+            { "model": "nvb:block/deinochococcus_covered_rock", "y": 180 },
+            { "model": "nvb:block/deinochococcus_covered_rock_mirrored", "y": 180 }
+        ]
+    }
+}

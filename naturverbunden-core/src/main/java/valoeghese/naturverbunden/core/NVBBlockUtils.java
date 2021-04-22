@@ -30,6 +30,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.datafixer.TypeReferences;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -37,8 +40,14 @@ import net.minecraft.world.BlockView;
 import valoeghese.naturverbunden.Naturverbunden;
 
 public class NVBBlockUtils {
-	protected static <T extends Block> T register(String id, AbstractBlock.Settings settings, Function<AbstractBlock.Settings, T> blockifier) {
-		return Registry.register(Registry.BLOCK, Naturverbunden.id(id), blockifier.apply(settings));
+	protected static <T extends Block> BlockResult<T> register(String id, AbstractBlock.Settings settings, Function<AbstractBlock.Settings, T> blockifier) {
+		Identifier identifier = Naturverbunden.id(id);
+		return new BlockResult<>(identifier, Registry.register(Registry.BLOCK, identifier, blockifier.apply(settings)));
+	}
+
+	protected static <T extends Block> T registerBlockItem(BlockResult<T> base, Item.Settings settings) {
+		Registry.register(Registry.ITEM, base.id, new BlockItem(base.block, settings));
+		return base.get();
 	}
 
 	protected static <T extends BlockEntity> BlockEntityType<T> create(String id, FabricBlockEntityTypeBuilder<T> builder) {
@@ -48,5 +57,19 @@ public class NVBBlockUtils {
 
 	protected static Boolean never(BlockState state, BlockView world, BlockPos pos) {
 		return false;
+	}
+
+	public static class BlockResult<T extends Block> {
+		private BlockResult(Identifier id, T block) {
+			this.id = id;
+			this.block = block;
+		}
+
+		private final Identifier id;
+		private final T block;
+
+		public T get() {
+			return this.block;
+		}
 	}
 }
