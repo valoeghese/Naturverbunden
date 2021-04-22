@@ -62,6 +62,24 @@ public class GasBlock extends AirBlock implements BooleanFunction<StatusEffectIn
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		int level = state.get(CONCENTRATION);
 
+		// Sinking
+		if (pos.getY() > world.getBottomY()) {
+			BlockPos down = pos.down();
+			BlockState existing = world.getBlockState(down);
+
+			if (existing.isAir()) {
+				if (existing.getBlock() instanceof GasBlock) {
+					if (existing.get(CONCENTRATION) < level) {
+						world.setBlockState(down, state); // set below to this concentration
+						--level;
+						state = state.with(CONCENTRATION, level);
+						world.setBlockState(pos, state); // set this to a lower concentration
+					}
+				}
+			}
+		}
+
+		// Diffusing
 		if (--level > 0) { // If the decremented level is greater than 0.
 			// Change to the state we want to set
 			state = state.with(CONCENTRATION, level);
@@ -75,18 +93,16 @@ public class GasBlock extends AirBlock implements BooleanFunction<StatusEffectIn
 
 					if (existing.isAir()) {
 						Block existingBlock = existing.getBlock();
-						
-						boolean isThis = existingBlock == this;
-						
-						if (isThis) {
+
+						boolean isGas = existingBlock instanceof GasBlock;
+
+						if (isGas) {
 							if (existing.get(CONCENTRATION) >= level) {
 								continue;
 							}
 						}
 
-						if (!(existingBlock instanceof GasBlock) || isThis) { // if the same block or a non-gas air block.
-							world.setBlockState(pos2, state);
-						}
+						world.setBlockState(pos2, state);
 					}
 				}
 			}
