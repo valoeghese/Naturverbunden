@@ -55,10 +55,10 @@ public class CalderaRidgeModifier implements TerrainTypeModifier {
 	public TerrainType apply(TerrainType original, TerrainBiomeProvider source, int x, int z, Properties properties, Info info) {
 		double voronoi = Voronoi.sampleD1SquaredWorley(x * FREQUENCY, z * FREQUENCY, this.seed);
 
-		if (voronoi < 0.015) {
+		if (voronoi < 0.008) {
 			return this.terrainHotSprings;
-		} else if (voronoi < 0.03) {
-			voronoi = (1.0 / 0.015) * (voronoi - 0.015);
+		} else if (voronoi < 0.016) {
+			voronoi = (1.0 / 0.008) * (voronoi - 0.008);
 			final double riverFade = 1.0 - voronoi;
 
 			return new EdgeTerrainType(this.terrainHotSpringsRidge, original, voronoi, voronoi > 0.7 ? original : this.terrainHotSpringsRidge) {

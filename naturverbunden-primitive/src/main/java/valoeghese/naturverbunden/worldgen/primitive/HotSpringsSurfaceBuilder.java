@@ -37,7 +37,11 @@ public class HotSpringsSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfi
 	@Override
 	public void generate(Random random, Chunk chunk, Biome biome, int x, int z, int height, double noise, BlockState defaultBlock, BlockState defaultFluid, int seaLevel, int depth, long seed, TernarySurfaceConfig surfaceConfig) {
 		if (height < THRESHOLD_0a || height > THRESHOLD_0b) {
-			SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, HS_0_CONFIG);
+			if (noise < 1.2 && height > MODIFIED_SEA_LEVEL + 4) {
+				SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, new TernarySurfaceConfig(surfaceConfig.getTopMaterial(), PrimitiveBlocks.BROWN_STONE.getDefaultState(), PrimitiveBlocks.BROWN_STONE.getDefaultState()));
+			} else {
+				SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, HS_0_CONFIG);
+			}
 		} else if (height > THRESHOLD_3) {
 			SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, HS_3_CONFIG);
 		} else if (height > THRESHOLD_2) {
@@ -71,12 +75,12 @@ public class HotSpringsSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfi
 			PrimitiveBlocks.CAROTENOID_COVERED_ROCK.getDefaultState(),
 			PrimitiveBlocks.BROWN_STONE.getDefaultState(),
 			PrimitiveBlocks.BROWN_STONE.getDefaultState());
-	
+
 	private static final TernarySurfaceConfig HS_3_CONFIG = new TernarySurfaceConfig(
 			PrimitiveBlocks.DEINOCOCCUS_COVERED_ROCK.getDefaultState(),
 			PrimitiveBlocks.BROWN_STONE.getDefaultState(),
 			PrimitiveBlocks.BROWN_STONE.getDefaultState());
-	
+
 	private static final TernarySurfaceConfig HS_0_CONFIG = new TernarySurfaceConfig(
 			PrimitiveBlocks.BROWN_STONE.getDefaultState(),
 			PrimitiveBlocks.BROWN_STONE.getDefaultState(),
