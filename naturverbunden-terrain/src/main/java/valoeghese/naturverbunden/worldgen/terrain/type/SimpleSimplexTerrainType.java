@@ -33,7 +33,7 @@ public class SimpleSimplexTerrainType extends TerrainType {
 		super(biome, null);
 
 		this.noise = new Noise(seed, octaves);
-		this.frequency = frequency * 2;
+		this.frequency = frequency;
 		this.amplitude = amplitude;
 		this.baseHeight = baseHeight;
 	}

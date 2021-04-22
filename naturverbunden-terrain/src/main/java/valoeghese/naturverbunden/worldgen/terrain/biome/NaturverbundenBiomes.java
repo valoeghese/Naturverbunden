@@ -19,7 +19,8 @@
 
 package valoeghese.naturverbunden.worldgen.terrain.biome;
 
-public class NaturverbundenBiomes {
+@Deprecated
+public class NaturverbundenBiomes { // Will add ecotones compat instead, probably.
 	// Lots of these will be vanilla biomes
 	// But in some cases I may need to add my own
 

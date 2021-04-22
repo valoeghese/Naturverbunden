@@ -21,8 +21,12 @@ package valoeghese.naturverbunden.worldgen.primitive;
 
 import java.util.Random;
 
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.BiomeKeys;
 import valoeghese.naturverbunden.util.terrain.Noise;
+import valoeghese.naturverbunden.util.terrain.OpenSimplexGenerator;
 import valoeghese.naturverbunden.util.terrain.RidgedSimplexGenerator;
 import valoeghese.naturverbunden.util.terrain.Voronoi;
 import valoeghese.naturverbunden.worldgen.terrain.biome.TerrainBiomeProvider;
@@ -43,7 +47,7 @@ public class CalderaRidgeModifier implements TerrainTypeModifier {
 		this.terrainHotSpringsRidge = new MultiNoiseTerrainType(BiomeKeys.MOUNTAINS, 130.0)
 				.addNoise(new Noise(rand, 2, RidgedSimplexGenerator::new), MountainsTerrainType.FREQUENCY * 0.5, 25.0);
 
-		this.terrainHotSprings = new SimpleSimplexTerrainType(PrimitiveWorldgen.HOT_SPRINGS_KEY, rand, 2, 110.0, 1.0 / 100.0, 16.0);
+		this.terrainHotSprings = new HotspringsTerrainType(rand);
 	}
 	
 	private final int seed;
@@ -65,4 +69,28 @@ public class CalderaRidgeModifier implements TerrainTypeModifier {
 	}
 
 	private static final double FREQUENCY = 1 / 4200.0;
+	
+	private static class HotspringsTerrainType extends SimpleSimplexTerrainType {
+		HotspringsTerrainType(Random rand) {
+			super(PrimitiveWorldgen.HOT_SPRINGS_KEY, rand, 2, 106.0, 1.0 / 100.0, 6.0);
+			this.lakes = new OpenSimplexGenerator(rand);
+		}
+
+		private final OpenSimplexGenerator lakes;
+
+		@Override
+		public double getHeight(int x, int z) {
+			double height = super.getHeight(x, z);
+			double lakeNoise = lakes.sample(x * LAKES_FREQUENCY, z * LAKES_FREQUENCY);
+
+			if (lakeNoise > 0.3) {
+				lakeNoise = (lakeNoise - 0.3) * (1.0 / (0.866 - 0.3));
+				height -= lakeNoise * 12.0;
+			}
+
+			return height;
+		}
+
+		private static final double LAKES_FREQUENCY = 1.0 / 60.0;
+	}
 }
