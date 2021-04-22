@@ -19,6 +19,7 @@
 
 package valoeghese.naturverbunden.worldgen.terrain.biome;
 
+import java.util.List;
 import java.util.Random;
 
 import com.mojang.serialization.Codec;
@@ -30,17 +31,15 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.BiomeSource;
+import valoeghese.naturverbunden.core.ListArray;
 import valoeghese.naturverbunden.core.NVBMathUtils;
 import valoeghese.naturverbunden.util.terrain.Noise;
 import valoeghese.naturverbunden.util.terrain.cache.DoubleGridOperator;
 import valoeghese.naturverbunden.util.terrain.cache.GridOperator;
 import valoeghese.naturverbunden.util.terrain.cache.LossyCache;
 import valoeghese.naturverbunden.util.terrain.cache.LossyDoubleCache;
-import valoeghese.naturverbunden.worldgen.terrain.TerrainChunkGenerator;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 import valoeghese.naturverbunden.worldgen.terrain.layer.util.Layers;
-import valoeghese.naturverbunden.worldgen.terrain.type.MountainEdgeTerrainType;
-import valoeghese.naturverbunden.worldgen.terrain.type.RiverEdgeTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainCategory;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
@@ -95,6 +94,10 @@ public class TerrainBiomeProvider extends BiomeSource {
 	private final Climates climates;
 
 	// Terrain
+
+	public VanillaTerrainTypes getVanillaTypes() {
+		return this.terrain;
+	}
 
 	public TerrainType sampleTerrainType(int x, int z) {
 		return this.terrainTypeSampler.get(x, z);
@@ -181,28 +184,23 @@ public class TerrainBiomeProvider extends BiomeSource {
 				mountainChain -= 0.5;
 			}
 
-			TerrainType primaryTerrain = this.climates.sample(temperature, humidity).get(terrainInfo);
+			TerrainType terrain = this.climates.sample(temperature, humidity).get(terrainInfo);
 
-			if (primaryTerrain == null) {
+			if (terrain == null) {
 				throw new IllegalStateException("WTF 2 electric boogaloo. Humidity " + humidity + ", MountainChain " + mountainChain + ", InfoBits " + terrainInfo.info + " TerrainCategory " + terrainInfo.category.name());
 			}
 
-			double riverGen = this.sampleRiver(x, z);
+			Properties properties = new Properties(mountainChain, temperature, humidity);
 
-			if (riverGen > -0.145) {
-				riverGen = (1 / -0.145) * Math.min(riverGen, 0.0); // Normalise 0-1 with clamp and bias.
-				riverGen = 1.0 - riverGen;
-				riverGen *= riverGen;
-
-				primaryTerrain = new RiverEdgeTerrainType(primaryTerrain, primaryTerrain.getCategory() == Biome.Category.DESERT && riverGen > 0.5 ? BiomeKeys.RIVER : primaryTerrain.getBiome(), TerrainChunkGenerator.RIVER_HEIGHT + 6, riverGen);
+			for (List<TerrainTypeModifier> modifier_ : MODIFIER_LIST) {
+				if (modifier_ != null) {
+					for (TerrainTypeModifier modifier : modifier_) {
+						modifier.apply(terrain, this, x, z, properties, terrainInfo);
+					}
+				}
 			}
 
-			if (mountainChain > 0) {
-				// Because mountainChain edge goes from 0 to 0.5, multiply by 2.
-				return new MountainEdgeTerrainType(primaryTerrain, this.terrain.terrainMountains, mountainChain * (1.0 / 0.6), terrainInfo.isLargeHills(), (temperature < 2 && humidity < 0.0) || (temperature == 2 && humidity < -0.34));
-			} else {
-				return primaryTerrain;
-			}
+			return terrain;
 		}
 	}
 
@@ -251,8 +249,45 @@ public class TerrainBiomeProvider extends BiomeSource {
 		return new TerrainBiomeProvider(this.biomeRegistry, seed);
 	}
 
+	// Static Methods
+	public static <T extends TerrainTypeModifier> T addTerrainTypeModifier(int priority, T modifier) {
+		MODIFIER_LIST.getOrCreate(priority).add(modifier);
+		return modifier;
+	}
+
+	private static final ListArray<TerrainTypeModifier> MODIFIER_LIST = new ListArray<>(5);
+
 	// Temperature Scale
 	private static final double TEMPERATURE_CELL_SIZE = 900.0;
 	private static final double CHAIN_CUTOFF = 0.17;
 	private static final double CHAIN_NORMALISER = 1 / CHAIN_CUTOFF;
+
+	@FunctionalInterface
+	public interface TerrainTypeModifier {
+		TerrainType apply(TerrainType original, TerrainBiomeProvider source, int x, int z, Properties properties, TerrainInfoSampler.Info info);
+	}
+
+	public static class Properties {
+		public Properties(double mountainChain, int temperature, double humidity) {
+			this.mountainChain = mountainChain;
+			this.temperature = temperature;
+			this.humidity = humidity;
+		}
+
+		private double mountainChain;
+		private int temperature;
+		private double humidity;
+
+		public double getMountainChain() {
+			return this.mountainChain;
+		}
+
+		public int getTemperature() {
+			return this.temperature;
+		}
+
+		public double getHumidity() {
+			return this.humidity;
+		}
+	}
 }

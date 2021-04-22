@@ -25,7 +25,6 @@ import java.util.function.IntFunction;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.server.world.ServerWorld;
@@ -69,7 +68,7 @@ public class GasBlock extends AirBlock implements IntFunction<StatusEffectInstan
 			if (existing.isAir()) {
 				if (!(existing.getBlock() instanceof GasBlock) || existing.get(CONCENTRATION) < level) {
 					world.setBlockState(down, state); // set below to this concentration
-					ignoreLevel = level;
+					ignoreLevel = level; // concerning code
 
 					if (--level > 0) {
 						state = state.with(CONCENTRATION, level);

@@ -123,7 +123,7 @@ public class VanillaTerrainTypes {
 	}
 
 	// Special
-	final TerrainType terrainMountains;
+	public final TerrainType terrainMountains;
 	final TerrainType terrainBeach;
 	final TerrainType terrainBeachFrozen;
 	final TerrainType terrainBeachStone;

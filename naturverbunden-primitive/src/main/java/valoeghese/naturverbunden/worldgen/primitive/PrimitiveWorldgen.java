@@ -22,15 +22,20 @@ package valoeghese.naturverbunden.worldgen.primitive;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.item.Items;
+import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
+import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
+import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.placer.BlockPlacerType;
 import valoeghese.naturverbunden.block.primitive.PrimitiveBlocks;
-import valoeghese.naturverbunden.core.NVBFeatureUtils;
+import valoeghese.naturverbunden.core.NVBWorldgenUtils;
 
-public class PrimitiveWorldgen extends NVBFeatureUtils {
+public class PrimitiveWorldgen extends NVBWorldgenUtils {
 	public static final BlockPlacerType<ItemBlockPlacer> ITEM_BLOCK_PLACER = register("item_block_placer", ItemBlockPlacer.CODEC);
 
 	// Forest Ground Sticks
@@ -40,6 +45,48 @@ public class PrimitiveWorldgen extends NVBFeatureUtils {
 
 	private static final RegistryKey<ConfiguredFeature<?, ?>> K_SPARSE_GROUND_STICKS = key("sparse_ground_sticks");
 	public static final ConfiguredFeature<?, ?> SPARSE_GROUND_STICKS = createFrequentPatch(K_SPARSE_GROUND_STICKS, 2, PrimitiveBlocks.ITEM_BLOCK.getDefaultState(), new ItemBlockPlacer(Items.STICK)); 
+
+	public static final RegistryKey<Biome> HOT_SPRINGS_KEY = bkey("hot_springs");
+
+	private static final Biome HOT_SPRINGS = register(HOT_SPRINGS_KEY, new Biome.Builder()
+			.precipitation(Biome.Precipitation.NONE)
+			.category(Biome.Category.FOREST)
+			.depth(2.0f)
+			.scale(0.125f)
+			.temperature(0.6f)
+			.downfall(0.5f)
+			.effects(new BiomeEffects.Builder()
+					.waterColor(0x3F76E4)
+					.waterFogColor(0x050533)
+					.fogColor(0x12638463)
+					.skyColor(getSkyColor(0.6F))
+					.moodSound(BiomeMoodSound.CAVE)
+					.build())
+			.spawnSettings(spawnSettings(DefaultBiomeFeatures::addPlainsMobs, true))
+			.generationSettings(generationSettings(builder -> {
+				DefaultBiomeFeatures.addDefaultUndergroundStructures(builder);
+				builder.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_MOUNTAIN);
+
+				DefaultBiomeFeatures.addLandCarvers(builder);
+				DefaultBiomeFeatures.addDefaultLakes(builder);
+				DefaultBiomeFeatures.addAmethystGeodes(builder);
+				DefaultBiomeFeatures.addDungeons(builder);
+
+				DefaultBiomeFeatures.addMineables(builder);
+				DefaultBiomeFeatures.addDefaultOres(builder);
+				DefaultBiomeFeatures.addDefaultDisks(builder);
+				DefaultBiomeFeatures.addEmeraldOre(builder);
+				DefaultBiomeFeatures.addInfestedStone(builder);
+
+				DefaultBiomeFeatures.addMountainTrees(builder);
+				DefaultBiomeFeatures.addDefaultFlowers(builder);
+				DefaultBiomeFeatures.addDefaultGrass(builder);
+				DefaultBiomeFeatures.addDefaultMushrooms(builder);
+				DefaultBiomeFeatures.addDefaultVegetation(builder);
+
+				DefaultBiomeFeatures.addFrozenTopLayer(builder);
+			}))
+			.build());
 
 	public static final ConfiguredFeature<?, ?> forceRegister() {
 		return FOREST_GROUND_STICKS;
