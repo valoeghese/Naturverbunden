@@ -55,20 +55,19 @@ public class GasBlock extends AirBlock implements BooleanFunction<StatusEffectIn
 
 	@Override
 	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
-		world.getBlockTickScheduler().schedule(pos, this, 30);
+		world.getBlockTickScheduler().schedule(pos, this, 20 * 2);
 	}
 
 	@Override
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		int level = state.get(CONCENTRATION);
-		System.out.println("ticking");
 
 		if (--level > 0) { // If the decremented level is greater than 0.
 			// Change to the state we want to set
 			state = state.with(CONCENTRATION, level);
 
 			// Loop around surrounding blocks.
-			for (Direction direction : net.minecraft.util.math.Direction.values()) {
+			for (Direction direction : Direction.values()) {
 				BlockPos pos2 = pos.offset(direction); // great variable name I know
 
 				if (world.isInBuildLimit(pos2)) {
@@ -76,13 +75,23 @@ public class GasBlock extends AirBlock implements BooleanFunction<StatusEffectIn
 
 					if (existing.isAir()) {
 						Block existingBlock = existing.getBlock();
+						
+						boolean isThis = existingBlock == this;
+						
+						if (isThis) {
+							if (existing.get(CONCENTRATION) >= level) {
+								continue;
+							}
+						}
 
-						if (!(existingBlock instanceof GasBlock) || existingBlock == this) { // if the same block or a non-gas air block.
+						if (!(existingBlock instanceof GasBlock) || isThis) { // if the same block or a non-gas air block.
 							world.setBlockState(pos2, state);
 						}
 					}
 				}
 			}
+
+			world.getBlockTickScheduler().schedule(pos, this, 20 * 2);
 		}
 	}
 
