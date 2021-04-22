@@ -20,6 +20,7 @@
 package valoeghese.naturverbunden.block.primitive;
 
 import java.util.Random;
+import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -29,6 +30,7 @@ import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.IntProperty;
@@ -36,17 +38,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-public class GasBlock extends AirBlock implements BooleanFunction<StatusEffectInstance> {
-	public GasBlock(Settings settings, @Nullable Supplier<StatusEffectInstance> effectStrong, Supplier<StatusEffectInstance> effectWeak) {
+public class GasBlock extends AirBlock implements IntFunction<StatusEffectInstance> {
+	public GasBlock(Settings settings, IntFunction<StatusEffectInstance> effect) {
 		super(settings);
-		this.effectStrong = effectStrong;
-		this.effectWeak = effectWeak;
+		this.effect = effect;
 		this.setDefaultState(this.getDefaultState().with(CONCENTRATION, MAX_CONCENTRATION));
 	}
 
-	@Nullable
-	private final Supplier<StatusEffectInstance> effectStrong;
-	private final Supplier<StatusEffectInstance> effectWeak;
+	private final IntFunction<StatusEffectInstance> effect;
 
 	@Override
 	protected void appendProperties(Builder<Block, BlockState> builder) {
@@ -68,10 +67,10 @@ public class GasBlock extends AirBlock implements BooleanFunction<StatusEffectIn
 			BlockState existing = world.getBlockState(down);
 
 			if (existing.isAir()) {
-				if (existing.getBlock() instanceof GasBlock) {
-					if (existing.get(CONCENTRATION) < level) {
-						world.setBlockState(down, state); // set below to this concentration
-						--level;
+				if (!(existing.getBlock() instanceof GasBlock) || existing.get(CONCENTRATION) < level) {
+					world.setBlockState(down, state); // set below to this concentration
+
+					if (--level > 0) {
 						state = state.with(CONCENTRATION, level);
 						world.setBlockState(pos, state); // set this to a lower concentration
 					}
@@ -112,10 +111,15 @@ public class GasBlock extends AirBlock implements BooleanFunction<StatusEffectIn
 	}
 
 	@Override
-	public StatusEffectInstance apply(boolean strong) {
-		return strong ? (this.effectStrong == null ? null : this.effectStrong.get()) : this.effectWeak.get();
+	public StatusEffectInstance apply(int strength) {
+		return this.effect.apply(strength);
 	}
 
-	public static final int MAX_CONCENTRATION = 5;
+	public static final int MAX_CONCENTRATION = 16;
 	public static final IntProperty CONCENTRATION = IntProperty.of("concentration", 1, MAX_CONCENTRATION);
+
+	/**
+	 * Hax to specify death while having null = nothing.
+	 */
+	public static final StatusEffectInstance INSTANT_DEATH = new StatusEffectInstance(StatusEffects.HERO_OF_THE_VILLAGE);
 }

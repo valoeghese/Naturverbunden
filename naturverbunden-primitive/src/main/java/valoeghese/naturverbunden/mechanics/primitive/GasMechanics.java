@@ -19,11 +19,14 @@
 
 package valoeghese.naturverbunden.mechanics.primitive;
 
+import javax.annotation.Nullable;
+
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -44,13 +47,13 @@ public class GasMechanics {
 							Block block = state.getBlock();
 
 							if (block instanceof GasBlock) {
-								// Could have written this in one line but that would be messy
-								StatusEffectInstance instance = ((GasBlock) block).apply(state.get(GasBlock.CONCENTRATION) == GasBlock.MAX_CONCENTRATION);
+								@Nullable
+								StatusEffectInstance instance = ((GasBlock) block).apply(state.get(GasBlock.CONCENTRATION));
 
 								//System.out.println(state.get(GasBlock.CONCENTRATION));
-								if (instance == null) {
-									player.kill();
-								} else {
+								if (instance == GasBlock.INSTANT_DEATH) {
+									player.damage(DamageSource.WITHER, Float.MAX_VALUE);
+								} else if (instance != null) {
 									player.addStatusEffect(instance);
 								}
 							}
