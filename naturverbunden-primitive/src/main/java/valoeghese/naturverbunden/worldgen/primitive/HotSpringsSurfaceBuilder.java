@@ -39,9 +39,9 @@ public class HotSpringsSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfi
 		if (height < THRESHOLD_0a || height > THRESHOLD_0b) {
 			SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, HS_0_CONFIG);
 		} else if (height > THRESHOLD_3) {
-			SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, HS_2_CONFIG);
-		} else if (height > THRESHOLD_2) {
 			SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, HS_3_CONFIG);
+		} else if (height > THRESHOLD_2) {
+			SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, HS_2_CONFIG);
 		} else {
 			SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, HS_1_CONFIG);
 		}
