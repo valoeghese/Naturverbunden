@@ -47,6 +47,7 @@ public class GasMechanics {
 								// Could have written this in one line but that would be messy
 								StatusEffectInstance instance = ((GasBlock) block).apply(state.get(GasBlock.CONCENTRATION) == GasBlock.MAX_CONCENTRATION);
 
+								//System.out.println(state.get(GasBlock.CONCENTRATION));
 								if (instance == null) {
 									player.kill();
 								} else {

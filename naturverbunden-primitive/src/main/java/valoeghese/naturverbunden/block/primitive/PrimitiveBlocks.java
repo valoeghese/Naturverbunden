@@ -46,7 +46,7 @@ public class PrimitiveBlocks extends NVBBlockUtils {
 			.blockVision(NVBBlockUtils::never)
 			.sounds(BlockSoundGroup.STONE), ItemBlock::new);
 
-	public static final Block HYDROGEN_SULFIDE = register("hydrogen_sulfide", createGasSettings(), settings -> new GasBlock(settings, null, () -> new StatusEffectInstance(StatusEffects.NAUSEA, 20 * 4)));
+	public static final Block HYDROGEN_SULFIDE = register("hydrogen_sulfide", createGasSettings(), settings -> new GasBlock(settings, null, () -> new StatusEffectInstance(StatusEffects.NAUSEA, 20 * 4, 0, false, false)));
 
 	public static final BlockEntityType<ItemBlockEntity> ITEM_BLOCK_ENTITY = create("item_block", FabricBlockEntityTypeBuilder.create(ItemBlockEntity::new, ITEM_BLOCK));
 

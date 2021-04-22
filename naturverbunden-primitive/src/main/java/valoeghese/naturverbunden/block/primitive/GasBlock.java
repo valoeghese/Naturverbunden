@@ -55,7 +55,7 @@ public class GasBlock extends AirBlock implements BooleanFunction<StatusEffectIn
 
 	@Override
 	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
-		world.getBlockTickScheduler().schedule(pos, this, 20 * 2);
+		world.getBlockTickScheduler().schedule(pos, this, 20 * 3);
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class GasBlock extends AirBlock implements BooleanFunction<StatusEffectIn
 				}
 			}
 
-			world.getBlockTickScheduler().schedule(pos, this, 20 * 2);
+			world.getBlockTickScheduler().schedule(pos, this, 20 * 3);
 		}
 	}
 
