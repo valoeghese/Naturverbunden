@@ -19,18 +19,29 @@
 
 package valoeghese.naturverbunden.worldgen.terrain.type;
 
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
+public class EdgeTerrainType extends ParentedTerrainType {
+	/**
+	 * @param bias how much the terrain is biased towards terrainB over terrainA.
+	 */
+	public EdgeTerrainType(TerrainType terrainA, TerrainType terrainB, double bias, TerrainType parent) {
+		super(parent);
 
-/**
- * Represents a mixed mountain edge sample at a position.
- */
-public class MountainEdgeTerrainType extends EdgeTerrainType {
-	public MountainEdgeTerrainType(TerrainType mix, TerrainType mountains, double mountainousness, boolean hills, boolean useHotMountainEdges) {
-		super(mix, mountains, mountainousness, mountainousness > 0.3 ? (useHotMountainEdges ? DUMMY_SHATTERED_SAVANNAH_PLATEAU : (hills ? DUMMY_WOODED_MOUNTAINS : mountains)) : mix);
+		this.terrainA = terrainA;
+		this.terrainB = terrainB;
+		this.bias = bias;
 	}
 
-	private static final TerrainType DUMMY_WOODED_MOUNTAINS = new FlatTerrainType(BiomeKeys.WOODED_MOUNTAINS, 0, Biome.Category.EXTREME_HILLS);
-	private static final TerrainType DUMMY_SHATTERED_SAVANNAH_PLATEAU = new FlatTerrainType(BiomeKeys.SHATTERED_SAVANNA_PLATEAU, 0, Biome.Category.EXTREME_HILLS);
+	private final double bias;
+	private final TerrainType terrainA, terrainB;
+
+	@Override
+	public double getHeight(int x, int z) {
+		return this.bias * this.terrainB.getHeight(x, z) + (1.0 - this.bias) * this.terrainA.getHeight(x, z);
+	}
 }
 
+abstract class ParentedTerrainType extends TerrainType {
+	protected ParentedTerrainType(TerrainType parent) {
+		super(parent.getBiome(), parent.getCategory());
+	}
+}

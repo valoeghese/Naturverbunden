@@ -22,6 +22,7 @@ package valoeghese.naturverbunden.core;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class ListArray<T> implements Iterable<List<T>> {
@@ -34,9 +35,29 @@ public class ListArray<T> implements Iterable<List<T>> {
 	public List<T> get(int index) {
 		return this.arr[index];
 	}
-	
+
 	public List<T> getOrCreate(int index) {
 		return NVBContainerUtils.computeIfAbsent(this.arr, index, $ -> new ArrayList<>());
+	}
+
+	public <E> ListArray<E> map(Function<T, E> mappingFunction) {
+		ListArray<E> result = new ListArray<>(this.arr.length);
+
+		for (int i = 0; i < 5; ++i) {
+			List<T> list = this.arr[i];
+
+			if (list != null) {
+				List<E> next = new ArrayList<>();
+
+				for (T t : list) {
+					next.add(mappingFunction.apply(t));
+				}
+
+				result.arr[i] = next;
+			}
+		}
+
+		return result;
 	}
 
 	@Override

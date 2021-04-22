@@ -21,6 +21,7 @@ package valoeghese.naturverbunden.worldgen.terrain.biome;
 
 import java.util.List;
 import java.util.Random;
+import java.util.function.LongFunction;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -74,8 +75,9 @@ public class TerrainBiomeProvider extends BiomeSource {
 		gr.setSeed(seed + 2);
 		RiverSampler rivers = new RiverSampler(gr);
 		this.rawMountains = new LossyDoubleCache(512, this::getChainSample);
-
 		this.rivers = new LossyDoubleCache(512, rivers::sample);
+
+		this.modifiers = MODIFIER_LIST.map(fn -> fn.apply(seed));
 	}
 
 	private final long seed;
@@ -92,6 +94,8 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	private final VanillaTerrainTypes terrain;
 	private final Climates climates;
+
+	private final ListArray<TerrainTypeModifier> modifiers;
 
 	// Terrain
 
@@ -192,7 +196,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 			Properties properties = new Properties(mountainChain, temperature, humidity);
 
-			for (List<TerrainTypeModifier> modifier_ : MODIFIER_LIST) {
+			for (List<TerrainTypeModifier> modifier_ : this.modifiers) {
 				if (modifier_ != null) {
 					for (TerrainTypeModifier modifier : modifier_) {
 						modifier.apply(terrain, this, x, z, properties, terrainInfo);
@@ -250,12 +254,17 @@ public class TerrainBiomeProvider extends BiomeSource {
 	}
 
 	// Static Methods
-	public static <T extends TerrainTypeModifier> T addTerrainTypeModifier(int priority, T modifier) {
+
+	/**
+	 * Adds a terrain type modifier to the terrain.
+	 * @param priority how relatively late to run the modifier. Higher -> Later.
+	 * @param modifier the terrain modifier to add.
+	 */
+	public static void addTerrainTypeModifier(int priority, LongFunction<TerrainTypeModifier> modifier) {
 		MODIFIER_LIST.getOrCreate(priority).add(modifier);
-		return modifier;
 	}
 
-	private static final ListArray<TerrainTypeModifier> MODIFIER_LIST = new ListArray<>(5);
+	private static final ListArray<LongFunction<TerrainTypeModifier>> MODIFIER_LIST = new ListArray<>(5);
 
 	// Temperature Scale
 	private static final double TEMPERATURE_CELL_SIZE = 900.0;

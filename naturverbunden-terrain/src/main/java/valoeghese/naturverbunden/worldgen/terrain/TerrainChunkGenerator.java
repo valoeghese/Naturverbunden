@@ -62,7 +62,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		super(biomeSource, biomeSource, settings.get().getStructuresConfig(), seed);
 
 		this.seed = seed;
-		this.voronoiSeed = (int) (seed & 0xFFFFFFFF);
+		this.voronoiSeed = Voronoi.seedFromLong(seed);
 		this.settings = settings.get();
 		this.surfaceDepthNoise = new OctaveSimplexNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
 

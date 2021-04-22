@@ -40,7 +40,7 @@ public class TerrainModule implements ModInitializer {
 		Registry.register(Registry.BIOME_SOURCE, Naturverbunden.id("overworld"), TerrainBiomeProvider.CODEC);
 
 		// River Edge
-		TerrainBiomeProvider.addTerrainTypeModifier(2, (original, source, x, z, properties, info) -> {
+		TerrainBiomeProvider.addTerrainTypeModifier(1, seed -> (original, source, x, z, properties, info) -> {
 			double riverGen = source.sampleRiver(x, z);
 
 			if (riverGen > -0.145) {
@@ -54,7 +54,8 @@ public class TerrainModule implements ModInitializer {
 			return original;
 		});
 
-		TerrainBiomeProvider.addTerrainTypeModifier(4, (original, source, x, z, properties, info) -> {
+		// Mountain Edge
+		TerrainBiomeProvider.addTerrainTypeModifier(4, seed -> (original, source, x, z, properties, info) -> {
 			double mountainChain = properties.getMountainChain();
 
 			if (mountainChain > 0) {

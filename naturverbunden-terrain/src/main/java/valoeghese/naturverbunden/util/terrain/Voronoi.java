@@ -31,6 +31,10 @@ public final class Voronoi {
 		return new Vec2d(vx, vy);
 	}
 
+	public static int seedFromLong(long seed) {
+		return (int) (seed & 0xFFFFFFFF);
+	}
+
 	public static Vec2d sampleEvenVoronoi(double x, double y, int seed) {
 		final int baseX = MathHelper.floor(x);
 		final int baseY = MathHelper.floor(y);
@@ -101,7 +105,6 @@ public final class Voronoi {
 			for (int yo = -1; yo <= 1; ++yo) {
 				int gridY = baseY + yo;
 
-				// ensure more evenly distributed
 				double vx = gridX + randomdouble(gridX, gridY, seed);
 				double vy = gridY + randomdouble(gridX, gridY, seed + 1);
 				double vdist = squaredDist(x, y, vx, vy);
@@ -116,6 +119,35 @@ public final class Voronoi {
 		}
 
 		return rdist2 - rdist;
+	}
+
+	//public static void main(String[] args) {
+	//	System.out.println(sampleD1D2Worley(0, 1, 5));
+	//}
+
+	public static double sampleD1Worley(double x, double y, int seed) {
+		final int baseX = MathHelper.floor(x);
+		final int baseY = MathHelper.floor(y);
+		double dist = 1000;
+
+		for (int xo = -1; xo <= 1; ++xo) {
+			int gridX = baseX + xo;
+
+			for (int yo = -1; yo <= 1; ++yo) {
+				int gridY = baseY + yo;
+
+				// ensure more evenly distributed
+				double vx = gridX + randomdouble(gridX, gridY, seed);
+				double vy = gridY + randomdouble(gridX, gridY, seed + 1);
+				double vdist = squaredDist(x, y, vx, vy);
+
+				if (vdist < dist) {
+					dist = vdist;
+				}
+			}
+		}
+
+		return dist;
 	}
 
 	public static Vec2d sampleManhattanVoronoi(double x, double y, int seed) {

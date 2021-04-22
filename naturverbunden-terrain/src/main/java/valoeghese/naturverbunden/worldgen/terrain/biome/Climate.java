@@ -20,10 +20,8 @@
 package valoeghese.naturverbunden.worldgen.terrain.biome;
 
 import java.util.Arrays;
-import java.util.Random;
 
 import valoeghese.naturverbunden.core.NVBMathUtils;
-import valoeghese.naturverbunden.util.terrain.Noise;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 

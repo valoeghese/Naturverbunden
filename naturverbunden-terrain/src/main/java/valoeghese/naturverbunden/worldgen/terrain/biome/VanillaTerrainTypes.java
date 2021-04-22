@@ -72,22 +72,22 @@ public class VanillaTerrainTypes {
 		this.oceanFrozen = new OceanEntry(BiomeKeys.FROZEN_OCEAN, BiomeKeys.DEEP_FROZEN_OCEAN, oceanRand);
 
 		this.terrainPlains = new MultiNoiseTerrainType(BiomeKeys.PLAINS, 76.0)
-				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 450.0, 15.0, 8.0)
-				.addNoise(new Noise(seed, 1), 1.0 / 90.0, 12.5, 3.0, -0.2);
+				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 225.0, 15.0, 8.0)
+				.addNoise(new Noise(seed, 1), 1.0 / 45.0, 12.5, 3.0, -0.2);
 
 		this.terrainRollingHills = new MultiNoiseTerrainType(BiomeKeys.PLAINS, 76.0)
-				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 290.0, 30.0, 12.0)
-				.addNoise(new Noise(seed, 2), 1.0 / 90.0, 25.0, 8.0);
+				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 145.0, 30.0, 12.0)
+				.addNoise(new Noise(seed, 2), 1.0 / 45.0, 25.0, 8.0);
 
 		this.terrainSavannah = new MultiNoiseTerrainType(BiomeKeys.SAVANNA, 77.0)
-				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 520.0, 22.0)
-				.addNoise(new Noise(seed, 1), 1.0 / 90.0, 6.0);
+				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 260.0, 22.0)
+				.addNoise(new Noise(seed, 1), 1.0 / 45.0, 6.0);
 
 		this.terrainSavannahPlateau = new SimpleSimplexTerrainType(BiomeKeys.SAVANNA_PLATEAU, seed, 2, 118.0, 1.0 / 82.0, 9.0);
 
 		this.terrainSavannahHills = new MultiNoiseTerrainType(BiomeKeys.SAVANNA, 84.0)
-				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 240.0, 22.0)
-				.addNoise(new Noise(seed, 1), 1.0 / 90.0, 12.0);
+				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 120.0, 22.0)
+				.addNoise(new Noise(seed, 1), 1.0 / 45.0, 12.0);
 
 		this.terrainSavannahTerrace = new TerracedTerrainType(BiomeKeys.SHATTERED_SAVANNA, seed, 4, 1.0 / 270.0, 72.0, 12.0, new Noise(seed, 2));
 
@@ -100,9 +100,9 @@ public class VanillaTerrainTypes {
 		this.terrainTaigaSnowy = createTaiga(BiomeKeys.SNOWY_TAIGA, seed);
 
 		this.terrainTropicalDesert = new MultiNoiseTerrainType(BiomeKeys.DESERT, 78.0)
-				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 410.0, 30.0, 12.0)
-				.addNoise(new Noise(seed, 2), 1.0 / 60.0, 2.5)
-				.addNoise(new Noise(seed, 1), 1.0 / 150.0, 22.0, 0.0, -0.4); // idk might remove this last one
+				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 205.0, 30.0, 12.0)
+				.addNoise(new Noise(seed, 2), 1.0 / 30.0, 2.5)
+				.addNoise(new Noise(seed, 1), 1.0 / 75.0, 22.0, 0.0, -0.4); // idk might remove this last one
 
 		this.terrainSnowyTundra.largeHills = this.terrainTaigaSnowy;
 		this.terrainSnowyTundra.smallHills = this.terrainSnowPlateau;
@@ -181,8 +181,8 @@ public class VanillaTerrainTypes {
 
 	private static TerrainType createTaiga(RegistryKey<Biome> biome, Random seed) {
 		return new MultiNoiseTerrainType(biome, 76.0)
-				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 390.0, 30.0, 12.0)
-				.addNoise(new Noise(seed, 2), 1.0 / 120.0, 25.0, 8.0);
+				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 195.0, 30.0, 12.0)
+				.addNoise(new Noise(seed, 2), 1.0 / 60.0, 25.0, 8.0);
 	}
 
 	public static class OceanEntry {

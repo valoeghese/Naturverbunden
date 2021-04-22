@@ -68,7 +68,7 @@ public class MultiNoiseTerrainType extends TerrainType {
 	private static class ConfiguredNoise {
 		public ConfiguredNoise(Noise noise, double frequency, double amplitude) {
 			this.noise = noise;
-			this.frequency = frequency * 2;
+			this.frequency = frequency;
 			this.amplitude = amplitude;
 		}
 

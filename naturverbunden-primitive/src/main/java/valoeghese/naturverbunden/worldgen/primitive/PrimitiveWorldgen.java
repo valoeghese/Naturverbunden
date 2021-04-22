@@ -34,6 +34,7 @@ import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.placer.BlockPlacerType;
 import valoeghese.naturverbunden.block.primitive.PrimitiveBlocks;
 import valoeghese.naturverbunden.core.NVBWorldgenUtils;
+import valoeghese.naturverbunden.worldgen.terrain.biome.TerrainBiomeProvider;
 
 public class PrimitiveWorldgen extends NVBWorldgenUtils {
 	public static final BlockPlacerType<ItemBlockPlacer> ITEM_BLOCK_PLACER = register("item_block_placer", ItemBlockPlacer.CODEC);
@@ -96,5 +97,8 @@ public class PrimitiveWorldgen extends NVBWorldgenUtils {
 	public static void initialiseWorldGen() {
 		BiomeModifications.addFeature(BiomeSelectors.categories(Category.FOREST, Category.JUNGLE, Category.TAIGA), GenerationStep.Feature.VEGETAL_DECORATION, K_FOREST_GROUND_STICKS);
 		BiomeModifications.addFeature(BiomeSelectors.categories(Category.EXTREME_HILLS, Category.PLAINS, Category.SWAMP, Category.RIVER, Category.SAVANNA), GenerationStep.Feature.VEGETAL_DECORATION, K_SPARSE_GROUND_STICKS);
+
+		// Caldera Ridge Modifier
+		TerrainBiomeProvider.addTerrainTypeModifier(3, CaleraRidgeModifier::new);
 	}
 }
