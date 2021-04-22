@@ -21,9 +21,6 @@ package valoeghese.naturverbunden.worldgen.primitive;
 
 import java.util.Random;
 
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.BiomeKeys;
 import valoeghese.naturverbunden.util.terrain.Noise;
 import valoeghese.naturverbunden.util.terrain.OpenSimplexGenerator;

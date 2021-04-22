@@ -199,7 +199,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 			for (List<TerrainTypeModifier> modifier_ : this.modifiers) {
 				if (modifier_ != null) {
 					for (TerrainTypeModifier modifier : modifier_) {
-						modifier.apply(terrain, this, x, z, properties, terrainInfo);
+						terrain = modifier.apply(terrain, this, x, z, properties, terrainInfo);
 					}
 				}
 			}
@@ -233,7 +233,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 		double rivers = this.sampleRiver(biomeX << 2, biomeZ << 2);
 		Biome.Category category = type.getCategory();
 
-		if (category != Biome.Category.EXTREME_HILLS && category != Biome.Category.OCEAN && category != Biome.Category.RIVER && category != Biome.Category.JUNGLE && rivers > 0.7) {
+		if (category != Biome.Category.EXTREME_HILLS && category != Biome.Category.OCEAN && category != Biome.Category.RIVER && category != Biome.Category.JUNGLE && rivers > (category == Biome.Category.FOREST ? 0.72 : 0.7)) {
 			// TODO put river type as a parameter of the gen type
 			return this.biomeRegistry.get(type.getCategory() == Biome.Category.ICY ? BiomeKeys.FROZEN_RIVER : BiomeKeys.RIVER);
 		}
