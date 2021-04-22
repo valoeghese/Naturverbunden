@@ -42,5 +42,5 @@ public class MountainsTerrainType extends TerrainType {
 		return 200.0 + this.mountainChainNoise.sample(x * FREQUENCY, z * FREQUENCY) * 50.0;
 	}
 
-	private static final double FREQUENCY = 1.0 / 150.0;
+	public static final double FREQUENCY = 1.0 / 150.0;
 }

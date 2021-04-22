@@ -19,25 +19,49 @@
 
 package valoeghese.naturverbunden.worldgen.primitive;
 
+import java.util.Random;
+
+import net.minecraft.world.biome.BiomeKeys;
+import valoeghese.naturverbunden.util.terrain.Noise;
+import valoeghese.naturverbunden.util.terrain.RidgedSimplexGenerator;
 import valoeghese.naturverbunden.util.terrain.Voronoi;
 import valoeghese.naturverbunden.worldgen.terrain.biome.TerrainBiomeProvider;
 import valoeghese.naturverbunden.worldgen.terrain.biome.TerrainBiomeProvider.Properties;
 import valoeghese.naturverbunden.worldgen.terrain.biome.TerrainBiomeProvider.TerrainTypeModifier;
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler.Info;
+import valoeghese.naturverbunden.worldgen.terrain.type.EdgeTerrainType;
+import valoeghese.naturverbunden.worldgen.terrain.type.MountainsTerrainType;
+import valoeghese.naturverbunden.worldgen.terrain.type.MultiNoiseTerrainType;
+import valoeghese.naturverbunden.worldgen.terrain.type.SimpleSimplexTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
 public class CalderaRidgeModifier implements TerrainTypeModifier {
 	CalderaRidgeModifier(long seed) {
 		this.seed = Voronoi.seedFromLong(seed - 10);
-//		this.terrainHotSprings 
+
+		Random rand = new Random(seed);
+		this.terrainHotSpringsRidge = new MultiNoiseTerrainType(BiomeKeys.MOUNTAINS, 130.0)
+				.addNoise(new Noise(rand, 2, RidgedSimplexGenerator::new), MountainsTerrainType.FREQUENCY * 0.5, 25.0);
+
+		this.terrainHotSprings = new SimpleSimplexTerrainType(PrimitiveWorldgen.HOT_SPRINGS_KEY, rand, 2, 110.0, 1.0 / 100.0, 16.0);
 	}
 	
 	private final int seed;
+	private final TerrainType terrainHotSpringsRidge;
 	private final TerrainType terrainHotSprings;
 
 	@Override
 	public TerrainType apply(TerrainType original, TerrainBiomeProvider source, int x, int z, Properties properties, Info info) {
 		double voronoi = Voronoi.sampleD1Worley(x * FREQUENCY, z * FREQUENCY, this.seed);
+
+		if (voronoi < 0.1) {
+			return this.terrainHotSprings;
+		} else if (voronoi < 0.15) {
+			voronoi = (1.0 / 0.05) * (voronoi - 0.1);
+			return new EdgeTerrainType(this.terrainHotSpringsRidge, original, voronoi, voronoi > 0.8 ? original : this.terrainHotSpringsRidge);
+		} else {
+			return original;
+		}
 	}
 
 	private static final double FREQUENCY = 1 / 4200.0;
