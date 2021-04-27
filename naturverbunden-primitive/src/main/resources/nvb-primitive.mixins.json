@@ -6,6 +6,7 @@
     "MixinItem",
     "MixinPlayerEntity",
     "gastick.MixinChunkSerializer",
+    "gastick.MixinFireBlock",
     "gastick.MixinProtoChunk",
     "gastick.MixinReadOnlyChunk",
     "gastick.MixinServerWorld"

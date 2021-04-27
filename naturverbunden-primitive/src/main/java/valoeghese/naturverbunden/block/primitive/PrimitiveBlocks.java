@@ -60,7 +60,14 @@ public class PrimitiveBlocks extends NVBBlockUtils {
 			.sounds(BlockSoundGroup.STONE), ItemBlock::new).get();
 
 	// Gases
-	public static final Block HYDROGEN_SULFIDE = register("hydrogen_sulfide", createGasSettings(), settings -> new GasBlock(settings, c -> c >= GasBlock.MAX_CONCENTRATION - 1 ? GasBlock.INSTANT_DEATH : new StatusEffectInstance(StatusEffects.NAUSEA, 20 * 4, 0, false, false))).get();
+	public static final Block HYDROGEN_SULFIDE = register("hydrogen_sulfide", createGasSettings(), settings -> new GasBlock(settings, false, c -> {
+		if (c >= GasBlock.MAX_CONCENTRATION - 1) {
+			return GasBlock.INSTANT_DEATH;
+		} else {
+			// TODO allow effect stacking
+			return new StatusEffectInstance(c > 2*GasBlock.MAX_CONCENTRATION/3 ? StatusEffects.BLINDNESS : StatusEffects.NAUSEA, 20 * 4, 0, false, false);
+		}
+	})).get();
 
 	// Stones
 	public static final Block BROWN_STONE = registerBlockItem(

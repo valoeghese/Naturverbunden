@@ -17,30 +17,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden.worldgen.terrain.type;
+package valoeghese.naturverbunden.block.primitive;
 
-import java.util.Random;
+import java.util.function.IntFunction;
 
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
-import valoeghese.naturverbunden.util.terrain.Noise;
-import valoeghese.naturverbunden.util.terrain.RidgedSimplexGenerator;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.minecraft.entity.effect.StatusEffectInstance;
 
-/**
- * Represents mountain terrain.
- */
-public class MountainsTerrainType extends TerrainType {
-	public MountainsTerrainType(Random seed) {
-		super(BiomeKeys.MOUNTAINS, Biome.Category.EXTREME_HILLS);
-		this.mountainChainNoise = new Noise(seed, 3, RidgedSimplexGenerator::new);
+public class CombustibleGasBlock extends GasBlock {
+	public CombustibleGasBlock(Settings settings, boolean rises, IntFunction<StatusEffectInstance> effect) {
+		super(settings, rises, effect);
+		FlammableBlockRegistry.getDefaultInstance().add(this, new FlammableBlockRegistry.Entry(2, 1));
 	}
 
-	private final Noise mountainChainNoise;
-
-	@Override
-	public double getHeight(int x, int z) {
-		return 200.0 + this.mountainChainNoise.sample(x * FREQUENCY, z * FREQUENCY) * 50.0;
-	}
-
-	public static final double FREQUENCY = 1.0 / 150.0;
 }

@@ -23,9 +23,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.LongFunction;
 
+import javax.annotation.Nullable;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
@@ -78,6 +81,10 @@ public class TerrainBiomeProvider extends BiomeSource {
 		this.rivers = new LossyDoubleCache(512, rivers::sample);
 
 		this.modifiers = MODIFIER_LIST.map(fn -> fn.apply(seed));
+
+		if (FabricLoader.getInstance().isDevelopmentEnvironment() && DEBUG_SHAPE) {
+			this.debug = new DebugTerrainTypes(gr);
+		}
 	}
 
 	private final long seed;
@@ -96,6 +103,9 @@ public class TerrainBiomeProvider extends BiomeSource {
 	private final Climates climates;
 
 	private final ListArray<TerrainTypeModifier> modifiers;
+
+	@Nullable
+	private DebugTerrainTypes debug;
 
 	// Terrain
 
@@ -134,9 +144,13 @@ public class TerrainBiomeProvider extends BiomeSource {
 	}
 
 	/**
-	 * Handles all terrain types except river edge and river terrain.
+	 * Handles all terrain types except rivers.
 	 */
 	private TerrainType getTerrainType(int x, int z) {
+		if (this.debug != null) { // Edit this for debugging terrain shapes
+			return this.debug.fcliffs5_0;
+		}
+
 		// Don't touch mountains here without mirroring your changes in the river sampler
 		final double humidityFrequency = 1.0 / 1069.0;
 
@@ -229,7 +243,12 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	@Override
 	public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+		if (DEBUG_SHAPE) {
+			return this.biomeRegistry.get(BiomeKeys.PLAINS);
+		}
+
 		TerrainType type = this.sampleTerrainType(biomeX << 2, biomeZ << 2);
+		
 		double rivers = this.sampleRiver(biomeX << 2, biomeZ << 2);
 		Biome.Category category = type.getCategory();
 
@@ -270,6 +289,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 	private static final double TEMPERATURE_CELL_SIZE = 900.0;
 	private static final double CHAIN_CUTOFF = 0.17;
 	private static final double CHAIN_NORMALISER = 1 / CHAIN_CUTOFF;
+	public static final boolean DEBUG_SHAPE = true;
 
 	@FunctionalInterface
 	public interface TerrainTypeModifier {

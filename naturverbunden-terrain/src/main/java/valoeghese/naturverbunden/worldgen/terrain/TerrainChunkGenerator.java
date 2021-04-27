@@ -259,6 +259,16 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 
 		// Complete the average
 		height = height / totalWeight;
+		// I don't know why, but with flat integer double terrain the blending algorithm loves to be
+		// slightly below the value and round down to the int BELOW what we want
+		// This hack fixes it
+		// Do not remove this
+		height += 0.00001;
+
+		if (TerrainBiomeProvider.DEBUG_SHAPE) { // debug
+			return (int) height;
+		}
+
 		riverFadeModifier = riverFadeModifier / totalWeight;
 
 		double riverGen = ((TerrainBiomeProvider) this.biomeSource).sampleRiver(x, z);

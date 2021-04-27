@@ -26,6 +26,7 @@ import net.minecraft.world.biome.Biome;
 import valoeghese.naturverbunden.util.terrain.Noise;
 import valoeghese.naturverbunden.util.terrain.OpenSimplexGenerator;
 
+// TODO move to primary terrain type methods
 public class TerracedTerrainType extends TerrainType {
 	public TerracedTerrainType(RegistryKey<Biome> biome, Random seed, int layers, double frequency, double baseHeight, double separation, Noise additional) {
 		super(biome, null);

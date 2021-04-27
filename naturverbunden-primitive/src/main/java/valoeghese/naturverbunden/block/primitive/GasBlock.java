@@ -25,6 +25,7 @@ import java.util.function.IntFunction;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.server.world.ServerWorld;
@@ -34,13 +35,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+// Perhaps stop scheduling tick when fully stable and then wait for neighbouring block updates to start scheduling ticks again
 public class GasBlock extends AirBlock implements IntFunction<StatusEffectInstance> {
-	public GasBlock(Settings settings, IntFunction<StatusEffectInstance> effect) {
+	public GasBlock(Settings settings, boolean rises, IntFunction<StatusEffectInstance> effect) {
 		super(settings);
 		this.effect = effect;
+		this.sinkDirection = rises ? Direction.UP : Direction.DOWN;
 		this.setDefaultState(this.getDefaultState().with(CONCENTRATION, MAX_CONCENTRATION));
 	}
 
+	private final Direction sinkDirection;
 	private final IntFunction<StatusEffectInstance> effect;
 
 	@Override
@@ -62,18 +66,15 @@ public class GasBlock extends AirBlock implements IntFunction<StatusEffectInstan
 
 		// Sinking
 		if (pos.getY() > world.getBottomY()) {
-			BlockPos down = pos.down();
-			BlockState existing = world.getBlockState(down);
+			BlockPos sinkPos = pos.offset(this.sinkDirection);
+			BlockState existing = world.getBlockState(sinkPos);
 
 			if (existing.isAir()) {
 				if (!(existing.getBlock() instanceof GasBlock) || existing.get(CONCENTRATION) < level) {
-					world.setBlockState(down, state); // set below to this concentration
-					ignoreLevel = level; // concerning code
-
-					if (--level > 0) {
-						state = state.with(CONCENTRATION, level);
-						world.setBlockState(pos, state); // set this to a lower concentration
-					}
+					world.setBlockState(sinkPos, state); // set sinking position to this concentration
+					world.setBlockState(pos, Blocks.AIR.getDefaultState()); // set this to air
+					world.getBlockTickScheduler().schedule(pos, this, 50);
+					return; // don't diffuse
 				}
 			}
 		}
@@ -100,10 +101,18 @@ public class GasBlock extends AirBlock implements IntFunction<StatusEffectInstan
 
 						boolean isGas = existingBlock instanceof GasBlock;
 
+						// If too high a concentration to overtake
 						if (isGas) {
 							if (existing.get(CONCENTRATION) >= ignoreLevel) {
 								continue;
 							}
+						}
+
+						// If already belongs to a sinking gas block of type: this
+						BlockPos posUp = pos2.offset(this.sinkDirection.getOpposite());
+
+						if (direction != this.sinkDirection && world.isInBuildLimit(posUp) && world.getBlockState(posUp).getBlock() == this) {
+							continue;
 						}
 
 						world.setBlockState(pos2, state);

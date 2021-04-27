@@ -23,7 +23,7 @@ public final class Climates {
 	public Climates(VanillaTerrainTypes types) {
 		// Lower values = higher temperature, lower humidity
 		// Sorted temperature * 5 + humidity
-		TROPICAL_RAINFOREST = new Climate(types.terrainJungle, types.terrainJungleMtns, types.terrainJungleWithHills, types.terrainJungleWithBamboo); // tropical rainforest
+		/*TROPICAL_RAINFOREST = new Climate(types.terrainJungle, types.terrainJungleMtns, types.terrainJungleWithHills, types.terrainJungleWithBamboo); // tropical rainforest
 		TROPICAL_MONSOON = new Climate(types.terrainJungleEdge); // tropical monsoon. think: florida. I'd add bayou to this but the grass colour doesn't blend nice
 		TROPICAL_WET_AND_DRY = new Climate(types.terrainSavannah, types.terrainSavannah, types.terrainSavannahHills, types.terrainSavannahTerrace); // Savannahs
 
@@ -52,11 +52,12 @@ public final class Climates {
 				COLD_DESERT, COLD_SEMI_ARID, HOT_SUMMER_CONTINENTAL, OCEANIC, HUMID_CONTINENTAL,
 				SUBARCTIC_DRY, SUBARCTIC_DRY, HEMIBOREAL, SUBARCTIC_HUMID, SUBARCTIC_HUMID,
 				ARCTIC_ICE_CAP, ARCTIC_ICE_CAP, ARCTIC_TUNDRA, ARCTIC_TUNDRA, ARCTIC_TUNDRA
-			};
+			};*/
+		CLIMATES = null;
 	}
 	
 	// Equatorial
-	public final Climate TROPICAL_WET_AND_DRY; // As, Aw
+	/*public final Climate TROPICAL_WET_AND_DRY; // As, Aw
 	public final Climate TROPICAL_MONSOON; // Am
 	public final Climate TROPICAL_RAINFOREST; // Af
 	
@@ -81,7 +82,7 @@ public final class Climates {
 	// Polar
 	public final Climate ARCTIC_ICE_CAP; // EF
 	public final Climate ARCTIC_TUNDRA; // ET
-
+*/
 	private final Climate[] CLIMATES;
 
 	public Climate sample(int temperature, double humidityRaw) {
