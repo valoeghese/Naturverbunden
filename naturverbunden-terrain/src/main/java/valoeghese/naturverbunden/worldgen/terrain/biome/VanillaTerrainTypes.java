@@ -203,8 +203,15 @@ public class VanillaTerrainTypes {
 		return oceans[temperature];
 	}
 
+	// TODO test each shape function individually in a debug client-side world type of only grass/dirt/stone.
+	// This way I can create individual shapes
+	// TODO make these functions registered as lambdas so they can be applied from configs and specified therefrom
+	// TODO more fucking datagen or scripting. I'd do scripting but is it worth depending on graal?
+	// TODO make the terrain types I want to keep moved to such functions
+	// TODO the mountain refactors I figured out over the last few days
+
 	/**
-	 * Add hills with a period of 70 blocks and height variation of +/- 12 (overall 24 blocks).
+	 * Add hills with a period of 70 blocks and height amplitude of +/- 12 (overall variation: 24 blocks).
 	 * @param type the type of terrain.
 	 * @param detail the level of detail, i.e. number of octaves.
 	 */
@@ -212,11 +219,16 @@ public class VanillaTerrainTypes {
 		INoise noise = detail == 1 ? new Noise(type.getRandom(), detail) : new OpenSimplexGenerator(type.getRandom());
 		final double freq = 1.0 / 70.0;
 		final double ampl = 12.0;
+		// relative grad: 0.2
 		type.addGenerator((x, z) -> ampl * noise.sample(x * freq, z * freq));
 	}
 
 	private static void addSmallHills(PrimaryTerrainType type) {
-		
+		OpenSimplexGenerator generator = new OpenSimplexGenerator(type.getRandom());		
+		final double freq = 1.0 / 45.0;
+		final double ampl = 12.0;
+		// relative grad: 0.2
+		type.addGenerator((x, z) -> ampl * generator.sample(x * freq, z * freq));
 	}
 
 	private static TerrainType createJungle(Random seed) {
