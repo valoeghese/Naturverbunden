@@ -22,6 +22,7 @@ package valoeghese.naturverbunden.worldgen.terrain.biome;
 import static valoeghese.naturverbunden.worldgen.terrain.biome.VanillaTerrainTypes.addCliffs;
 import static valoeghese.naturverbunden.worldgen.terrain.biome.VanillaTerrainTypes.addFrequentCliffs;
 import static valoeghese.naturverbunden.worldgen.terrain.biome.VanillaTerrainTypes.addLowHills;
+import static valoeghese.naturverbunden.worldgen.terrain.biome.VanillaTerrainTypes.addSuperFrequentCliffs;
 
 import java.util.Random;
 import java.util.function.Consumer;
@@ -43,6 +44,7 @@ public class DebugTerrainTypes {
 		this.mountainRidges = debug(VanillaTerrainTypes::addMountainRidges);
 		this.cliffs5_0 = debug($ -> addCliffs($, 5.0, 0.0));
 		this.fcliffs5_0 = debug($ -> addFrequentCliffs($, 5.0, 0.0));
+		this.sfcliffs5_0 = debug($ -> addSuperFrequentCliffs($, 5.0, 0.0));
 	}
 
 	private final Random rand;
@@ -55,6 +57,7 @@ public class DebugTerrainTypes {
 	final TerrainType mountainRidges;
 	final TerrainType cliffs5_0;
 	final TerrainType fcliffs5_0;
+	final TerrainType sfcliffs5_0;
 	
 	private final TerrainType debug(Consumer<PrimaryTerrainType> initialiser) {
 		PrimaryTerrainType result = new PrimaryTerrainType(BiomeKeys.PLAINS, this.rand, 90.0);

@@ -148,7 +148,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 	 */
 	private TerrainType getTerrainType(int x, int z) {
 		if (this.debug != null) { // Edit this for debugging terrain shapes
-			return this.debug.fcliffs5_0;
+			return this.debug.sfcliffs5_0;
 		}
 
 		// Don't touch mountains here without mirroring your changes in the river sampler

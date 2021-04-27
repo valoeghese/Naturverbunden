@@ -166,11 +166,30 @@ public class VanillaTerrainTypes {
 	public static void addFrequentCliffs(PrimaryTerrainType type, double maxHeight, double minHeight) {
 		OpenSimplexGenerator height = new RidgedSimplexGenerator(type.getRandom());		
 		OpenSimplexGenerator cutoff = new RidgedSimplexGenerator(type.getRandom());		
-		final double freq = 1.0 / 100.0;
+		final double freq = 1.0 / 90.0;
 		// relative grad: 0.58r
 		type.addGenerator((x, z) -> {
 			if (cutoff.sample(x * freq, z * freq) > 0) {
 				double cliffheight = maxHeight * height.sample(x * freq, z * freq);
+
+				if (cliffheight > minHeight) {
+					return cliffheight;
+				}
+			}
+
+			return 0.0;
+		});
+	}
+
+	public static void addSuperFrequentCliffs(PrimaryTerrainType type, double maxHeight, double minHeight) {
+		OpenSimplexGenerator height = new RidgedSimplexGenerator(type.getRandom());		
+		OpenSimplexGenerator cutoff = new RidgedSimplexGenerator(type.getRandom());		
+		final double freq = 1.0 / 62.0;
+		// relative grad: 0.58r
+		type.addGenerator((x, z) -> {
+			if (cutoff.sample(x * freq, z * freq) > 0) {
+				// cliff regions are more restrained, meaning they are more prominent when they happen
+				double cliffheight = (maxHeight + 1.5) * height.sample(x * freq, z * freq) - 1.5;
 
 				if (cliffheight > minHeight) {
 					return cliffheight;
