@@ -28,7 +28,7 @@ import valoeghese.naturverbunden.util.terrain.Noise;
 import valoeghese.naturverbunden.util.terrain.RidgedSimplexGenerator;
 import valoeghese.naturverbunden.worldgen.terrain.type.FlatTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.MountainsTerrainType;
-import valoeghese.naturverbunden.worldgen.terrain.type.MultiNoiseTerrainType;
+import valoeghese.naturverbunden.worldgen.terrain.type.PrimaryTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.SimpleSimplexTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerracedTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
@@ -49,7 +49,7 @@ public class VanillaTerrainTypes {
 		this.terrainJungleWithHills = createJungle(seed);
 		this.terrainJungleWithBamboo = createJungle(seed);	
 		this.terrainJungleHills = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE_HILLS, seed, 1, 90.0, 1.0 / 60.0, 15.0);
-		this.terrainJungleMtns = new MultiNoiseTerrainType(BiomeKeys.MODIFIED_JUNGLE, 97.0)
+		this.terrainJungleMtns = new PrimaryTerrainType(BiomeKeys.MODIFIED_JUNGLE, 97.0)
 				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 380.0, 34.0);
 		this.terrainBambooJungle = new SimpleSimplexTerrainType(BiomeKeys.BAMBOO_JUNGLE, seed, 1, 70.0, 1.0 / 50.0, 10.0);
 		this.terrainJungleEdge = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE_EDGE, seed, 2, 72.0, 1.0 / 60.0, 15.0);
@@ -71,21 +71,21 @@ public class VanillaTerrainTypes {
 		oceanRand.setSeed(seedoc);
 		this.oceanFrozen = new OceanEntry(BiomeKeys.FROZEN_OCEAN, BiomeKeys.DEEP_FROZEN_OCEAN, oceanRand);
 
-		this.terrainPlains = new MultiNoiseTerrainType(BiomeKeys.PLAINS, 76.0)
+		this.terrainPlains = new PrimaryTerrainType(BiomeKeys.PLAINS, 76.0)
 				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 225.0, 15.0, 8.0)
 				.addNoise(new Noise(seed, 1), 1.0 / 45.0, 12.5, 3.0, -0.2);
 
-		this.terrainRollingHills = new MultiNoiseTerrainType(BiomeKeys.PLAINS, 76.0)
+		this.terrainRollingHills = new PrimaryTerrainType(BiomeKeys.PLAINS, 76.0)
 				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 145.0, 30.0, 12.0)
 				.addNoise(new Noise(seed, 2), 1.0 / 45.0, 25.0, 8.0);
 
-		this.terrainSavannah = new MultiNoiseTerrainType(BiomeKeys.SAVANNA, 77.0)
+		this.terrainSavannah = new PrimaryTerrainType(BiomeKeys.SAVANNA, 77.0)
 				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 260.0, 22.0)
 				.addNoise(new Noise(seed, 1), 1.0 / 45.0, 6.0);
 
 		this.terrainSavannahPlateau = new SimpleSimplexTerrainType(BiomeKeys.SAVANNA_PLATEAU, seed, 2, 118.0, 1.0 / 41.0, 9.0);
 
-		this.terrainSavannahHills = new MultiNoiseTerrainType(BiomeKeys.SAVANNA, 84.0)
+		this.terrainSavannahHills = new PrimaryTerrainType(BiomeKeys.SAVANNA, 84.0)
 				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 120.0, 22.0)
 				.addNoise(new Noise(seed, 1), 1.0 / 45.0, 12.0);
 
@@ -99,7 +99,7 @@ public class VanillaTerrainTypes {
 		this.terrainTaigaGiant = createTaiga(BiomeKeys.GIANT_TREE_TAIGA, seed);
 		this.terrainTaigaSnowy = createTaiga(BiomeKeys.SNOWY_TAIGA, seed);
 
-		this.terrainTropicalDesert = new MultiNoiseTerrainType(BiomeKeys.DESERT, 78.0)
+		this.terrainTropicalDesert = new PrimaryTerrainType(BiomeKeys.DESERT, 78.0)
 				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 205.0, 30.0, 12.0)
 				.addNoise(new Noise(seed, 2), 1.0 / 30.0, 2.5)
 				.addNoise(new Noise(seed, 1), 1.0 / 75.0, 22.0, 0.0, -0.4); // idk might remove this last one
@@ -180,7 +180,7 @@ public class VanillaTerrainTypes {
 	}
 
 	private static TerrainType createTaiga(RegistryKey<Biome> biome, Random seed) {
-		return new MultiNoiseTerrainType(biome, 76.0)
+		return new PrimaryTerrainType(biome, 76.0)
 				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 195.0, 30.0, 12.0)
 				.addNoise(new Noise(seed, 2), 1.0 / 60.0, 25.0, 8.0);
 	}

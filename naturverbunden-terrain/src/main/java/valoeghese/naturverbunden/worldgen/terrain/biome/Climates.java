@@ -92,21 +92,21 @@ public final class Climates {
 	 * For climate:
 	 * Noise Distributions in 5 sections, 3 sig figs.
 	 * Retrieved via calculating noise values numerous times at random positions and dividing into 5 sections
-	 * Section 1: [-0.866, -0.353]
-	 * Section 2: [-0.353, -0.117]
-	 * Section 3: [-0.117, 0.117]
-	 * Section 4: [0.117, 0.353]
-	 * Section 5: [0.353, 0.866]
-	 * @return the "section number" minus one (i.e. an int in the range 0,5). 
+	 * Section 1: [-1, -0.415]
+	 * Section 2: [-0.415, -0.139]
+	 * Section 3: [-0.139, 0.139]
+	 * Section 4: [0.139, 0.415]
+	 * Section 5: [0.415, 1]
+	 * @return the "section number" minus one (i.e. an int in the range [0,4] inclusive). 
 	 */
 	public static int getHumidity(double raw) {
-		if (raw < -0.353) {
+		if (raw < -0.415) {
 			return 0;
-		} else if (raw < -0.117) {
+		} else if (raw < -0.139) {
 			return 1;
-		} else if (raw < 0.117) {
+		} else if (raw < 0.139) {
 			return 2;
-		} else if (raw < 0.353) {
+		} else if (raw < 0.415) {
 			return 3;
 		} else {
 			return 4;

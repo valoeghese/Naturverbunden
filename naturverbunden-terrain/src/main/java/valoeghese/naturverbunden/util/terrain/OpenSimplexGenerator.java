@@ -65,6 +65,8 @@ class RawOpenSimplexNoise {
 
 	private static final double NORM_CONSTANT_2D = 47;
 
+	private static final double NORM_CONSTANT_2D_2_ELECTRIC_BOOGALOO = 1.0 / 0.8659203482361326; // Modification by Valoeghese: After a bunch of testing.
+
 	private short[] perm;
 	private short[] permGradIndex3D;
 
@@ -202,7 +204,7 @@ class RawOpenSimplexNoise {
 			value += attn_ext * attn_ext * extrapolate(xsv_ext, ysv_ext, dx_ext, dy_ext);
 		}
 
-		return value / NORM_CONSTANT_2D;
+		return (value / NORM_CONSTANT_2D) * NORM_CONSTANT_2D_2_ELECTRIC_BOOGALOO;
 	}
 
 	private double extrapolate(int xsb, int ysb, double dx, double dy)

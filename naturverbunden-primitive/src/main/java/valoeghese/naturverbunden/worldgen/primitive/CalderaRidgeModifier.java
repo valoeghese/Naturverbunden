@@ -32,7 +32,7 @@ import valoeghese.naturverbunden.worldgen.terrain.biome.TerrainBiomeProvider.Ter
 import valoeghese.naturverbunden.worldgen.terrain.layer.TerrainInfoSampler.Info;
 import valoeghese.naturverbunden.worldgen.terrain.type.EdgeTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.MountainsTerrainType;
-import valoeghese.naturverbunden.worldgen.terrain.type.MultiNoiseTerrainType;
+import valoeghese.naturverbunden.worldgen.terrain.type.PrimaryTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.SimpleSimplexTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
@@ -41,7 +41,7 @@ public class CalderaRidgeModifier implements TerrainTypeModifier {
 		this.seed = Voronoi.seedFromLong(seed - 10);
 
 		Random rand = new Random(seed);
-		this.terrainHotSpringsRidge = new MultiNoiseTerrainType(BiomeKeys.MOUNTAINS, 145.0)
+		this.terrainHotSpringsRidge = new PrimaryTerrainType(BiomeKeys.MOUNTAINS, 145.0)
 				.addNoise(new Noise(rand, 2, RidgedSimplexGenerator::new), MountainsTerrainType.FREQUENCY * 0.5, 35.0);
 
 		this.terrainHotSprings = new HotspringsTerrainType(rand);
