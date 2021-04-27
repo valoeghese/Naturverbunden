@@ -25,7 +25,7 @@ import java.util.function.Function;
 /**
  * Base class for octave noise samplers.
  */
-public class Noise {
+public class Noise implements INoise {
 	public Noise(Random random, int octaves) {
 		this(random, octaves, OpenSimplexGenerator::new);
 	}
@@ -43,6 +43,12 @@ public class Noise {
 	private final OpenSimplexGenerator[] samplers;
 	private double clamp;
 
+	@Override
+	public double sample(double x) {
+		return this.sample(x, 0.0);
+	}
+
+	@Override
 	public double sample(double x, double y) {
 		double amplFreq = 1.0D; // was 0.5D in my original algorithm.
 

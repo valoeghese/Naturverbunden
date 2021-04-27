@@ -248,6 +248,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 				// this is kept square-weighted because sqrt is a trash not pog not based operation and is slower than the hare from aesop's fables
 				if (weight > 0) {
 					TerrainType type = ((TerrainBiomeProvider) this.biomeSource).sampleTerrainType(MathHelper.floor(voronoi.getX() * 16.0), MathHelper.floor(voronoi.getY() * 16.0));
+					weight *= type.getShapeWeight();
 
 					totalWeight += weight;
 					height += weight * type.getHeight(x, z);

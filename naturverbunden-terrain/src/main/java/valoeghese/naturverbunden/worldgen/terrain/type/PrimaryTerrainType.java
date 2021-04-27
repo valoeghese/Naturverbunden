@@ -21,7 +21,9 @@ package valoeghese.naturverbunden.worldgen.terrain.type;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import valoeghese.naturverbunden.util.terrain.Noise;
@@ -30,42 +32,71 @@ import valoeghese.naturverbunden.util.terrain.Noise;
  * Terrain type that generates height with mutliple provided noise algorithms.
  */
 public class PrimaryTerrainType extends TerrainType {
-	public PrimaryTerrainType(RegistryKey<Biome> biome, double baseHeight) {
+	public PrimaryTerrainType(RegistryKey<Biome> biome, Random rand, double baseHeight) {
 		super(biome, null);
 
+		this.rand = new Random(rand.nextLong());
 		this.baseHeight = baseHeight;
 	}
 
+	private final Random rand;
+	private final double baseHeight;
+	private final List<HeightModifier> generators = new ArrayList<>();
+
+	public void switchBiome(RegistryKey<Biome> nextBiome) {
+		this.biome = nextBiome;
+		Biome builtin = BuiltinRegistries.BIOME.get(biome);
+
+		if (builtin == null) {
+			throw new IllegalStateException("Tried to auto-provide category from the builtin registry, as specified by the terrain type. Found no matching entry for " + biome.getValue() + "!");
+		}
+
+		this.category = builtin.getCategory();
+	}
+
+	public PrimaryTerrainType addGenerator(HeightModifier modifier) {
+		this.generators.add(modifier);
+		return this;
+	}
+
+	// @WillProbablyDeprecateSoon
 	public PrimaryTerrainType addNoise(Noise noise, double frequency, double amplitude) {
-		this.noises.add(
+		this.generators.add(
 				(x, z) -> noise.sample(x * frequency, z * frequency) * amplitude);
 		return this;
 	}
 
+	// @WillProbablyDeprecateSoon
 	public PrimaryTerrainType addNoise(Noise noise, double frequency, double amplitudeHigh, double amplitudeLow) {
-		this.noises.add((x, z) -> {
+		this.generators.add((x, z) -> {
 			double preliminary = noise.sample(x * frequency, z * frequency);
 			return preliminary * (preliminary < 0 ? amplitudeLow : amplitudeHigh);
 		});
 		return this;
 	}
 
+	// @WillProbablyDeprecateSoon
 	public PrimaryTerrainType addNoise(Noise noise, double frequency, double amplitudeHigh, double amplitudeLow, double offset) {
-		this.noises.add((x, z) -> {
+		this.generators.add((x, z) -> {
 			double preliminary = noise.sample(x * frequency, z * frequency) + offset;
 			return preliminary * (preliminary < 0 ? amplitudeLow : amplitudeHigh);
 		});
 		return this;
 	}
 
-	private final List<HeightModifier> noises = new ArrayList<>();
-	private final double baseHeight;
+	public Random getRandom() {
+		return this.rand;
+	}
+
+	public int nextInt(int bound) {
+		return this.rand.nextInt(bound);
+	}
 
 	@Override
 	public double getHeight(int x, int z) {
 		double result = this.baseHeight;
 
-		for (HeightModifier noise : this.noises) {
+		for (HeightModifier noise : this.generators) {
 			result += noise.sample(x, z);
 		}
 

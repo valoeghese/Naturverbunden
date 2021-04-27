@@ -50,8 +50,8 @@ public abstract class TerrainType {
 		}
 	}
 
-	private final RegistryKey<Biome> biome;
-	private final Biome.Category category;
+	protected RegistryKey<Biome> biome;
+	protected Biome.Category category;
 	private final double shapeWeight;
 	public TerrainType largeHills = this;
 	public TerrainType smallHills = this;

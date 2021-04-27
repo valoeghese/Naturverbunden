@@ -28,6 +28,7 @@ import valoeghese.naturverbunden.util.terrain.Noise;
 /**
  * Terrain type that generates height with a simple octave simplex noise algorithm.
  */
+@Deprecated
 public class SimpleSimplexTerrainType extends TerrainType {
 	public SimpleSimplexTerrainType(RegistryKey<Biome> biome, Random seed, int octaves, double baseHeight, double frequency, double amplitude) {
 		super(biome, null);

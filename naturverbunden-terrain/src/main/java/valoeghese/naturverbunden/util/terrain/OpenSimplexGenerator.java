@@ -24,7 +24,7 @@ import java.util.Random;
 /**
  * 2D OpenSimplexNoise
  */
-public class OpenSimplexGenerator extends RawOpenSimplexNoise {
+public class OpenSimplexGenerator extends RawOpenSimplexNoise implements INoise {
 	public OpenSimplexGenerator(Random rand) {
 		super(rand.nextLong());
 
@@ -34,6 +34,7 @@ public class OpenSimplexGenerator extends RawOpenSimplexNoise {
 
 	private final double xOffset, yOffset;
 
+	@Override
 	public double sample(double x) {
 		return super.sample(x + this.xOffset, 0.0);
 	}

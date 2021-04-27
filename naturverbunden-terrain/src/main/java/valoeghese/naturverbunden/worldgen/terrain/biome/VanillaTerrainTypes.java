@@ -24,7 +24,9 @@ import java.util.Random;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
+import valoeghese.naturverbunden.util.terrain.INoise;
 import valoeghese.naturverbunden.util.terrain.Noise;
+import valoeghese.naturverbunden.util.terrain.OpenSimplexGenerator;
 import valoeghese.naturverbunden.util.terrain.RidgedSimplexGenerator;
 import valoeghese.naturverbunden.worldgen.terrain.type.FlatTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.MountainsTerrainType;
@@ -33,7 +35,35 @@ import valoeghese.naturverbunden.worldgen.terrain.type.SimpleSimplexTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerracedTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
 
+/*
+ *  UNDERGOING MAJOR REVISIONS
+ *  
+ *  SHAPES TO KEEP (remember to rescale):
+ *  - Tropical Desert
+ *  - Taiga
+ *  - Jungle Mountains and regular flat Jungle
+ *  - Terraced Savannah
+ *  - Flat terrains
+ *  - Other savannah ones are fine but I think normal savannah needs to be flatter
+ *  
+ *  SHAPES TO REWRITE FULLY
+ *  - Plains / Forest types
+ *  
+ *  OTHER SHAPES WILL BE REWRITTEN ANYWAY, THOUGH I MAY REFERENCE THIS.
+ *
+ *  BIOMES TO ADD
+ *  - Mesa
+ *  
+ *  SHAPES TO ADD AS METHODS (aside from porting a bunch of stuff I already had)
+ *  - Cliffs (dual noise generator additional-type cliff generators)
+ *  
+ *  POSSIBLE THINGS I MIGHT DO
+ *  - Make a modifier to raise/lower terrain in large-beach-edge-terrain so we can have cliffs
+ *  - Though, because of the smooth large-scale blending, I might want to add some more methods to control terrain height directly at x/z sample-time.
+ */
+
 public class VanillaTerrainTypes {
+	// I can't remember what this number means I think it might have been a world seed for testing at some point?
 	// 1580589449715291311
 	public VanillaTerrainTypes(Random seed) {
 		this.terrainBeach = new FlatTerrainType(BiomeKeys.BEACH, 64.0, Biome.Category.BEACH);
@@ -53,8 +83,6 @@ public class VanillaTerrainTypes {
 				.addNoise(new Noise(seed, 2, RidgedSimplexGenerator::new), 1.0 / 380.0, 34.0);
 		this.terrainBambooJungle = new SimpleSimplexTerrainType(BiomeKeys.BAMBOO_JUNGLE, seed, 1, 70.0, 1.0 / 50.0, 10.0);
 		this.terrainJungleEdge = new SimpleSimplexTerrainType(BiomeKeys.JUNGLE_EDGE, seed, 2, 72.0, 1.0 / 60.0, 15.0);
-
-		// Rainforest will be more mountainous
 
 		this.terrainMountains = new MountainsTerrainType(seed);
 
@@ -99,7 +127,7 @@ public class VanillaTerrainTypes {
 		this.terrainTaigaGiant = createTaiga(BiomeKeys.GIANT_TREE_TAIGA, seed);
 		this.terrainTaigaSnowy = createTaiga(BiomeKeys.SNOWY_TAIGA, seed);
 
-		this.terrainTropicalDesert = new PrimaryTerrainType(BiomeKeys.DESERT, 78.0)
+		this.terrainTropicalDesert = new PrimaryTerrainType(BiomeKeys.DESERT, seed, 78.0)
 				.addNoise(new Noise(seed, 1, RidgedSimplexGenerator::new), 1.0 / 205.0, 30.0, 12.0)
 				.addNoise(new Noise(seed, 2), 1.0 / 30.0, 2.5)
 				.addNoise(new Noise(seed, 1), 1.0 / 75.0, 22.0, 0.0, -0.4); // idk might remove this last one
@@ -124,55 +152,71 @@ public class VanillaTerrainTypes {
 
 	// Special
 	public final TerrainType terrainMountains;
-	final TerrainType terrainBeach;
-	final TerrainType terrainBeachFrozen;
-	final TerrainType terrainBeachStone;
+	public final TerrainType terrainBeach;
+	public final TerrainType terrainBeachFrozen;
+	public final TerrainType terrainBeachStone;
 
 	// Ocean
-	final OceanEntry oceanWarm;
-	final OceanEntry oceanLukewarm;
-	final OceanEntry oceanTemperate;
-	final OceanEntry oceanCool;
-	final OceanEntry oceanFrozen;
+	public final OceanEntry oceanWarm;
+	public final OceanEntry oceanLukewarm;
+	public final OceanEntry oceanTemperate;
+	public final OceanEntry oceanCool;
+	public final OceanEntry oceanFrozen;
 
 	// Hottish Wettish
-	final TerrainType terrainJungle;
-	final TerrainType terrainJungleWithHills;
-	final TerrainType terrainJungleHills;
-	final TerrainType terrainJungleMtns;
-	final TerrainType terrainJungleWithBamboo;
-	final TerrainType terrainBambooJungle;
-	final TerrainType terrainJungleEdge;
+	public final TerrainType terrainJungle;
+	public final TerrainType terrainJungleWithHills;
+	public final TerrainType terrainJungleHills;
+	public final TerrainType terrainJungleMtns;
+	public final TerrainType terrainJungleWithBamboo;
+	public final TerrainType terrainBambooJungle;
+	public final TerrainType terrainJungleEdge;
 
 	// Hottish Dryish
-	final TerrainType terrainSavannah;
-	final TerrainType terrainSavannahHills;
-	final TerrainType terrainSavannahTerrace;
-	final TerrainType terrainSavannahPlateau;
-	final TerrainType terrainTropicalDesert;
+	public final TerrainType terrainSavannah;
+	public final TerrainType terrainSavannahHills;
+	public final TerrainType terrainSavannahTerrace;
+	public final TerrainType terrainSavannahPlateau;
+	public final TerrainType terrainTropicalDesert;
 
 	// Temperatish Dryish
-	final TerrainType terrainRollingHills;
-	final TerrainType terrainTaiga;
-	final TerrainType terrainTaigaGiant;
-	final TerrainType terrainPlains;
+	public final TerrainType terrainRollingHills;
+	public final TerrainType terrainTaiga;
+	public final TerrainType terrainTaigaGiant;
+	public final TerrainType terrainPlains;
 
 	// Temperatish Wettish
-	final TerrainType terrainBayou;
-	final TerrainType terrainRoofedForest;
-	final TerrainType terrainDeciduousForest;
-	final TerrainType terrainBirchForest;
+	public final TerrainType terrainBayou;
+	public final TerrainType terrainRoofedForest;
+	public final TerrainType terrainDeciduousForest;
+	public final TerrainType terrainBirchForest;
 
 	// Ice Cap
-	final TerrainType terrainSnowPlateau;
-	final TerrainType terrainSnowySpikes;
-	final TerrainType terrainSnowyTundra;
-	final TerrainType terrainTaigaSnowy;
+	public final TerrainType terrainSnowPlateau;
+	public final TerrainType terrainSnowySpikes;
+	public final TerrainType terrainSnowyTundra;
+	public final TerrainType terrainTaigaSnowy;
 
 	private final OceanEntry[] oceans;
 
 	OceanEntry getOcean(int temperature) {
 		return oceans[temperature];
+	}
+
+	/**
+	 * Add hills with a period of 70 blocks and height variation of +/- 12 (overall 24 blocks).
+	 * @param type the type of terrain.
+	 * @param detail the level of detail, i.e. number of octaves.
+	 */
+	private static void addFlatHills(PrimaryTerrainType type, int detail) {
+		INoise noise = detail == 1 ? new Noise(type.getRandom(), detail) : new OpenSimplexGenerator(type.getRandom());
+		final double freq = 1.0 / 70.0;
+		final double ampl = 12.0;
+		type.addGenerator((x, z) -> ampl * noise.sample(x * freq, z * freq));
+	}
+
+	private static void addSmallHills(PrimaryTerrainType type) {
+		
 	}
 
 	private static TerrainType createJungle(Random seed) {
