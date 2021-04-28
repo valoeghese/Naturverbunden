@@ -119,7 +119,7 @@ public class VanillaTerrainTypes {
 	}
 
 	private static PrimaryTerrainType createHillyForest(RegistryKey<Biome> biome, Random rand) {
-		PrimaryTerrainType hillyForest = new PrimaryTerrainType(biome, rand, 73.0);
+		PrimaryTerrainType hillyForest = new PrimaryTerrainType(biome, rand, 75.0);
 		addLargeHills(hillyForest, 1); // +44v, +22u
 		addCliffs(hillyForest, 5.0, 0.0); // +5v, +5u
 		return hillyForest;
@@ -220,6 +220,41 @@ public class VanillaTerrainTypes {
 		final double freq = 1.0 / 120.0;
 		final double amplUp = 22.0;
 		final double amplDown = 8.0;
+		// relative grad: 0.37
+		type.addGenerator((x, z) -> {
+			double norm = generator.sample(x * freq, z * freq);
+
+			if (norm > 0) {
+				return amplUp * norm;
+			} else {
+				return amplDown * norm;
+			}
+		});
+	}
+
+	/**
+	 * Add hills with a period of 90 blocks and height amplitude of +/- 33 (overall variation: 66 blocks).
+	 * @param type the type of terrain.
+	 * @param detail the level of detail, i.e. number of octaves. Anything above 3 is not recommended. Each octave makes it less common for large peaks and dips, in exchange for higher detail.
+	 */
+	public static void addMassiveHills(PrimaryTerrainType type, int detail) {
+		OpenSimplexGenerator generator = new OpenSimplexGenerator(type.getRandom());		
+		final double freq = 1.0 / 90.0;
+		final double ampl = 33.0;
+		// relative grad: 0.37
+		type.addGenerator((x, z) -> ampl * generator.sample(x * freq, z * freq));
+	}
+
+	/**
+	 * Add hills with a period of 90 blocks and height amplitude of +33/-12 (overall variation: 45 blocks).
+	 * @param type the type of terrain.
+	 * @param detail the level of detail, i.e. number of octaves. Anything above 3 is not recommended. Each octave makes it less common for large peaks and dips, in exchange for higher detail.
+	 */
+	public static void addSeparatedMassiveHills(PrimaryTerrainType type, int detail) {
+		OpenSimplexGenerator generator = new OpenSimplexGenerator(type.getRandom());		
+		final double freq = 1.0 / 90.0;
+		final double amplUp = 33.0;
+		final double amplDown = 12.0;
 		// relative grad: 0.37
 		type.addGenerator((x, z) -> {
 			double norm = generator.sample(x * freq, z * freq);

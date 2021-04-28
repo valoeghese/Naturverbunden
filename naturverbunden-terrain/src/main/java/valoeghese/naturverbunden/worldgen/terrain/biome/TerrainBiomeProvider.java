@@ -191,7 +191,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 				mountainChain -= 0.5;
 			}
 
-			TerrainType terrain = DEBUG_BIOMES ? Climate.modify(this.terrain.terrainDeciduousForest, terrainInfo) : this.climates.sample(temperature, humidity).get(terrainInfo);
+			TerrainType terrain = DEBUG_BIOMES ? Climate.modify(this.terrain.terrainDeciduousForestHills, terrainInfo) : this.climates.sample(temperature, humidity).get(terrainInfo);
 
 			if (terrain == null) {
 				throw new IllegalStateException("WTF 2 electric boogaloo. Humidity " + humidity + ", MountainChain " + mountainChain + ", InfoBits " + terrainInfo.info + " TerrainCategory " + terrainInfo.category.name());
