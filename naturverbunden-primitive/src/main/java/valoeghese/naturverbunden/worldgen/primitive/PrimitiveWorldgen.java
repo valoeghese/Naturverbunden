@@ -69,8 +69,8 @@ public class PrimitiveWorldgen extends NVBWorldgenUtils {
 
 		registerBiomes();
 
-		// Caldera Ridge Modifier
-		TerrainBiomeProvider.addTerrainTypeModifier(3, CalderaRidgeModifier::new);
+		// Caldera Ridge Modifier TODO readd
+		//TerrainBiomeProvider.addTerrainTypeModifier(3, CalderaRidgeModifier::new);
 	}
 
 	private static void registerBiomes() {

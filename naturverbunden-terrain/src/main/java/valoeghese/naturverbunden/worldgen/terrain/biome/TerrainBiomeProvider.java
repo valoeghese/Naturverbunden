@@ -118,21 +118,10 @@ public class TerrainBiomeProvider extends BiomeSource {
 	}
 
 	private double getChainSample(int x, int z) {
-		final double stretchFrequency = 1.0 / 810.0;
-		final double chainFrequency = 1.0 / 3045.0; // 6090 / 2
+		final double chainFrequency = 1.0 / 3269.0;
 
 		// Chain Sample. Used for mountain chains and fake orthographic lift humidity modification
-		double chainStretch = this.mountainChainStretch.sample(x * stretchFrequency, z * stretchFrequency);
-
-		double chainSample = 0;
-
-		if (chainStretch >= 0) {
-			chainSample = this.mountainChain.sample(x * chainFrequency * (1.0 - 0.33 * chainStretch), z * chainFrequency);
-		} else {
-			chainSample = this.mountainChain.sample(x * chainFrequency, z * chainFrequency * (1.0 + 0.33 * chainStretch));
-		}
-
-		return chainSample;
+		return this.mountainChain.sample(x * chainFrequency, z * chainFrequency);
 	}
 
 	public double getMtnChainVal(int x, int z) {
@@ -148,7 +137,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 	 */
 	private TerrainType getTerrainType(int x, int z) {
 		if (this.debug != null) { // Edit this for debugging terrain shapes
-			return this.debug.sfcliffs5_0;
+			return this.terrain.terrainTaiga;
 		}
 
 		// Don't touch mountains here without mirroring your changes in the river sampler
@@ -187,7 +176,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 			double humidityIncrease = calculateHumidityIncrease(z);
 			humidity += humidityIncrease;
 
-			if (terrainInfo.category == TerrainCategory.OCEAN) {
+			if (terrainInfo.category == TerrainCategory.OCEAN && !DEBUG_BIOMES) {
 				final int deepCheckDist = 8;
 				boolean i5 = this.infoSampler.sample((x >> 2) + deepCheckDist, (z >> 2) + deepCheckDist).category == TerrainCategory.OCEAN;
 				boolean _09 = this.infoSampler.sample((x >> 2) + deepCheckDist, (z >> 2) - deepCheckDist).category == TerrainCategory.OCEAN;
@@ -202,7 +191,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 				mountainChain -= 0.5;
 			}
 
-			TerrainType terrain = this.climates.sample(temperature, humidity).get(terrainInfo);
+			TerrainType terrain = DEBUG_BIOMES ? Climate.modify(this.terrain.terrainDeciduousForest, terrainInfo) : this.climates.sample(temperature, humidity).get(terrainInfo);
 
 			if (terrain == null) {
 				throw new IllegalStateException("WTF 2 electric boogaloo. Humidity " + humidity + ", MountainChain " + mountainChain + ", InfoBits " + terrainInfo.info + " TerrainCategory " + terrainInfo.category.name());
@@ -243,13 +232,14 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	@Override
 	public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-		if (DEBUG_SHAPE) {
+		if (DEBUG_SHAPE && !DEBUG_BIOMES) {
 			return this.biomeRegistry.get(BiomeKeys.PLAINS);
 		}
 
 		TerrainType type = this.sampleTerrainType(biomeX << 2, biomeZ << 2);
-		
-		double rivers = this.sampleRiver(biomeX << 2, biomeZ << 2);
+
+		double rivers = this.getMtnChainVal(biomeX << 2, biomeZ << 2) > 0.1 ? 0 : this.sampleRiver(biomeX << 2, biomeZ << 2);
+
 		Biome.Category category = type.getCategory();
 
 		if (category != Biome.Category.EXTREME_HILLS && category != Biome.Category.OCEAN && category != Biome.Category.RIVER && category != Biome.Category.JUNGLE && rivers > 0.7) {
@@ -286,10 +276,11 @@ public class TerrainBiomeProvider extends BiomeSource {
 	private static final ListArray<LongFunction<TerrainTypeModifier>> MODIFIER_LIST = new ListArray<>(5);
 
 	// Temperature Scale
-	private static final double TEMPERATURE_CELL_SIZE = 900.0;
+	private static final double TEMPERATURE_CELL_SIZE = 1800.0;
 	private static final double CHAIN_CUTOFF = 0.17;
 	private static final double CHAIN_NORMALISER = 1 / CHAIN_CUTOFF;
-	public static final boolean DEBUG_SHAPE = true;
+	public static final boolean DEBUG_SHAPE = false; // If this is enabled, lots of worldgen shape modifiers will be disabled (some will be reenabled if DEBUG_BIOMES is also on)
+	public static final boolean DEBUG_BIOMES = true; // If this is enabled, single biome world except for modifiers such as mountains
 
 	@FunctionalInterface
 	public interface TerrainTypeModifier {

@@ -21,6 +21,7 @@ package valoeghese.naturverbunden.worldgen.terrain.biome;
 
 import static valoeghese.naturverbunden.worldgen.terrain.biome.VanillaTerrainTypes.addCliffs;
 import static valoeghese.naturverbunden.worldgen.terrain.biome.VanillaTerrainTypes.addFrequentCliffs;
+import static valoeghese.naturverbunden.worldgen.terrain.biome.VanillaTerrainTypes.addLargeHills;
 import static valoeghese.naturverbunden.worldgen.terrain.biome.VanillaTerrainTypes.addLowHills;
 import static valoeghese.naturverbunden.worldgen.terrain.biome.VanillaTerrainTypes.addSuperFrequentCliffs;
 
@@ -37,8 +38,8 @@ public class DebugTerrainTypes {
 
 		this.flatHills1 = debug($ -> addLowHills($, 1));
 		this.flatHills3 = debug($ -> addLowHills($, 3));
-		this.smallHills = debug(VanillaTerrainTypes::addSmallHills);
-		this.largeHills = debug(VanillaTerrainTypes::addLargeHills);
+		this.smallHills = debug(VanillaTerrainTypes::addModerateHills);
+		this.largeHills = debug($ -> addLargeHills($, 1));
 		this.grasslandRidges = debug(VanillaTerrainTypes::addGrasslandRidges);
 		this.taigaRidges = debug(VanillaTerrainTypes::addTaigaRidges);
 		this.mountainRidges = debug(VanillaTerrainTypes::addMountainRidges);

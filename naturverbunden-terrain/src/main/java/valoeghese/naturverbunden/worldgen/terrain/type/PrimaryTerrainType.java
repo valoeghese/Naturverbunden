@@ -35,13 +35,21 @@ public class PrimaryTerrainType extends TerrainType {
 	public PrimaryTerrainType(RegistryKey<Biome> biome, Random rand, double baseHeight) {
 		super(biome, null);
 
-		this.rand = new Random(rand.nextLong());
+		this.rand = rand;
 		this.baseHeight = baseHeight;
 	}
 
 	private final Random rand;
 	private final double baseHeight;
 	private final List<HeightModifier> generators = new ArrayList<>();
+
+	public void reduceBlendRadius(double by) {
+		super.reduceBlendRadius(by);
+	}
+
+	public void setShapeWeight(double weight) {
+		super.setShapeWeight(weight);
+	}
 
 	public void switchBiome(RegistryKey<Biome> nextBiome) {
 		this.biome = nextBiome;

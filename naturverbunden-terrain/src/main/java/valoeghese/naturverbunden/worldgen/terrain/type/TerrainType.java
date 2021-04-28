@@ -30,12 +30,15 @@ import net.minecraft.world.biome.Biome;
  */
 public abstract class TerrainType {
 	protected TerrainType(RegistryKey<Biome> biome, @Nullable Biome.Category category) {
-		this(biome, category, 1.0);
+		this(biome, category, 0.0);
 	}
 
 	protected TerrainType(RegistryKey<Biome> biome, @Nullable Biome.Category category, double shapeWeight) {
 		this.biome = biome;
-		this.shapeWeight = shapeWeight;
+		// initialise blend radius variables: 0.0 and (9/(9-0)) = 1.0.
+		this.reduceBlendRadius(0.0);
+		// 1.0
+		this.setShapeWeight(1.0);
 
 		if (category == null) {
 			Biome builtin = BuiltinRegistries.BIOME.get(biome);
@@ -52,9 +55,32 @@ public abstract class TerrainType {
 
 	protected RegistryKey<Biome> biome;
 	protected Biome.Category category;
-	private final double shapeWeight;
+	private double shapeWeightSubtractor;
+	private double shapeWeightNormaliser;
+	private double shapeWeight;
 	public TerrainType largeHills = this;
 	public TerrainType smallHills = this;
+
+	/**
+	 * Reduce the blend radius.
+	 * @param by a value between 0.0 and 1.0. 0.0 represents normal blending, 1.0 represents immediate full strength.
+	 */
+	protected void reduceBlendRadius(double by) {
+		final double maxSquareRadius = 9.0; // 9.0 is the constant maxSquaredRadius from the chunk generator
+
+		if (by == 1.0) {
+			by -= Double.MIN_VALUE;
+		}
+
+		by *= maxSquareRadius;
+
+		this.shapeWeightSubtractor = by;
+		this.shapeWeightNormaliser = maxSquareRadius / (maxSquareRadius - by);
+	}
+
+	protected void setShapeWeight(double weight) {
+		this.shapeWeight = weight;
+	}
 
 	public final RegistryKey<Biome> getBiome() {
 		return this.biome;
@@ -64,8 +90,8 @@ public abstract class TerrainType {
 		return this.category;
 	}
 
-	public final double getShapeWeight() {
-		return this.shapeWeight;
+	public final double modifyWeight(double original) {
+		return (original - this.shapeWeightSubtractor) * this.shapeWeightNormaliser * this.shapeWeight;
 	}
 
 	/**

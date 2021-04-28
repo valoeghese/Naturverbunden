@@ -70,6 +70,15 @@ public class VanillaTerrainTypes {
 		// Mountains
 		this.terrainMountains = new PrimaryTerrainType(BiomeKeys.MOUNTAINS, seed, 200.0);
 		addMountainRidges(this.terrainMountains);
+
+		// Forest Types
+		Random frand = new Random(seed.nextLong());
+		this.terrainTaiga = createMontaneForest(BiomeKeys.TAIGA, frand, false);
+		this.terrainTaigaSnowy = createMontaneForest(BiomeKeys.SNOWY_TAIGA, frand, false);
+		this.terrainTaigaGiant = createMontaneForest(BiomeKeys.GIANT_TREE_TAIGA, frand, true);
+		
+		this.terrainDeciduousForest = createLowlandForest(BiomeKeys.FOREST, BiomeKeys.WOODED_HILLS, frand);
+		this.terrainDeciduousForestHills = createHillyForest(BiomeKeys.FOREST, frand);
 	}
 
 	// Special
@@ -79,9 +88,58 @@ public class VanillaTerrainTypes {
 
 	private final OceanEntry[] oceans = new OceanEntry[5];
 
-	// Primary types
+	// === Primary types ===
 
+	// Mountain Types
 	public final PrimaryTerrainType terrainMountains;
+
+	// Forest Types
+	public final PrimaryTerrainType terrainTaiga;
+	public final PrimaryTerrainType terrainTaigaGiant;
+	public final PrimaryTerrainType terrainTaigaSnowy;
+
+	public final PrimaryTerrainType terrainDeciduousForest;
+	public final PrimaryTerrainType terrainDeciduousForestHills;
+
+	// Factories
+
+	// montane here just refers to the shape, not the placement.
+	private static PrimaryTerrainType createMontaneForest(RegistryKey<Biome> biome, Random rand, boolean smootherHills) {
+		PrimaryTerrainType montaneForest = new PrimaryTerrainType(biome, rand, 76.0);
+		addTaigaRidges(montaneForest); // +38v, +26u
+		
+		if (smootherHills) {
+			addSeparatedSmoothLargeHills(montaneForest, 2); // +30v, +22u
+		} else {
+			addSeparatedLargeHills(montaneForest, 2); // +30v, +22u
+		}
+
+		addCliffs(montaneForest, 5.0, 0.0); // +5v, +5u
+		return montaneForest; // overall variation: 74 blocks, 54 up
+	}
+
+	private static PrimaryTerrainType createHillyForest(RegistryKey<Biome> biome, Random rand) {
+		PrimaryTerrainType hillyForest = new PrimaryTerrainType(biome, rand, 73.0);
+		addLargeHills(hillyForest, 1); // +44v, +22u
+		addCliffs(hillyForest, 5.0, 0.0); // +5v, +5u
+		return hillyForest;
+	}
+
+	private static PrimaryTerrainType createLowlandForest(RegistryKey<Biome> biome, RegistryKey<Biome> hills, Random rand) {
+		PrimaryTerrainType lowlandForest = new PrimaryTerrainType(biome, rand, 70.0);
+		addLowHills(lowlandForest, 2); // +20v, +10u
+		addCliffs(lowlandForest, 5.0, 0.0); // +5v, +5u
+
+		PrimaryTerrainType hillsForest = new PrimaryTerrainType(hills, rand, 85.0);
+		addModerateHills(hillsForest); // +24v, +12u
+		addFrequentCliffs(hillsForest, 8.0, 0.0); // +8v, +8u
+		hillsForest.reduceBlendRadius(0.5);
+		hillsForest.setShapeWeight(1.5);
+
+		lowlandForest.largeHills = hillsForest;
+
+		return lowlandForest;
+	}
 
 	OceanEntry getOcean(int temperature) {
 		return oceans[temperature];
@@ -93,9 +151,9 @@ public class VanillaTerrainTypes {
 	// TODO the mountain refactors I figured out over the last few days
 
 	/**
-	 * Add hills with a period of 70 blocks and height amplitude of +/- 12 (overall variation: 24 blocks).
+	 * Add hills with a period of 70 blocks and height amplitude of +/- 10 (overall variation: 20 blocks).
 	 * @param type the type of terrain.
-	 * @param detail the level of detail, i.e. number of octaves. 3 or greater is not recommended.
+	 * @param detail the level of detail, i.e. number of octaves. Anything above 3 is not recommended. Each octave makes it less common for large peaks and dips, in exchange for higher detail.
 	 */
 	public static void addLowHills(PrimaryTerrainType type, int detail) {
 		INoise noise = detail > 1 ? new Noise(type.getRandom(), detail) : new OpenSimplexGenerator(type.getRandom());
@@ -105,7 +163,11 @@ public class VanillaTerrainTypes {
 		type.addGenerator((x, z) -> ampl * noise.sample(x * freq, z * freq));
 	}
 
-	public static void addSmallHills(PrimaryTerrainType type) {
+	/**
+	 * Add hills with a period of 55 blocks and height amplitude of +/- 12 (overall variation: 24 blocks).
+	 * @param type the type of terrain.
+	 */
+	public static void addModerateHills(PrimaryTerrainType type) {
 		OpenSimplexGenerator generator = new OpenSimplexGenerator(type.getRandom());		
 		final double freq = 1.0 / 55.0;
 		final double ampl = 12.0;
@@ -113,7 +175,12 @@ public class VanillaTerrainTypes {
 		type.addGenerator((x, z) -> ampl * generator.sample(x * freq, z * freq));
 	}
 
-	public static void addLargeHills(PrimaryTerrainType type) {
+	/**
+	 * Add hills with a period of 60 blocks and height amplitude of +/- 22 (overall variation: 44 blocks).
+	 * @param type the type of terrain.
+	 * @param detail the level of detail, i.e. number of octaves. Anything above 3 is not recommended. Each octave makes it less common for large peaks and dips, in exchange for higher detail.
+	 */
+	public static void addLargeHills(PrimaryTerrainType type, int detail) {
 		OpenSimplexGenerator generator = new OpenSimplexGenerator(type.getRandom());		
 		final double freq = 1.0 / 60.0;
 		final double ampl = 22.0;
@@ -121,6 +188,54 @@ public class VanillaTerrainTypes {
 		type.addGenerator((x, z) -> ampl * generator.sample(x * freq, z * freq));
 	}
 
+	/**
+	 * Add hills with a period of 60 blocks and height amplitude of +22/-8 (overall variation: 30 blocks).
+	 * @param type the type of terrain.
+	 * @param detail the level of detail, i.e. number of octaves. Anything above 3 is not recommended. Each octave makes it less common for large peaks and dips, in exchange for higher detail.
+	 */
+	public static void addSeparatedLargeHills(PrimaryTerrainType type, int detail) {
+		OpenSimplexGenerator generator = new OpenSimplexGenerator(type.getRandom());		
+		final double freq = 1.0 / 60.0;
+		final double amplUp = 22.0;
+		final double amplDown = 8.0;
+		// relative grad: 0.37
+		type.addGenerator((x, z) -> {
+			double norm = generator.sample(x * freq, z * freq);
+
+			if (norm > 0) {
+				return amplUp * norm;
+			} else {
+				return amplDown * norm;
+			}
+		});
+	}
+
+	/**
+	 * Add hills with a period of 120 blocks and height amplitude of +22/-8 (overall variation: 30 blocks).
+	 * @param type the type of terrain.
+	 * @param detail the level of detail, i.e. number of octaves. Anything above 3 is not recommended. Each octave makes it less common for large peaks and dips, in exchange for higher detail.
+	 */
+	public static void addSeparatedSmoothLargeHills(PrimaryTerrainType type, int detail) {
+		OpenSimplexGenerator generator = new OpenSimplexGenerator(type.getRandom());		
+		final double freq = 1.0 / 120.0;
+		final double amplUp = 22.0;
+		final double amplDown = 8.0;
+		// relative grad: 0.37
+		type.addGenerator((x, z) -> {
+			double norm = generator.sample(x * freq, z * freq);
+
+			if (norm > 0) {
+				return amplUp * norm;
+			} else {
+				return amplDown * norm;
+			}
+		});
+	}
+
+	/**
+	 * Add ridges with a period of 260 blocks and height amplitude of +/- 19 (overall variation: 38 blocks).
+	 * @param type the type of terrain.
+	 */
 	public static void addGrasslandRidges(PrimaryTerrainType type) {
 		OpenSimplexGenerator generator = new RidgedSimplexGenerator(type.getRandom());		
 		final double freq = 1.0 / 260.0;
@@ -129,14 +244,31 @@ public class VanillaTerrainTypes {
 		type.addGenerator((x, z) -> ampl * generator.sample(x * freq, z * freq));
 	}
 
+	/**
+	 * Add ridges with a period of 195 blocks and height amplitude of +26/-12 (overall variation: 38 blocks).
+	 * @param type the type of terrain.
+	 */
 	public static void addTaigaRidges(PrimaryTerrainType type) {
 		OpenSimplexGenerator generator = new RidgedSimplexGenerator(type.getRandom());		
 		final double freq = 1.0 / 195.0;
-		final double ampl = 26.0;
+		final double amplUp = 26.0;
+		final double amplDown = 12.0;
 		// relative grad: 0.26r
-		type.addGenerator((x, z) -> ampl * generator.sample(x * freq, z * freq));
+		type.addGenerator((x, z) -> {
+			double norm = generator.sample(x * freq, z * freq);
+
+			if (norm > 0) {
+				return amplUp * norm;
+			} else {
+				return amplDown * norm;
+			}
+		});
 	}
-	
+
+	/**
+	 * Add 3-octave ridges with a period of 150 blocks and height amplitude of +/- 43.3 (overall variation: 86.6 blocks).
+	 * @param type the type of terrain.
+	 */
 	public static void addMountainRidges(PrimaryTerrainType type) {
 		INoise noise = new Noise(type.getRandom(), 3, RidgedSimplexGenerator::new);		
 		final double freq = 1.0 / 150.0;
@@ -145,6 +277,12 @@ public class VanillaTerrainTypes {
 		type.addGenerator((x, z) -> ampl * noise.sample(x * freq, z * freq));
 	}
 
+	/**
+	 * Adds sparsely generating cliffs to the terrain.
+	 * @param type the terrain type
+	 * @param maxHeight the maximum height of cliffs.
+	 * @param minHeight the minimum height of cliffs (i.e. the cutoff)
+	 */
 	public static void addCliffs(PrimaryTerrainType type, double maxHeight, double minHeight) {
 		OpenSimplexGenerator height = new RidgedSimplexGenerator(type.getRandom());		
 		OpenSimplexGenerator cutoff = new RidgedSimplexGenerator(type.getRandom());		
@@ -163,6 +301,12 @@ public class VanillaTerrainTypes {
 		});
 	}
 
+	/**
+	 * Adds more frequently generating cliffs to the terrain.
+	 * @param type the terrain type
+	 * @param maxHeight the maximum height of cliffs.
+	 * @param minHeight the minimum height of cliffs (i.e. the cutoff)
+	 */
 	public static void addFrequentCliffs(PrimaryTerrainType type, double maxHeight, double minHeight) {
 		OpenSimplexGenerator height = new RidgedSimplexGenerator(type.getRandom());		
 		OpenSimplexGenerator cutoff = new RidgedSimplexGenerator(type.getRandom());		
@@ -181,15 +325,23 @@ public class VanillaTerrainTypes {
 		});
 	}
 
+	/**
+	 * Adds super frequently generating cliffs to the terrain.
+	 * @param type the terrain type
+	 * @param maxHeight the maximum height of cliffs.
+	 * @param minHeight the minimum height of cliffs.
+	 */
 	public static void addSuperFrequentCliffs(PrimaryTerrainType type, double maxHeight, double minHeight) {
-		OpenSimplexGenerator height = new RidgedSimplexGenerator(type.getRandom());		
-		OpenSimplexGenerator cutoff = new RidgedSimplexGenerator(type.getRandom());		
-		final double freq = 1.0 / 62.0;
+		OpenSimplexGenerator height = new RidgedSimplexGenerator(type.getRandom());
+		OpenSimplexGenerator cutoff = new RidgedSimplexGenerator(type.getRandom());
+		// Was a value of 62.0 each but I decided to mess with it a bit
+		final double cutfreq = 1.0 / 58.0;
+		final double genFreq = 1.0 / 68.0;
 		// relative grad: 0.58r
 		type.addGenerator((x, z) -> {
-			if (cutoff.sample(x * freq, z * freq) > 0) {
+			if (cutoff.sample(x * cutfreq, z * cutfreq) > 0) {
 				// cliff regions are more restrained, meaning they are more prominent when they happen
-				double cliffheight = (maxHeight + 1.5) * height.sample(x * freq, z * freq) - 1.5;
+				double cliffheight = (maxHeight + 1.0) * height.sample(x * genFreq, z * genFreq) - 1.0;
 
 				if (cliffheight > minHeight) {
 					return cliffheight;

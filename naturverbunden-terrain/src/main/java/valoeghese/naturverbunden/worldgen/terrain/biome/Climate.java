@@ -54,13 +54,15 @@ public final class Climate {
 	public final TerrainType[] types;
 
 	public TerrainType get(TerrainInfoSampler.Info info) {
-		TerrainType result = this.types[info.getInfo()];
+		return modify(this.types[info.getInfo()], info);
+	}
 
+	public static TerrainType modify(TerrainType type, TerrainInfoSampler.Info info) {
 		if (info.isLargeHills()) {
-			result = result.largeHills;
+			type = type.largeHills;
 		}
 
-		return info.isSmallHills() ? result.smallHills : result;
+		return info.isSmallHills() ? type.smallHills : type;
 	}
 
 	/**
