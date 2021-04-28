@@ -61,6 +61,8 @@ import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
  */
 
 public class VanillaTerrainTypes {
+	// Feel Free to mess with the biomes these use in addons and stuff
+
 	public VanillaTerrainTypes(Random seed) {
 		// Beaches
 		this.terrainBeach = new FlatTerrainType(BiomeKeys.BEACH, 64.0, Biome.Category.BEACH);
@@ -72,13 +74,33 @@ public class VanillaTerrainTypes {
 		addMountainRidges(this.terrainMountains);
 
 		// Forest Types
-		Random frand = new Random(seed.nextLong());
-		this.terrainTaiga = createMontaneForest(BiomeKeys.TAIGA, frand, false);
-		this.terrainTaigaSnowy = createMontaneForest(BiomeKeys.SNOWY_TAIGA, frand, false);
-		this.terrainTaigaGiant = createMontaneForest(BiomeKeys.GIANT_TREE_TAIGA, frand, true);
+		Random rand = new Random(seed.nextLong());
+		this.terrainTaiga = createMontaneForest(BiomeKeys.TAIGA, rand, false);
+		this.terrainTaigaSnowy = createMontaneForest(BiomeKeys.SNOWY_TAIGA, rand, false);
+		this.terrainTaigaGiant = createMontaneForest(BiomeKeys.GIANT_TREE_TAIGA, rand, true);
 		
-		this.terrainDeciduousForest = createLowlandForest(BiomeKeys.FOREST, BiomeKeys.WOODED_HILLS, frand);
-		this.terrainDeciduousForestHills = createHillyForest(BiomeKeys.FOREST, frand);
+		this.terrainBorealLowlandForest = createLowlandForest(BiomeKeys.TAIGA, BiomeKeys.TAIGA_HILLS, rand);
+
+		this.terrainDeciduousForest = createLowlandForest(BiomeKeys.FOREST, BiomeKeys.WOODED_HILLS, rand);
+		this.terrainDeciduousForestHilly = createHillyForest(BiomeKeys.FOREST, rand);
+
+		this.terrainBirchForest = createLowlandForest(BiomeKeys.BIRCH_FOREST, BiomeKeys.BIRCH_FOREST_HILLS, rand);
+		this.terrainBirchForestHilly = createLowlandForest(BiomeKeys.BIRCH_FOREST, BiomeKeys.BIRCH_FOREST_HILLS, rand);
+
+		this.terrainTallBirchForest = createLowlandForest(BiomeKeys.TALL_BIRCH_FOREST, BiomeKeys.TALL_BIRCH_HILLS, rand);
+		this.terrainFlowerForest = createHillyForest(BiomeKeys.FLOWER_FOREST, rand);
+
+		// Grassland Types
+		// TODO debug pasture type
+		rand = new Random(seed.nextLong());
+		this.terrainPasture = createLowland(BiomeKeys.PLAINS, BiomeKeys.PLAINS, rand);
+		this.terrainPasture.smallHills = this.terrainDeciduousForest;
+
+		// Wetland Types
+
+		// Desert Types
+
+		// Rainforest & Monsoon Types
 	}
 
 	// Special
@@ -98,8 +120,18 @@ public class VanillaTerrainTypes {
 	public final PrimaryTerrainType terrainTaigaGiant;
 	public final PrimaryTerrainType terrainTaigaSnowy;
 
+	public final PrimaryTerrainType terrainBorealLowlandForest;
+
 	public final PrimaryTerrainType terrainDeciduousForest;
-	public final PrimaryTerrainType terrainDeciduousForestHills;
+	public final PrimaryTerrainType terrainDeciduousForestHilly;
+
+	public final PrimaryTerrainType terrainBirchForest;
+	public final PrimaryTerrainType terrainBirchForestHilly;
+
+	public final PrimaryTerrainType terrainTallBirchForest;
+	public final PrimaryTerrainType terrainFlowerForest;
+
+	public final PrimaryTerrainType terrainPasture;
 
 	// Factories
 
@@ -139,6 +171,22 @@ public class VanillaTerrainTypes {
 		lowlandForest.largeHills = hillsForest;
 
 		return lowlandForest;
+	}
+
+	private static PrimaryTerrainType createLowland(RegistryKey<Biome> biome, RegistryKey<Biome> hills, Random rand) {
+		PrimaryTerrainType lowland = new PrimaryTerrainType(biome, rand, 70.0);
+		addLowHills(lowland, 2); // +20v, +10u
+		addCliffs(lowland, 4.0, 0.0); // +5v, +5u
+
+		PrimaryTerrainType lowlandHills = new PrimaryTerrainType(hills, rand, 85.0);
+		addLowHills(lowland, 1); // +20v, +10u
+		addCliffs(lowlandHills, 8.0, 0.0); // +8v, +8u
+		lowlandHills.reduceBlendRadius(0.6);
+		lowlandHills.setShapeWeight(2.0);
+
+		lowland.largeHills = lowlandHills;
+
+		return lowland;
 	}
 
 	OceanEntry getOcean(int temperature) {

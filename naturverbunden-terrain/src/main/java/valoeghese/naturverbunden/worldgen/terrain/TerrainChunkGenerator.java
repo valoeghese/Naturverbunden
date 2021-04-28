@@ -50,6 +50,7 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
+import valoeghese.naturverbunden.debug.terrain.IngameDebugSettings;
 import valoeghese.naturverbunden.util.terrain.Vec2d;
 import valoeghese.naturverbunden.util.terrain.Voronoi;
 import valoeghese.naturverbunden.worldgen.terrain.biome.TerrainBiomeProvider;
@@ -267,7 +268,7 @@ public class TerrainChunkGenerator extends ChunkGenerator {
 		// Do not remove this
 		height += 0.00001;
 
-		if (TerrainBiomeProvider.DEBUG_SHAPE && !TerrainBiomeProvider.DEBUG_BIOMES) { // debug
+		if (IngameDebugSettings.debugShape() && !IngameDebugSettings.debugBiomes()) { // debug
 			return (int) height;
 		}
 

@@ -25,6 +25,8 @@ import java.util.function.LongFunction;
 
 import javax.annotation.Nullable;
 
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -37,6 +39,7 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.BiomeSource;
 import valoeghese.naturverbunden.core.ListArray;
 import valoeghese.naturverbunden.core.NVBMathUtils;
+import valoeghese.naturverbunden.debug.terrain.IngameDebugSettings;
 import valoeghese.naturverbunden.util.terrain.Noise;
 import valoeghese.naturverbunden.util.terrain.cache.DoubleGridOperator;
 import valoeghese.naturverbunden.util.terrain.cache.GridOperator;
@@ -63,7 +66,6 @@ public class TerrainBiomeProvider extends BiomeSource {
 		Random gr = new Random(seed);
 		this.humidityNoise = new Noise(gr, 1);
 		this.mountainChain = new Noise(gr, 1);
-		this.mountainChainStretch = new Noise(gr, 1);
 		this.tempOffset = (gr.nextDouble() - 0.5) * 6; // -3 to 3
 		this.infoSampler = Layers.build(seed);
 
@@ -77,12 +79,12 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 		gr.setSeed(seed + 2);
 		RiverSampler rivers = new RiverSampler(gr);
-		this.rawMountains = new LossyDoubleCache(512, this::getChainSample);
+		this.rawMountains = new LossyDoubleCache(1024, this::getChainSample);
 		this.rivers = new LossyDoubleCache(512, rivers::sample);
 
 		this.modifiers = MODIFIER_LIST.map(fn -> fn.apply(seed));
 
-		if (FabricLoader.getInstance().isDevelopmentEnvironment() && DEBUG_SHAPE) {
+		if (FabricLoader.getInstance().isDevelopmentEnvironment() && IngameDebugSettings.debugShape()) {
 			this.debug = new DebugTerrainTypes(gr);
 		}
 	}
@@ -92,7 +94,6 @@ public class TerrainBiomeProvider extends BiomeSource {
 	private final DoubleGridOperator rivers;
 	private final Noise humidityNoise;
 	private final Noise mountainChain;
-	private final Noise mountainChainStretch;
 	private final double tempOffset;
 	private final TerrainInfoSampler infoSampler;
 	private final GridOperator<TerrainType> terrainTypeSampler;
@@ -118,7 +119,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 	}
 
 	private double getChainSample(int x, int z) {
-		final double chainFrequency = 1.0 / 3269.0;
+		final double chainFrequency = 1.0 / (2*3269.0);
 
 		// Chain Sample. Used for mountain chains and fake orthographic lift humidity modification
 		return this.mountainChain.sample(x * chainFrequency, z * chainFrequency);
@@ -126,10 +127,11 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	public double getMtnChainVal(int x, int z) {
 		// Copied From Terrain Sample (below)
-		double chainSample = this.rawMountains.get(x, z);
+		double chainSample = this.rawMountains.get(x * 2, z * 2);
 		double rawMountainChain = CHAIN_CUTOFF - Math.abs(chainSample);
+		double isolator = Math.max(0.0, Math.min(1.0, 20 * this.rawMountains.get(x + 20, z - 69))); // value to isolate chains
 		// normalised between 0 and 1
-		return CHAIN_NORMALISER * Math.max(0.0, rawMountainChain);
+		return CHAIN_NORMALISER * Math.max(0.0, rawMountainChain) * isolator;
 	}
 
 	/**
@@ -176,7 +178,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 			double humidityIncrease = calculateHumidityIncrease(z);
 			humidity += humidityIncrease;
 
-			if (terrainInfo.category == TerrainCategory.OCEAN && !DEBUG_BIOMES) {
+			if (terrainInfo.category == TerrainCategory.OCEAN && !IngameDebugSettings.debugBiomes()) {
 				final int deepCheckDist = 8;
 				boolean i5 = this.infoSampler.sample((x >> 2) + deepCheckDist, (z >> 2) + deepCheckDist).category == TerrainCategory.OCEAN;
 				boolean _09 = this.infoSampler.sample((x >> 2) + deepCheckDist, (z >> 2) - deepCheckDist).category == TerrainCategory.OCEAN;
@@ -191,7 +193,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 				mountainChain -= 0.5;
 			}
 
-			TerrainType terrain = DEBUG_BIOMES ? Climate.modify(this.terrain.terrainDeciduousForestHills, terrainInfo) : this.climates.sample(temperature, humidity).get(terrainInfo);
+			TerrainType terrain = IngameDebugSettings.debugBiomes() ? Climate.modify(this.terrain.terrainDeciduousForestHilly, terrainInfo) : this.climates.sample(temperature, humidity).get(terrainInfo);
 
 			if (terrain == null) {
 				throw new IllegalStateException("WTF 2 electric boogaloo. Humidity " + humidity + ", MountainChain " + mountainChain + ", InfoBits " + terrainInfo.info + " TerrainCategory " + terrainInfo.category.name());
@@ -232,7 +234,7 @@ public class TerrainBiomeProvider extends BiomeSource {
 
 	@Override
 	public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-		if (DEBUG_SHAPE && !DEBUG_BIOMES) {
+		if (IngameDebugSettings.debugShape() && !IngameDebugSettings.debugBiomes()) {
 			return this.biomeRegistry.get(BiomeKeys.PLAINS);
 		}
 
@@ -279,8 +281,6 @@ public class TerrainBiomeProvider extends BiomeSource {
 	private static final double TEMPERATURE_CELL_SIZE = 1800.0;
 	private static final double CHAIN_CUTOFF = 0.17;
 	private static final double CHAIN_NORMALISER = 1 / CHAIN_CUTOFF;
-	public static final boolean DEBUG_SHAPE = false; // If this is enabled, lots of worldgen shape modifiers will be disabled (some will be reenabled if DEBUG_BIOMES is also on)
-	public static final boolean DEBUG_BIOMES = true; // If this is enabled, single biome world except for modifiers such as mountains
 
 	@FunctionalInterface
 	public interface TerrainTypeModifier {
