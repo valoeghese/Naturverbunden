@@ -1,6 +1,6 @@
 plugins {
 	id "java"
-	id "fabric-loom" version "0.8-SNAPSHOT" apply false
+	id "fabric-loom" version "0.8.12" apply false
 	id "maven-publish"
 }
 
@@ -40,6 +40,11 @@ allprojects {
 	group = "${project.maven_group}"
 	version = "${project.mod_version}+${project.minecraft_version}"
 
+	tasks.withType(JavaCompile).configureEach {
+		it.options.encoding = "UTF-8"
+		it.options.release = 16
+	}
+
 	repositories {
 		maven { url "https://server.bbkr.space/artifactory/libs-release" } // Cotton maven - home of Cotton projects
 		maven { url "https://maven.abusedmaster.xyz" } // NerdHub maven
@@ -72,11 +77,6 @@ allprojects {
 		from(sourceSets.main.resources.srcDirs) {
 			exclude "fabric.mod.json"
 		}
-	}
-
-	tasks.withType(JavaCompile).configureEach {
-		it.options.encoding = "UTF-8"
-		it.options.release = 16
 	}
 
 	task sourcesJar(type: Jar, dependsOn: classes) {
