@@ -19,20 +19,22 @@ dependencies {
 	implementation project(":naturverbunden-health")
 	implementation project(":naturverbunden-primitive")
 	implementation project(":naturverbunden-terrain")
+	implementation project(":naturverbunden-zoesteria")
 	
 	afterEvaluate {
 		include project("naturverbunden-core:")
 		include project("naturverbunden-health:")
 		include project("naturverbunden-primitive:")
 		include project("naturverbunden-terrain:")
+		include project("naturverbunden-zoesteria:")
 	}
 }
 
 allprojects {
 	apply plugin: "fabric-loom"
 
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
+	sourceCompatibility = JavaVersion.VERSION_16
+	targetCompatibility = JavaVersion.VERSION_16
 
 	archivesBaseName = "${project.archives_base_name}"
 	group = "${project.maven_group}"
@@ -46,6 +48,10 @@ allprojects {
 			url = "https://maven.onyxstudios.dev"
 		}
 		maven { url 'https://jitpack.io' }
+		maven {
+			name = 'HalfOf2'
+			url = 'https://storage.googleapis.com/devan-maven/'
+		}
 	}
 
 	dependencies {
@@ -68,8 +74,9 @@ allprojects {
 		}
 	}
 
-	tasks.withType(JavaCompile) {
-		options.encoding = "UTF-8"
+	tasks.withType(JavaCompile).configureEach {
+		it.options.encoding = "UTF-8"
+		it.options.release = 16
 	}
 
 	task sourcesJar(type: Jar, dependsOn: classes) {

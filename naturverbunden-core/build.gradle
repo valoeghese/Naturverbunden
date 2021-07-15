@@ -6,6 +6,6 @@ minecraft {
 }
 
 dependencies {
-	implementation "tk.valoeghese:ZoesteriaConfig:${project.zoesteria_config_version}"
-	include "tk.valoeghese:ZoesteriaConfig:${project.zoesteria_config_version}"
+	implementation "valoeghese:ZoesteriaConfig:${project.zoesteria_config_version}"
+	include "valoeghese:ZoesteriaConfig:${project.zoesteria_config_version}"
 }

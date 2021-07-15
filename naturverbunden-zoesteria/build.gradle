@@ -1,7 +1,6 @@
-archivesBaseName = "naturverbunden-terrain"
+archivesBaseName = "naturverbunden-zoesteria"
 version = getSubprojectVersion(project)
 
 dependencies {
 	compile project(path: ':naturverbunden-core')
-	compile project(path: ':naturverbunden-zoesteria')
 }
