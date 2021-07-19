@@ -2,5 +2,5 @@ archivesBaseName = "naturverbunden-zoesteria"
 version = getSubprojectVersion(project)
 
 dependencies {
-	compile project(path: ':naturverbunden-core')
+	implementation project(path: ':naturverbunden-core')
 }

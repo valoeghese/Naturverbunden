@@ -86,9 +86,9 @@ allprojects {
 		from "LICENSE"
 	}
 	
-	loom {
+	/*loom {
 		shareCaches = true
-	}
+	}*/
 }
 
 subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }
