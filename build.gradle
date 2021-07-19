@@ -31,10 +31,8 @@ dependencies {
 }
 
 allprojects {
+	apply plugin: "java"
 	apply plugin: "fabric-loom"
-
-	sourceCompatibility = JavaVersion.VERSION_16
-	targetCompatibility = JavaVersion.VERSION_16
 
 	archivesBaseName = "${project.archives_base_name}"
 	group = "${project.maven_group}"
@@ -92,6 +90,8 @@ allprojects {
 		shareCaches = true
 	}
 }
+
+subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }
 
 // configure the maven publication
 publishing {
