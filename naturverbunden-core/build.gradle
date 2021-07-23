@@ -8,4 +8,6 @@ minecraft {
 dependencies {
 	implementation "valoeghese:ZoesteriaConfig:${project.zoesteria_config_version}"
 	include "valoeghese:ZoesteriaConfig:${project.zoesteria_config_version}"
+	modImplementation "net.devtech:arrp:0.+"
+	include "net.devtech:arrp:0.+"
 }

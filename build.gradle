@@ -55,6 +55,10 @@ allprojects {
 			name = 'HalfOf2'
 			url = 'https://storage.googleapis.com/devan-maven/'
 		}
+		maven {
+			name = "Devan-Kerman/Devan-Repo"
+			url = "https://raw.githubusercontent.com/Devan-Kerman/Devan-Repo/master/"
+		}
 	}
 
 	dependencies {
