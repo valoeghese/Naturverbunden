@@ -12,8 +12,7 @@ public class PrimitiveModule implements ModInitializer {
 		Naturverbunden.LOGGER.info("[Primitive] Initializing");
 		PrimitiveBlocks.forceRegister();
 		PrimitiveCrafting.addDefaultRecipes();
-		PrimitiveWorldgen.forceRegister();
-		PrimitiveWorldgen.initialiseWorldGen();
+		PrimitiveWorldgen.initWorldgen();
 		GasMechanics.initialise();
 	}
 }

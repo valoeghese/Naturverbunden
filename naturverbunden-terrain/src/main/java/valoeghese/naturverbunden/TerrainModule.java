@@ -50,7 +50,7 @@ public class TerrainModule implements ModInitializer {
 
 				return new RiverEdgeTerrainType(original, original.getCategory() == Biome.Category.DESERT && riverGen > 0.5 ? BiomeKeys.RIVER : original.getBiome(), TerrainChunkGenerator.RIVER_HEIGHT + 6, riverGen);
 			}
-			
+
 			return original;
 		});
 
@@ -68,6 +68,9 @@ public class TerrainModule implements ModInitializer {
 				return original;
 			}
 		});
+
+		// Caldera Ridge Modifier TODO readd
+		//TerrainBiomeProvider.addTerrainTypeModifier(3, CalderaRidgeModifier::new);
 	}
 
 }

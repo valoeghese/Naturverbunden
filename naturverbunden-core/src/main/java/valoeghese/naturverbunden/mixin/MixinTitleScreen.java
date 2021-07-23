@@ -19,18 +19,23 @@
 
 package valoeghese.naturverbunden.mixin;
 
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Util;
@@ -42,6 +47,13 @@ public abstract class MixinTitleScreen extends Screen {
 		super(title);
 	}
 
+	@Shadow
+	private List<Element> children;
+	@Shadow
+	private List<Selectable> selectables;
+	@Shadow
+	private List<Drawable> drawables;
+
 	@Inject(at = @At("RETURN"), method = "init")
 	private void onInit(CallbackInfo info) {
 		if (NVBToggles.cutePuppies && new Random().nextInt(1000) == 0 ) {
@@ -49,16 +61,17 @@ public abstract class MixinTitleScreen extends Screen {
 
 			final int realmsy = j + 24 * 2;
 
-			AbstractButtonWidget realms = getButtonForY(realmsy);
+			ClickableWidget realms = getButtonForY(realmsy);
 
 			if (realms != null) {
-				this.buttons.remove(realms);
+				this.drawables.remove(realms);
+				this.selectables.remove(realms);
 				this.children.remove(realms);
 			} else {
 				throw new RuntimeException("Bad");
 			}
 
-			this.addButton(new ButtonWidget(this.width / 2 - 100, realmsy, 200, 20, new TranslatableText("menu.online"), (buttonWidget) -> {
+			this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, realmsy, 200, 20, new TranslatableText("menu.online"), (buttonWidget) -> {
 				try {
 					String cutePuppies = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 					Util.getOperatingSystem().open(cutePuppies);
@@ -69,11 +82,13 @@ public abstract class MixinTitleScreen extends Screen {
 		}
 	}
 
-	private AbstractButtonWidget getButtonForY(int y) {
-		AtomicReference<AbstractButtonWidget> am = new AtomicReference<>();
-		this.buttons.forEach(b -> {
-			if (b.y == y) {
-				am.set(b);
+	private ClickableWidget getButtonForY(int y) {
+		AtomicReference<ClickableWidget> am = new AtomicReference<>();
+		this.drawables.forEach(b -> {
+			if (b instanceof ClickableWidget) {
+				if (((ClickableWidget) b).y == y) {
+					am.set((ClickableWidget)b);
+				}
 			}
 		});
 

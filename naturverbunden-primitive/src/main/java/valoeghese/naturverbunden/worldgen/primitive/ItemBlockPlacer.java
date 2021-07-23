@@ -34,7 +34,6 @@ import net.minecraft.world.gen.placer.BlockPlacer;
 import net.minecraft.world.gen.placer.BlockPlacerType;
 import valoeghese.naturverbunden.Naturverbunden;
 import valoeghese.naturverbunden.block.primitive.ItemBlockEntity;
-import valoeghese.naturverbunden.core.NVBWorldgenUtils;
 
 public class ItemBlockPlacer extends BlockPlacer {
 	public ItemBlockPlacer(Item item) {

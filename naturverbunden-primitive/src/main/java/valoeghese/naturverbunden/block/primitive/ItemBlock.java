@@ -40,6 +40,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import valoeghese.naturverbunden.block.zoesteria.FakeItemBlock;
 
 public class ItemBlock extends FakeItemBlock implements BlockEntityProvider {
 	public ItemBlock(Settings settings) {

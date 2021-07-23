@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.FireBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldView;
-import valoeghese.naturverbunden.block.primitive.CombustibleGasBlock;
+import valoeghese.naturverbunden.block.zoesteria.CombustibleGasBlock;
 
 @Mixin(FireBlock.class)
 public class MixinFireBlock {

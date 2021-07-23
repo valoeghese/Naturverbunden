@@ -31,7 +31,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import valoeghese.naturverbunden.block.primitive.GasBlock;
+import valoeghese.naturverbunden.block.zoesteria.GasBlock;
 
 public class GasMechanics {
 	public static void initialise() {

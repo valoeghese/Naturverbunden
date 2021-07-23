@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden.worldgen.primitive;
+package valoeghese.naturverbunden.worldgen.zoesteria;
 
 import java.util.Random;
 
@@ -27,7 +27,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
-import valoeghese.naturverbunden.block.primitive.PrimitiveBlocks;
+import valoeghese.naturverbunden.block.zoesteria.ZoesteriaBlocks;
 
 public class HotSpringsSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> {
 	public HotSpringsSurfaceBuilder() {
@@ -38,7 +38,7 @@ public class HotSpringsSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfi
 	public void generate(Random random, Chunk chunk, Biome biome, int x, int z, int height, double noise, BlockState defaultBlock, BlockState defaultFluid, int seaLevel, int depth, long seed, TernarySurfaceConfig surfaceConfig) {
 		if (height < THRESHOLD_0a || height > THRESHOLD_0b) {
 			if (noise < 1.2 && height > MODIFIED_SEA_LEVEL + 4) {
-				SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, new TernarySurfaceConfig(surfaceConfig.getTopMaterial(), PrimitiveBlocks.BROWN_STONE.getDefaultState(), PrimitiveBlocks.BROWN_STONE.getDefaultState()));
+				SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, new TernarySurfaceConfig(surfaceConfig.getTopMaterial(), ZoesteriaBlocks.BROWN_STONE.getDefaultState(), ZoesteriaBlocks.BROWN_STONE.getDefaultState()));
 			} else {
 				SurfaceBuilder.DEFAULT.generate(random, chunk, biome, x, z, height, noise, defaultBlock, defaultFluid, MODIFIED_SEA_LEVEL, depth, seed, HS_0_CONFIG);
 			}
@@ -67,22 +67,22 @@ public class HotSpringsSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfi
 	public static final int THRESHOLD_3 = MODIFIED_SEA_LEVEL + 2;
 
 	private static final TernarySurfaceConfig HS_1_CONFIG = new TernarySurfaceConfig(
-			PrimitiveBlocks.SYNECHOCOCCUS_COVERED_ROCK.getDefaultState(),
-			PrimitiveBlocks.BROWN_STONE.getDefaultState(),
-			PrimitiveBlocks.BROWN_STONE.getDefaultState());
+			ZoesteriaBlocks.SYNECHOCOCCUS_COVERED_ROCK.getDefaultState(),
+			ZoesteriaBlocks.BROWN_STONE.getDefaultState(),
+			ZoesteriaBlocks.BROWN_STONE.getDefaultState());
 
 	private static final TernarySurfaceConfig HS_2_CONFIG = new TernarySurfaceConfig(
-			PrimitiveBlocks.CAROTENOID_COVERED_ROCK.getDefaultState(),
-			PrimitiveBlocks.BROWN_STONE.getDefaultState(),
-			PrimitiveBlocks.BROWN_STONE.getDefaultState());
+			ZoesteriaBlocks.CAROTENOID_COVERED_ROCK.getDefaultState(),
+			ZoesteriaBlocks.BROWN_STONE.getDefaultState(),
+			ZoesteriaBlocks.BROWN_STONE.getDefaultState());
 
 	private static final TernarySurfaceConfig HS_3_CONFIG = new TernarySurfaceConfig(
-			PrimitiveBlocks.DEINOCOCCUS_COVERED_ROCK.getDefaultState(),
-			PrimitiveBlocks.BROWN_STONE.getDefaultState(),
-			PrimitiveBlocks.BROWN_STONE.getDefaultState());
+			ZoesteriaBlocks.DEINOCOCCUS_COVERED_ROCK.getDefaultState(),
+			ZoesteriaBlocks.BROWN_STONE.getDefaultState(),
+			ZoesteriaBlocks.BROWN_STONE.getDefaultState());
 
 	private static final TernarySurfaceConfig HS_0_CONFIG = new TernarySurfaceConfig(
-			PrimitiveBlocks.BROWN_STONE.getDefaultState(),
-			PrimitiveBlocks.BROWN_STONE.getDefaultState(),
-			PrimitiveBlocks.BROWN_STONE.getDefaultState());
+			ZoesteriaBlocks.BROWN_STONE.getDefaultState(),
+			ZoesteriaBlocks.BROWN_STONE.getDefaultState(),
+			ZoesteriaBlocks.BROWN_STONE.getDefaultState());
 }

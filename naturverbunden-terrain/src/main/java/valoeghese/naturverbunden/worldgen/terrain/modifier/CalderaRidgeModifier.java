@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden.worldgen.primitive;
+package valoeghese.naturverbunden.worldgen.terrain.modifier;
 
 import java.util.Random;
 
@@ -34,6 +34,7 @@ import valoeghese.naturverbunden.worldgen.terrain.type.EdgeTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.PrimaryTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.SimpleSimplexTerrainType;
 import valoeghese.naturverbunden.worldgen.terrain.type.TerrainType;
+import valoeghese.naturverbunden.worldgen.zoesteria.ZoesteriaWorldgen;
 
 public class CalderaRidgeModifier implements TerrainTypeModifier {
 	CalderaRidgeModifier(long seed) {
@@ -75,7 +76,7 @@ public class CalderaRidgeModifier implements TerrainTypeModifier {
 
 	private static class HotspringsTerrainType extends SimpleSimplexTerrainType {
 		HotspringsTerrainType(Random rand) {
-			super(PrimitiveWorldgen.HOT_SPRINGS_KEY, rand, 2, 106.0, 1.0 / 104.0, 6.0);
+			super(ZoesteriaWorldgen.HOT_SPRINGS_KEY, rand, 2, 106.0, 1.0 / 104.0, 6.0);
 			this.lakes = new OpenSimplexGenerator(rand);
 		}
 

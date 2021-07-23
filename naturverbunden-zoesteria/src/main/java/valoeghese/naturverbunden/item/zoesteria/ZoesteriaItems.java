@@ -17,14 +17,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package valoeghese.naturverbunden.item.primitive;
+package valoeghese.naturverbunden.item.zoesteria;
 
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import valoeghese.naturverbunden.Naturverbunden;
+import valoeghese.naturverbunden.block.zoesteria.ZoesteriaBlocks;
 
-public class PrimitiveItems {
-	public static final ItemGroup GROUP = FabricItemGroupBuilder.build(Naturverbunden.id("primitive"), () -> new ItemStack(Items.STICK, 1));
+public class ZoesteriaItems {
+	public static final ItemGroup GROUP = FabricItemGroupBuilder.build(Naturverbunden.id("primitive"), () -> new ItemStack(ZoesteriaBlocks.BROWN_STONE, 1));
 }
