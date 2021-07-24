@@ -17,23 +17,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package schluessel.block;
+package schluessel.block.event;
 
-import net.minecraft.util.ActionResult;
+import net.minecraft.block.Block;
 import schluessel.util.Position;
-import schluessel.util.VanillaBehaviour;
 
 /**
- * Class that handles default block mechanics.
+ * Event parameters for a block being right clicked.
  */
-public class BlockMechanics {
+public interface BlockActivateEvent {
 	/**
-	 * Called when the block is right clicked by a player.
-	 * @param position the position of the block being right clicked.
-	 * @param vanilla the vanilla behaviour.
-	 * @return the action result for vanilla behaviour.
+	 * The block being right clicked.
 	 */
-	public ActionResult onUse(Position position, VanillaBehaviour<ActionResult> vanilla) {
-		return vanilla.run();
-	}
+	Block getBlock();
+
+	/**
+	 * The position of the block being right clicked.
+	 */
+	Position position();
 }

@@ -23,11 +23,19 @@ import java.util.function.Function;
 
 import net.devtech.arrp.json.models.JModel;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import schluessel.block.BlockMaterial;
 import schluessel.block.BlockMechanics;
 import schluessel.block.BlockModel;
 import schluessel.item.ItemSettings;
+import schluessel_impl.ImplSchluesselFabric;
 
 public class ImplSchluesselBlock extends Block {
 	public ImplSchluesselBlock(Settings settings, BlockMechanics mechanics, BlockModel model,
@@ -68,10 +76,12 @@ public class ImplSchluesselBlock extends Block {
 		return this.itemSettings;
 	}
 
-//	@Override
-//	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-//		return this.mechanics.onUse((schluessel.block.Block) this, state, world, pos, player, hand, hit);
-//	}
+	@Override
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		return this.mechanics.onUse(
+				ImplSchluesselFabric.blockposToPosition(pos),
+				() -> super.onUse(state, world, pos, player, hand, hit));
+	}
 
 	@Override
 	public OffsetType getOffsetType() {

@@ -20,7 +20,14 @@
     "fabricloader": ">=0.4.0"
   },
   
+  "entrypoints": {
+    "main": [
+      "schluessel_impl.ImplSchluesselFabric"
+    ]
+  },
+  
   "mixins": [
-    "nvb-core.mixins.json"
+    "nvb-core.mixins.json",
+    "schluessel.mixins.json"
   ]
 }

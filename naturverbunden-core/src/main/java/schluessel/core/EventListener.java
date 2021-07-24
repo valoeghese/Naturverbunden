@@ -17,23 +17,27 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package schluessel.block;
+package schluessel.core;
 
-import net.minecraft.util.ActionResult;
-import schluessel.util.Position;
-import schluessel.util.VanillaBehaviour;
+import schluessel.block.Block;
+import schluessel.block.event.BlockActivateEvent;
+import schluessel.registry.RegistryEvent;
 
 /**
- * Class that handles default block mechanics.
+ * Specifies an event listener.
  */
-public class BlockMechanics {
+public interface EventListener {
 	/**
-	 * Called when the block is right clicked by a player.
-	 * @param position the position of the block being right clicked.
-	 * @param vanilla the vanilla behaviour.
-	 * @return the action result for vanilla behaviour.
+	 * Block registry event listener.
+	 * @param event the event.
 	 */
-	public ActionResult onUse(Position position, VanillaBehaviour<ActionResult> vanilla) {
-		return vanilla.run();
+	default void onBlockRegister(RegistryEvent<Block> event) {
+	}
+
+	/**
+	 * Block right click event listener.
+	 * @param event the event.
+	 */
+	default void onBlockActivate(BlockActivateEvent event) {
 	}
 }

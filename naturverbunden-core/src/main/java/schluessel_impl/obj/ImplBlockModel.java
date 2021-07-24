@@ -32,7 +32,7 @@ import net.minecraft.block.AbstractBlock.OffsetType;
 import net.minecraft.util.Identifier;
 import schluessel.block.BlockModel;
 import schluessel.block.Layer;
-import schluessel.core.SchluesselMod;
+import schluessel.core.Mod;
 import schluessel_impl.ImplSchluesselARRP;
 
 public class ImplBlockModel implements BlockModel {
@@ -95,7 +95,7 @@ public class ImplBlockModel implements BlockModel {
 		return this.renderLayer;
 	}
 
-	public void createModelFor(SchluesselMod context, ImplSchluesselBlock block, String id) {
+	public void createModelFor(Mod context, ImplSchluesselBlock block, String id) {
 		IdentifierFunction identifierFunction = (subPath, section) -> context.identifierOf(
 				(section == null ? "" : section + "/" + id)
 				+ (subPath.isEmpty() ? "" : ("_" + subPath)));

@@ -22,9 +22,9 @@ package schluessel.core;
 import net.minecraft.util.Identifier;
 
 /**
- * Interface which specifies a schluessel mod.
+ * Interface which specifies a mod that runs from schluessel.
  */
-public interface SchluesselMod {
+public interface Mod {
 	/**
 	 * @return the mod id of the mod.
 	 */

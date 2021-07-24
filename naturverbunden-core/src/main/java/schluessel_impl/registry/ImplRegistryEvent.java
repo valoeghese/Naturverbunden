@@ -10,7 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import schluessel.block.Layer;
-import schluessel.core.SchluesselMod;
+import schluessel.core.Mod;
 import schluessel.registry.RegistryEvent;
 import schluessel_impl.ImplSchluesselARRP;
 import schluessel_impl.ImplSchluesselClient;
@@ -22,11 +22,11 @@ import schluessel_impl.obj.ImplSchluesselBlock;
 
 public class ImplRegistryEvent {
 	static class Block implements RegistryEvent<schluessel.block.Block> {
-		Block(SchluesselMod mod) {
+		Block(Mod mod) {
 			this.context = mod;
 		}
 
-		private final SchluesselMod context;
+		private final Mod context;
 
 		@Override
 		public void register(String id, schluessel.block.Block object) {
