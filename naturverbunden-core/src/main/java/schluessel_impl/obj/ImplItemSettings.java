@@ -17,11 +17,29 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package schluessel.block;
+package schluessel_impl.obj;
 
-/**
- * Class that handles block mechanics.
- */
-// todo in the parameters of the methods here is given somewhere a ()V function that runs the vanilla implementation
-public class BlockMechanics {
+import javax.annotation.Nullable;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import schluessel.item.ItemSettings;
+
+public final class ImplItemSettings implements ItemSettings {
+	private ItemGroup creativeTab;
+
+	@Override
+	public ItemSettings creativeTab(ItemGroup group) {
+		this.creativeTab = group;
+		return this;
+	}
+
+	@Nullable
+	public ItemGroup getCreativeTab() {
+		return this.creativeTab;
+	}
+
+	public Item.Settings build() {
+		return new Item.Settings().group(this.creativeTab);
+	}
 }

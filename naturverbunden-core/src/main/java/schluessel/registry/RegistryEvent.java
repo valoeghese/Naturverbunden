@@ -17,11 +17,8 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package schluessel.block;
+package schluessel.registry;
 
-/**
- * Class that handles block mechanics.
- */
-// todo in the parameters of the methods here is given somewhere a ()V function that runs the vanilla implementation
-public class BlockMechanics {
+public interface RegistryEvent<T> {
+	public void register(String id, T object);
 }

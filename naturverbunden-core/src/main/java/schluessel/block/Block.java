@@ -19,9 +19,6 @@
 
 package schluessel.block;
 
-/**
- * Class that handles block mechanics.
- */
-// todo in the parameters of the methods here is given somewhere a ()V function that runs the vanilla implementation
-public class BlockMechanics {
+public interface Block {
+
 }

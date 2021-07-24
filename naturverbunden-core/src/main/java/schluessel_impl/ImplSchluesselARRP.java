@@ -6,7 +6,7 @@ import net.devtech.arrp.api.RuntimeResourcePack;
 /**
  * Schlüssel API's little <i>key</i> to ARRP
  */
-public class SchluesselARRP {
+public class ImplSchluesselARRP {
 	public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create("schluessel");
 
 	public static void setup() {

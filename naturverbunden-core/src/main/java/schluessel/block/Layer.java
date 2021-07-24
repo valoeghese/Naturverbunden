@@ -20,10 +20,10 @@
 package schluessel.block;
 
 /**
- * The render layer for the block.
+ * The render layer for a block.
  */
 public enum Layer {
 	DEFAULT,
-	CUTOUT_MIPPED,
+	CUTOUT,
 	TRANSLUCENT
 }

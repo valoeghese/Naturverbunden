@@ -17,11 +17,18 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package schluessel.block;
+package schluessel.item;
+
+import net.minecraft.item.ItemGroup;
+import schluessel_impl.obj.ImplItemSettings;
 
 /**
- * Class that handles block mechanics.
+ * Item Settings builder.
  */
-// todo in the parameters of the methods here is given somewhere a ()V function that runs the vanilla implementation
-public class BlockMechanics {
+public interface ItemSettings {
+	ItemSettings creativeTab(ItemGroup group);
+
+	static ItemSettings create() {
+		return new ImplItemSettings();
+	}
 }

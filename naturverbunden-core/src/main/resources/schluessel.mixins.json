@@ -1,11 +1,12 @@
 {
   "required": true,
-  "package": "valoeghese.naturverbunden.mixin",
+  "package": "schluessel_impl.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "FireBlockAccessor",
+    "MixinBlock"
   ],
   "client": [
-    "MixinTitleScreen"
   ],
   "server": [
   ],

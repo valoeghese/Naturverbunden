@@ -17,11 +17,17 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package schluessel.block;
+package schluessel_impl.mixin;
 
-/**
- * Class that handles block mechanics.
- */
-// todo in the parameters of the methods here is given somewhere a ()V function that runs the vanilla implementation
-public class BlockMechanics {
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.FireBlock;
+
+@Mixin(FireBlock.class)
+public interface FireBlockAccessor {
+
+	@Invoker
+	void callRegisterFlammableBlock(Block block, int burnChance, int spreadChance);
 }
