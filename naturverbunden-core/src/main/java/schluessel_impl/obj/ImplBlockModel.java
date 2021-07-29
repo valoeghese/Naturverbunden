@@ -28,10 +28,10 @@ import com.google.common.collect.Lists;
 
 import net.devtech.arrp.json.blockstate.JBlockModel;
 import net.devtech.arrp.json.models.JModel;
-import net.minecraft.block.AbstractBlock.OffsetType;
 import net.minecraft.util.Identifier;
 import schluessel.block.BlockModel;
 import schluessel.block.Layer;
+import schluessel.block.RandomOffsetType;
 import schluessel.core.Mod;
 import schluessel_impl.ImplSchluesselARRP;
 
@@ -44,7 +44,7 @@ public class ImplBlockModel implements BlockModel {
 	Boolean opaque = null; // This can also be determined by the material. If both are set, this wins.
 	Layer renderLayer = Layer.DEFAULT;
 	AdditionalModelFunction additionalModels;
-	OffsetType offsetType;
+	RandomOffsetType offsetType;
 
 	@Override
 	public BlockModel blockState(StateFunction blockStateCreator) {
@@ -77,7 +77,7 @@ public class ImplBlockModel implements BlockModel {
 	}
 
 	@Override
-	public BlockModel offsetType(OffsetType type) {
+	public BlockModel randomOffset(RandomOffsetType type) {
 		this.offsetType = type;
 		return this;
 	}
@@ -87,7 +87,7 @@ public class ImplBlockModel implements BlockModel {
 		return new Immutable(this);
 	}
 
-	public OffsetType getOffsetType() {
+	public RandomOffsetType getRandomOffsetType() {
 		return this.offsetType;
 	}
 
@@ -163,7 +163,7 @@ public class ImplBlockModel implements BlockModel {
 		}
 
 		@Override
-		public BlockModel offsetType(OffsetType type) {
+		public BlockModel randomOffset(RandomOffsetType type) {
 			throw new UnsupportedOperationException("Cannot set the offset type on an immutable model!");
 		}
 	}

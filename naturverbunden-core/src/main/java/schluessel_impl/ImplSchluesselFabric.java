@@ -1,6 +1,7 @@
 package schluessel_impl;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import schluessel.util.Position;
 
@@ -15,5 +16,14 @@ public class ImplSchluesselFabric implements ModInitializer {
 	// TODO should Position be bound to these classes instead? i.e. use an interface instead of a record, and bind it to BlockPos, Vec3d, etc
 	public static Position blockposToPosition(BlockPos pos) {
 		return new Position(pos.getX(), pos.getY(), pos.getZ());
+	}
+	
+	public static ActionResult convertAction(schluessel.registry.ActionResult action) {
+		return switch (action) {
+			case SKIP, PASS -> ActionResult.PASS;
+			case CONSUME -> ActionResult.CONSUME;
+			case SUCCESS -> ActionResult.SUCCESS;
+			case FAIL -> ActionResult.FAIL;
+		};
 	}
 }

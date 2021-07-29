@@ -47,6 +47,12 @@ public class ImplSchluesselBlock extends Block {
 		this.itemModel = itemModel;
 		this.material = material;
 		this.itemSettings = itemSettings;
+		
+		this.vanillaOffsetType = switch(((ImplBlockModel)this.model).getRandomOffsetType()) {
+		    case ALL			-> OffsetType.XYZ;
+		    case HORIZONTAL_ONLY-> OffsetType.XZ;
+		    case NONE			-> OffsetType.NONE;
+		};
 	}
 
 	private final BlockMechanics mechanics;
@@ -55,6 +61,7 @@ public class ImplSchluesselBlock extends Block {
 	private final boolean defaultLootTable;
 	private final Function<Identifier, JModel> itemModel;
 	private final ItemSettings itemSettings;
+	private final OffsetType vanillaOffsetType;
 
 	public BlockModel getModel() {
 		return this.model;
@@ -78,14 +85,13 @@ public class ImplSchluesselBlock extends Block {
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		return this.mechanics.onUse(
-				ImplSchluesselFabric.blockposToPosition(pos),
-				() -> super.onUse(state, world, pos, player, hand, hit));
+		// if there is ever more logic added to vanilla here, PASS will need to be differentiated to SKIP where SKIP just returns immediately whereas PASS runs vanilla
+		return ImplSchluesselFabric.convertAction(this.mechanics.onUse(ImplSchluesselFabric.blockposToPosition(pos)));
 	}
 
 	@Override
 	public OffsetType getOffsetType() {
-		return ((ImplBlockModel)this.model).getOffsetType();
+		return this.vanillaOffsetType;
 	}
 
 //	@Override

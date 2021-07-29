@@ -19,20 +19,20 @@
 
 package schluessel.block;
 
-import schluessel.registry.ActionResult;
-import schluessel.util.Position;
-
 /**
- * Class that handles default block mechanics.
+ * Enum for a random block offset for block models.
  */
-public class BlockMechanics {
+public enum RandomOffsetType {
 	/**
-	 * Called when the block is right clicked by a player.
-	 * @param position the position of the block being right clicked.
-	 * @param vanilla the vanilla behaviour.
-	 * @return the result of the action
+	 * Indicates there is to be no random offset.
 	 */
-	public ActionResult onUse(Position position) {
-		return ActionResult.PASS;
-	}
+	NONE,
+	/**
+	 * Indicates the random offset is to be in the horizontal direction only.
+	 */
+	HORIZONTAL_ONLY,
+	/**
+	 * Indicates the random offset may be in any and all directions.
+	 */
+	ALL
 }

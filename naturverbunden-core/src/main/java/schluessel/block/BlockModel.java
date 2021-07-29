@@ -31,7 +31,6 @@ import com.google.common.collect.ImmutableMap;
 import net.devtech.arrp.json.blockstate.JBlockModel;
 import net.devtech.arrp.json.blockstate.JState;
 import net.devtech.arrp.json.models.JModel;
-import net.minecraft.block.AbstractBlock.OffsetType;
 import net.minecraft.util.Identifier;
 import schluessel_impl.obj.ImplBlockModel;
 
@@ -75,11 +74,11 @@ public interface BlockModel {
 	BlockModel renderOn(Layer layer);
 
 	/**
-	 * Sets the offset type of the block model.
+	 * Sets the random offset type of the block model.
 	 * @param type the offset type.
 	 * @return this
 	 */
-	BlockModel offsetType(OffsetType type);
+	BlockModel randomOffset(RandomOffsetType type);
 
 	/**
 	 * Creates an immutable block model from the settings.
