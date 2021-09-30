@@ -1,7 +1,8 @@
-archivesBaseName = "naturverbunden-core"
+archivesBaseName = "naturverbunden-terrain"
 version = getSubprojectVersion(project)
 
 dependencies {
+	implementation project(path: ':naturverbunden-core')
 	implementation project(path: ':schluessel')
 	runtimeOnly project(path: ':schluessel-impl')
 }

@@ -1,0 +1,5 @@
+archivesBaseName = "schluessel"
+version = getSubprojectVersion(project)
+
+dependencies {
+}

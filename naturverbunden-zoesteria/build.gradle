@@ -1,6 +1,0 @@
-archivesBaseName = "naturverbunden-zoesteria"
-version = getSubprojectVersion(project)
-
-dependencies {
-	implementation project(path: ':naturverbunden-core')
-}

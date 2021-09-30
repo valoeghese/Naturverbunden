@@ -1,6 +1,0 @@
-{
-    "parent": "block/cube_all",
-    "textures": {
-        "all": "nvb:block/synechococcus_covered_rock"
-    }
-}

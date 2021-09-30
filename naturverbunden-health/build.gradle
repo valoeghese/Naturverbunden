@@ -2,7 +2,8 @@ archivesBaseName = "naturverbunden-health"
 version = getSubprojectVersion(project)
 
 dependencies {
-	implementation project(path: ':naturverbunden-core')
+	implementation project(path: ':schluessel')
+	runtimeOnly project(path: ':schluessel-impl')
 	
 	// Bad Bloat Api
 	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:3.0.0-nightly.21w06a"

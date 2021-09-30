@@ -15,18 +15,24 @@ def getSubprojectVersion(project) {
 }
 
 dependencies {
+	implementation project(":schluessel")
+	implementation project(":schluessel-impl")
+	
 	implementation project(":naturverbunden-core")
 	implementation project(":naturverbunden-health")
-	implementation project(":naturverbunden-primitive")
+	implementation project(":naturverbunden-progression")
+	implementation project(":naturverbunden-biomes")
 	implementation project(":naturverbunden-terrain")
-	implementation project(":naturverbunden-zoesteria")
 	
 	afterEvaluate {
-		include project("naturverbunden-core:")
-		include project("naturverbunden-health:")
-		include project("naturverbunden-primitive:")
-		include project("naturverbunden-terrain:")
-		include project("naturverbunden-zoesteria:")
+		include project(":schluessel")
+		include project(":schluessel-impl")
+		
+		include project(":naturverbunden-core")
+		include project(":naturverbunden-health")
+		include project(":naturverbunden-progression")
+		include project(":naturverbunden-biomes")
+		include project(":naturverbunden-terrain")
 	}
 }
 

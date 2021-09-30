@@ -1,7 +1,0 @@
-archivesBaseName = "naturverbunden-primitive"
-version = getSubprojectVersion(project)
-
-dependencies {
-	implementation project(path: ':naturverbunden-core')
-	implementation project(path: ':naturverbunden-zoesteria')
-}

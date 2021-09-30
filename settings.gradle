@@ -12,9 +12,12 @@ pluginManagement {
 
 rootProject.name = "naturverbunden"
 
+include 'schluessel'
+include 'schluessel-impl'
+
 include 'naturverbunden-core'
 
+include 'naturverbunden-biomes'
 include 'naturverbunden-health'
-include 'naturverbunden-primitive'
+include 'naturverbunden-progression'
 include 'naturverbunden-terrain'
-include 'naturverbunden-zoesteria'

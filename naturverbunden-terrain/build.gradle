@@ -3,5 +3,7 @@ version = getSubprojectVersion(project)
 
 dependencies {
 	implementation project(path: ':naturverbunden-core')
-	implementation project(path: ':naturverbunden-zoesteria')
+	implementation project(path: ':naturverbunden-biomes')
+	implementation project(path: ':schluessel')
+	runtimeOnly project(path: ':schluessel-impl')
 }
