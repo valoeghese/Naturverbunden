@@ -16,6 +16,7 @@ include 'schluessel'
 include 'schluessel-impl'
 
 include 'naturverbunden-core'
+include 'naturverbunden-terrain-core'
 
 include 'naturverbunden-biomes'
 include 'naturverbunden-health'

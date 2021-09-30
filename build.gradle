@@ -19,6 +19,7 @@ dependencies {
 	implementation project(":schluessel-impl")
 	
 	implementation project(":naturverbunden-core")
+	implementation project(":naturverbunden-terrain-core")
 	implementation project(":naturverbunden-health")
 	implementation project(":naturverbunden-progression")
 	implementation project(":naturverbunden-biomes")
@@ -29,6 +30,7 @@ dependencies {
 		include project(":schluessel-impl")
 		
 		include project(":naturverbunden-core")
+		include project(":naturverbunden-terrain-core")
 		include project(":naturverbunden-health")
 		include project(":naturverbunden-progression")
 		include project(":naturverbunden-biomes")

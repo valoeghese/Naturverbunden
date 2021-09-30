@@ -1,0 +1,5 @@
+archivesBaseName = "naturverbunden-terrain-core"
+version = getSubprojectVersion(project)
+
+dependencies {
+}
