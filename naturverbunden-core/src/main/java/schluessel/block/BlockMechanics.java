@@ -19,7 +19,7 @@
 
 package schluessel.block;
 
-import schluessel.registry.ActionResult;
+import schluessel.util.ActionResult;
 import schluessel.util.Position;
 
 /**

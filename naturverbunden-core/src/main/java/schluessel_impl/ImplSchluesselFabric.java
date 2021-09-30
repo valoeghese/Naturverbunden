@@ -18,7 +18,7 @@ public class ImplSchluesselFabric implements ModInitializer {
 		return new Position(pos.getX(), pos.getY(), pos.getZ());
 	}
 	
-	public static ActionResult convertAction(schluessel.registry.ActionResult action) {
+	public static ActionResult convertAction(schluessel.util.ActionResult action) {
 		return switch (action) {
 			case SKIP, PASS -> ActionResult.PASS;
 			case CONSUME -> ActionResult.CONSUME;

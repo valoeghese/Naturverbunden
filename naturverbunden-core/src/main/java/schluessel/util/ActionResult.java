@@ -1,4 +1,4 @@
-package schluessel.registry;
+package schluessel.util;
 
 /**
  * A result for an action or an event handler.
