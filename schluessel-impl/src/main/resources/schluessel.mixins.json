@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "schluessel_impl.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "FireBlockAccessor",
+    "MixinBlock"
+  ],
+  "client": [
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
