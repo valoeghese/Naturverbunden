@@ -1,12 +1,14 @@
-package schluessel_impl;
+package schluessel.impl.client;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.renderer.RenderType;
 import schluessel.block.Layer;
-import schluessel_impl.obj.ImplSchluesselBlock;
+import schluessel.impl.ClientConversions;
+import schluessel.impl.obj.ImplSchluesselBlock;
 
-public class ImplSchluesselClient {
-	public static void setRenderLayer(ImplSchluesselBlock block, Layer layer) {
+public class ImplementedClientConversions extends ClientConversions {
+	@Override
+	public void setRenderLayer(ImplSchluesselBlock block, Layer layer) {
 		BlockRenderLayerMap.INSTANCE.putBlock(block, getVanillaRenderLayer(layer));
 	}
 
@@ -15,9 +17,9 @@ public class ImplSchluesselClient {
 	 */
 	private static RenderType getVanillaRenderLayer(Layer layer) {
 		return switch (layer) {
-			case CUTOUT -> RenderType.cutoutMipped();
-			case TRANSLUCENT -> RenderType.translucent();
-			default -> RenderType.solid();
+		case CUTOUT -> RenderType.cutoutMipped();
+		case TRANSLUCENT -> RenderType.translucent();
+		default -> RenderType.solid();
 		};
 	}
 }

@@ -17,17 +17,29 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package schluessel_impl.mixin;
+package schluessel.impl.obj;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.FireBlock;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.world.item.Item;
+import schluessel.item.ItemSettings;
 
-@Mixin(FireBlock.class)
-public interface FireBlockAccessor {
+public final class ImplItemSettings implements ItemSettings {
+	private ItemGroup creativeTab;
 
-	@Invoker
-	void callRegisterFlammableBlock(Block block, int burnChance, int spreadChance);
+	@Override
+	public ItemSettings creativeTab(ItemGroup group) {
+		this.creativeTab = group;
+		return this;
+	}
+
+	@Nullable
+	public ItemGroup getCreativeTab() {
+		return this.creativeTab;
+	}
+
+	public Item.Properties build() {
+		return new Item.Properties().group(this.creativeTab);
+	}
 }

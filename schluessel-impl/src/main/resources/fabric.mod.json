@@ -1,15 +1,14 @@
 {
   "schemaVersion": 1,
-  "id": "nvb-core",
+  "id": "schluessel-impl",
   "version": "${version}",
   
-  "name": "Naturverbunden Core Module",
-  "description": "A realistic progression overhaul for minecraft.",
+  "name": "Schluessel Fabric Implementation",
+  "description": "Implementation of the Schuessel library on fabric.",
   "authors": [
     "Mekal \"Valoeghese\" Covic"
   ],
-  
-  "icon": "assets/nvb/icon.png",
+ 
   "license": "LGPLv3",
   
   "environment": "*",
@@ -19,10 +18,10 @@
   "depends": {
     "fabricloader": ">=0.4.0"
   },
-  
+
   "entrypoints": {
     "main": [
-      "schluessel_impl.ImplSchluesselFabric"
+      "schluessel.impl.ImplSchluesselFabric"
     ]
   },
   

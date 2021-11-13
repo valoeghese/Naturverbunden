@@ -8,7 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import schluessel.Implementation;
+import schluessel.impl.Implementation;
 import schluessel.util.MapColour;
 
 /**

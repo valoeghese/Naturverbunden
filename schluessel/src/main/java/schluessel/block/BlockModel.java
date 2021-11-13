@@ -32,7 +32,7 @@ import net.devtech.arrp.json.blockstate.JBlockModel;
 import net.devtech.arrp.json.blockstate.JState;
 import net.devtech.arrp.json.models.JModel;
 import net.minecraft.resources.ResourceLocation;
-import schluessel.Implementation;
+import schluessel.impl.Implementation;
 
 /**
  * Class that represents the visual elements of a block.

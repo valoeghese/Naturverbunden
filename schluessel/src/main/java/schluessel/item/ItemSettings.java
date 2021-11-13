@@ -20,7 +20,7 @@
 package schluessel.item;
 
 import net.minecraft.world.item.CreativeModeTab;
-import schluessel.Implementation;
+import schluessel.impl.Implementation;
 
 /**
  * Item Settings builder.

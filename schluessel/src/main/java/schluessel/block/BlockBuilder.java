@@ -23,7 +23,7 @@ import java.util.function.Function;
 
 import net.devtech.arrp.json.models.JModel;
 import net.minecraft.resources.ResourceLocation;
-import schluessel.Implementation;
+import schluessel.impl.Implementation;
 import schluessel.item.ItemSettings;
 
 /**

@@ -17,21 +17,21 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package schluessel_impl.obj;
+package schluessel.impl.obj;
 
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
 import net.fabricmc.fabric.mixin.object.builder.AbstractBlockAccessor;
 import net.fabricmc.fabric.mixin.object.builder.AbstractBlockSettingsAccessor;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.MapColor;
-import net.minecraft.block.Material;
-import net.minecraft.item.Item;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.tag.Tag;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import schluessel.block.BlockMaterial;
+import schluessel.util.MapColour;
 
 public class ImplBlockMaterial implements BlockMaterial {
 	private ImplBlockMaterial(ImplBlockMaterial builder) {
@@ -61,13 +61,13 @@ public class ImplBlockMaterial implements BlockMaterial {
 
 	// Based Properties
 	Material material;
-	Function<BlockState, MapColor> materialColour;
+	Function<BlockState, MapColour> materialColour;
 	float hardness = 0.0f;
 	float resistance = 0.0f;
 	ToIntFunction<BlockState> luminosity = ignored -> 0;
 
 	// Cringe Properties
-	BlockSoundGroup sounds = BlockSoundGroup.STONE;
+	SoundType sounds = SoundType.STONE;
 	boolean ticksRandomly = false;
 	boolean dropsNothing = false;
 	float slipperiness = 0.6f;
@@ -91,12 +91,12 @@ public class ImplBlockMaterial implements BlockMaterial {
 	}
 
 	@Override
-	public BlockMaterial.Builder colour(MapColor colour) {
+	public BlockMaterial.Builder colour(MapColour colour) {
 		return new Builder(this).colour(colour);
 	}
 
 	@Override
-	public BlockMaterial.Builder colour(Function<BlockState, MapColor> colour) {
+	public BlockMaterial.Builder colour(Function<BlockState, MapColour> colour) {
 		return new Builder(this).colour(colour);
 	}
 
@@ -129,7 +129,7 @@ public class ImplBlockMaterial implements BlockMaterial {
 	}
 
 	@Override
-	public BlockMaterial.Builder sounds(BlockSoundGroup sounds) {
+	public BlockMaterial.Builder sounds(SoundType sounds) {
 		return new Builder(this).sounds(sounds);
 	}
 
@@ -188,7 +188,8 @@ public class ImplBlockMaterial implements BlockMaterial {
 			AbstractBlockSettingsAccessor settings = (AbstractBlockSettingsAccessor) ((AbstractBlockAccessor) existing).getSettings();
 
 			this.material = settings.getMaterial();
-			this.materialColour = settings.getMapColorProvider();
+			this.materialColour = settings.getMapColorProvider()
+					.andThen(materialColour -> MapColour.byId(materialColour.id));
 			this.hardness = settings.getHardness();
 			this.luminosity = settings.getLuminance();
 			this.resistance = settings.getResistance();
@@ -212,13 +213,13 @@ public class ImplBlockMaterial implements BlockMaterial {
 		}
 
 		@Override
-		public BlockMaterial.Builder colour(MapColor colour) {
+		public BlockMaterial.Builder colour(MapColour colour) {
 			this.materialColour = ignored -> colour;
 			return this;
 		}
 
 		@Override
-		public BlockMaterial.Builder colour(Function<BlockState, MapColor> colour) {
+		public BlockMaterial.Builder colour(Function<BlockState, MapColour> colour) {
 			this.materialColour = colour;
 			return this;
 		}
@@ -255,7 +256,7 @@ public class ImplBlockMaterial implements BlockMaterial {
 		}
 
 		@Override
-		public BlockMaterial.Builder sounds(BlockSoundGroup sounds) {
+		public BlockMaterial.Builder sounds(SoundType sounds) {
 			this.sounds = sounds;
 			return this;
 		}

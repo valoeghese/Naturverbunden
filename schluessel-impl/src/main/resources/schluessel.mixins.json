@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "schluessel_impl.mixin",
+  "package": "schluessel.impl.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "FireBlockAccessor",

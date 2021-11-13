@@ -17,14 +17,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package schluessel_impl.obj;
+package schluessel.impl.obj;
 
 import java.util.function.Function;
 
 import net.devtech.arrp.json.models.JModel;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import schluessel.block.Block;
 import schluessel.block.BlockBuilder;
 import schluessel.block.BlockMaterial;
@@ -37,7 +37,7 @@ public class ImplBlockBuilder implements BlockBuilder {
 	private ItemSettings itemSettings = new ImplItemSettings();
 	private ImplBlockMaterial material;
 	private boolean defaultLootTable = true;
-	private Function<Identifier, JModel> itemModel = PARENTED;
+	private Function<ResourceLocation, JModel> itemModel = PARENTED;
 	private BlockMechanics mechanics = DEFAULT_MECHANICS;
 
 	@Override
@@ -76,7 +76,7 @@ public class ImplBlockBuilder implements BlockBuilder {
 	 * Replace the default item model. Function takes the item id (NOT the model id) and returns the item JModel.
 	 */
 	@Override
-	public BlockBuilder itemModel(Function<Identifier, JModel> modelCreator) {
+	public BlockBuilder itemModel(Function<ResourceLocation, JModel> modelCreator) {
 		this.itemModel = modelCreator;
 		return this;
 	}
@@ -131,6 +131,6 @@ public class ImplBlockBuilder implements BlockBuilder {
 		return result;
 	}
 
-	private static final Function<Identifier, JModel> PARENTED = id -> JModel.model().parent(new Identifier(id.getNamespace(), "block/" + id.getPath()).toString());
+	private static final Function<ResourceLocation, JModel> PARENTED = id -> JModel.model().parent(new ResourceLocation(id.getNamespace(), "block/" + id.getPath()).toString());
 	private static final BlockMechanics DEFAULT_MECHANICS = new BlockMechanics();
 }

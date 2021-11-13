@@ -17,29 +17,31 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package schluessel_impl.obj;
+package schluessel.impl.obj;
 
 import java.util.function.Function;
 
 import net.devtech.arrp.json.models.JModel;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import schluessel.block.BlockMaterial;
 import schluessel.block.BlockMechanics;
 import schluessel.block.BlockModel;
+import schluessel.impl.CommonConversions;
+import schluessel.impl.ImplSchluesselFabric;
 import schluessel.item.ItemSettings;
-import schluessel_impl.ImplSchluesselFabric;
+import schluessel.util.ActionResult;
 
-public class ImplSchluesselBlock extends Block implements schluessel.block.Block {
-	public ImplSchluesselBlock(Settings settings, BlockMechanics mechanics, BlockModel model,
-			boolean dlt, BlockMaterial material, Function<Identifier, JModel> itemModel, ItemSettings itemSettings) {
+public class ImplSchluesselBlock extends Block {
+	public ImplSchluesselBlock(BlockBehaviour.Properties settings, BlockMechanics mechanics, BlockModel model,
+			boolean dlt, BlockMaterial material, Function<ResourceLocation, JModel> itemModel, ItemSettings itemSettings) {
 		super(settings);
 		this.mechanics = mechanics;
 		this.model = model;
@@ -59,7 +61,7 @@ public class ImplSchluesselBlock extends Block implements schluessel.block.Block
 	private final BlockMaterial material;
 	private final BlockModel model;
 	private final boolean defaultLootTable;
-	private final Function<Identifier, JModel> itemModel;
+	private final Function<ResourceLocation, JModel> itemModel;
 	private final ItemSettings itemSettings;
 	private final OffsetType vanillaOffsetType;
 
@@ -71,7 +73,7 @@ public class ImplSchluesselBlock extends Block implements schluessel.block.Block
 		return this.defaultLootTable;
 	}
 	
-	public JModel computeItemModel(Identifier id) {
+	public JModel computeItemModel(ResourceLocation id) {
 		return this.itemModel.apply(id);
 	}
 
@@ -86,7 +88,7 @@ public class ImplSchluesselBlock extends Block implements schluessel.block.Block
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		// if there is ever more logic added to vanilla here, PASS will need to be differentiated to SKIP where SKIP just returns immediately whereas PASS runs vanilla
-		return ImplSchluesselFabric.convertAction(this.mechanics.onUse(ImplSchluesselFabric.blockposToPosition(pos)));
+		return ImplSchluesselFabric.convertAction(this.mechanics.onUse(CommonConversions.blockposToPosition(pos)));
 	}
 
 	@Override

@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package schluessel_impl.obj;
+package schluessel.impl.obj;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +33,7 @@ import schluessel.block.BlockModel;
 import schluessel.block.Layer;
 import schluessel.block.RandomOffsetType;
 import schluessel.core.Mod;
-import schluessel_impl.ImplSchluesselARRP;
+import schluessel.impl.RuntimeResources;
 
 public class ImplBlockModel implements BlockModel {
 	public ImplBlockModel() {
@@ -109,7 +109,7 @@ public class ImplBlockModel implements BlockModel {
 			Set<Map.Entry<Identifier, JModel>> models = this.blockModel.createModels(identifierFunction).entrySet();
 
 			for (Map.Entry<Identifier, JModel> model : models) {
-				ImplSchluesselARRP.RESOURCE_PACK.addModel(model.getValue(), model.getKey());
+				RuntimeResources.RESOURCE_PACK.addModel(model.getValue(), model.getKey());
 			}
 
 			modelLocations = models.stream().map(entry -> new JBlockModel(entry.getKey())).collect(Collectors.toList());
@@ -121,7 +121,7 @@ public class ImplBlockModel implements BlockModel {
 		if (this.state != null) {
 			// "ID Location"
 			Identifier idWithModid = context.locationOf(id);
-			ImplSchluesselARRP.RESOURCE_PACK.addBlockState(this.state.createModel(idWithModid, modelLocations.toArray(JBlockModel[]::new)), idWithModid);
+			RuntimeResources.RESOURCE_PACK.addBlockState(this.state.createModel(idWithModid, modelLocations.toArray(JBlockModel[]::new)), idWithModid);
 		}
 	}
 

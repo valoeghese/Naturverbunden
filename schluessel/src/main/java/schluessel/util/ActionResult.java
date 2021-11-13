@@ -13,7 +13,7 @@ public enum ActionResult {
 	 */
 	CONSUME,
 	/**
-	 * Indicates whether the action was performed should be left to further processing, by other mods, vanilla, or ultimately by some base implementation.
+	 * Indicates whether the action should be left to further processing, by other mods, vanilla, or ultimately by some base implementation.
 	 */
 	PASS,
 	/**
