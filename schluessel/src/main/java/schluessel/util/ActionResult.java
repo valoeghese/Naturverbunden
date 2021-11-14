@@ -13,13 +13,9 @@ public enum ActionResult {
 	 */
 	CONSUME,
 	/**
-	 * Indicates whether the action should be left to further processing, by other mods, vanilla, or ultimately by some base implementation.
+	 * Indicates whether the action should be left to further processing, ultimately by some base implementation.
 	 */
 	PASS,
-	/**
-	 * Indicates further event processing should be skipped, and whether the action was performed should be left to some base implementation, which may in some cases have still have more logic involved and/or delegate handling to other classes.
-	 */
-	SKIP,
 	/**
 	 * Indicates the action should not be performed.
 	 */

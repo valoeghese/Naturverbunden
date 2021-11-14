@@ -29,6 +29,6 @@ public interface ItemSettings {
 	ItemSettings creativeTab(CreativeModeTab group);
 
 	static ItemSettings create() {
-		return Implementation.INSTANCE.newItemSettings();
+		return Implementation.delegate().newItemSettings();
 	}
 }

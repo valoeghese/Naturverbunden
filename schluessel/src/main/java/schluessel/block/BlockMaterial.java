@@ -88,10 +88,10 @@ public interface BlockMaterial {
 	}
 
 	public static BlockMaterial.Builder builder() {
-		return Implementation.INSTANCE.newBlockMaterialBuilder();
+		return Implementation.delegate().newBlockMaterialBuilder();
 	}
 
 	public static BlockMaterial.Builder copy(Block existing) {
-		return Implementation.INSTANCE.newBlockMaterialBuilder(existing);
+		return Implementation.delegate().newBlockMaterialBuilder(existing);
 	}
 }

@@ -5,7 +5,12 @@ import schluessel.block.Block;
 import schluessel.block.BlockBuilder;
 import schluessel.block.BlockMaterial.Builder;
 import schluessel.block.BlockModel;
+import schluessel.impl.obj.ImplBlockBuilder;
+import schluessel.impl.obj.ImplBlockMaterial;
+import schluessel.impl.obj.ImplBlockModel;
+import schluessel.impl.obj.ImplItemSettings;
 import schluessel.item.ItemSettings;
+import schluessel.util.ActionResult;
 import schluessel.util.Position;
 
 public class ImplSchluesselFabric extends Implementation implements ModInitializer {
@@ -21,37 +26,32 @@ public class ImplSchluesselFabric extends Implementation implements ModInitializ
 
 	@Override
 	public BlockBuilder newBlockBuilder() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ImplBlockBuilder();
 	}
 
 	@Override
 	public Builder newBlockMaterialBuilder() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ImplBlockMaterial.Builder();
 	}
 
 	@Override
 	public Builder newBlockMaterialBuilder(Block existing) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ImplBlockMaterial.Builder((net.minecraft.world.level.block.Block)existing);
 	}
 
 	@Override
 	public BlockModel newBlockModel() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ImplBlockModel();
 	}
 
 	@Override
 	public ItemSettings newItemSettings() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ImplItemSettings();
 	}
 
 	@Override
-	public void blockBaseOnUse(Block block, Position position) {
-		// TODO Auto-generated method stub
-		
+	public ActionResult blockBaseOnUse(Block block, Position position) {
+		// TODO
+		return CommonConversions.convertAction(((net.minecraft.world.level.block.Block) block).use(null, null, null, null, null, null));
 	}
 }

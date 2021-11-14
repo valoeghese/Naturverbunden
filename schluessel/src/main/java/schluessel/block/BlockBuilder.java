@@ -74,6 +74,6 @@ public interface BlockBuilder {
 	 * @return the constructed block builder.
 	 */
 	public static BlockBuilder create() {
-		return Implementation.INSTANCE.newBlockBuilder();
+		return Implementation.delegate().newBlockBuilder();
 	}
 }

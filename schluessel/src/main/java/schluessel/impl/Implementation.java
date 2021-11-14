@@ -5,6 +5,7 @@ import schluessel.block.BlockBuilder;
 import schluessel.block.BlockMaterial.Builder;
 import schluessel.block.BlockModel;
 import schluessel.item.ItemSettings;
+import schluessel.util.ActionResult;
 import schluessel.util.Position;
 
 /**
@@ -32,7 +33,7 @@ public abstract class Implementation {
 	// *********************************************
 	//          B L O C K   M A T E R I A L
 	// *********************************************
-	abstract public void blockBaseOnUse(Block block, Position position);
+	abstract public ActionResult blockBaseOnUse(Block block, Position position);
 	
 	// *********************************************
 	//        I M P L E M E N T A T I O N

@@ -234,6 +234,6 @@ public interface BlockModel {
 	 * @return the created instance.
 	 */
 	static BlockModel create() {
-		return Implementation.INSTANCE.newBlockModel();
+		return Implementation.delegate().newBlockModel();
 	}
 }
