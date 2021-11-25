@@ -47,7 +47,7 @@ public class JFrameViewer extends JPanel {
 
 			for (int z = -250; z < 250; ++z) {
 				int height = this.generator.height(x * ZOOM_OUT, z * ZOOM_OUT);
-				this.image.setRGB(imgx, z + 250, (255 << 6) | (height << 2) | (height << 4) | height);
+				this.image.setRGB(imgx, z + 250, (255 << 24) | (height << 16) | (height << 8) | height);
 			}
 		}
 		// TODO separate
