@@ -36,7 +36,7 @@ public class TerrainGenerator {
 	private final INoise baseHeightGenerator;
 
 	public double baseHeight(double x, double z) {
-		return this.baseHeightGenerator.sample(x * BASE_HEIGHT_FREQUENCY, z * BASE_HEIGHT_FREQUENCY);
+		return BASE_AVERAGE_HEIGHT * BASE_HEIGHT_AMPLITUDE * this.baseHeightGenerator.sample(x * BASE_HEIGHT_FREQUENCY, z * BASE_HEIGHT_FREQUENCY);
 	}
 
 	public void pregen() {
