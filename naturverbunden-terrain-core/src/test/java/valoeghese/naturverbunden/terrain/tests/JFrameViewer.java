@@ -27,8 +27,9 @@ import javax.swing.JPanel;
 
 import valoeghese.naturverbunden.terrain.core.TerrainGenerator;
 
-@SuppressWarnings("serial") // @reason don't serialise this.
 public class JFrameViewer extends JPanel {
+	private static final long serialVersionUID = 1L;
+
 	public JFrameViewer() {
 		final long seed = 1;
 		this.generator = new TerrainGenerator(seed);
