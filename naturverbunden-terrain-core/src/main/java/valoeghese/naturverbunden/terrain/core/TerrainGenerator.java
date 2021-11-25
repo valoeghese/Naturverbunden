@@ -51,7 +51,7 @@ public class TerrainGenerator {
 	}
 
 	public int height(int x, int z) {
-		return (int)this.baseHeight(x, z) > 80 ? 255 : 0;
+		return (int)this.baseHeight(x, z);
 	}
 
 	private static final double BASE_HEIGHT_FREQUENCY = 1.0 / 1024.0;
