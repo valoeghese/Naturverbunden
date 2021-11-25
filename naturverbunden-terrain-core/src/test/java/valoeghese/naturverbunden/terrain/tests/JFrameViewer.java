@@ -57,6 +57,7 @@ public class JFrameViewer extends JPanel {
 
 		// TODO separate
 		System.out.println("Sampled terrain and created image in " + (System.currentTimeMillis() - timeMillis) + "ms.");
+		g.drawImage(image, 0, 0, this);
 	}
 
 	public static void main(String[] args) {
