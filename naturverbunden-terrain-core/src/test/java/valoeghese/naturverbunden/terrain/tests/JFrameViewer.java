@@ -47,6 +47,9 @@ public class JFrameViewer extends JPanel {
 
 			for (int z = -250; z < 250; ++z) {
 				int height = this.generator.height(x * ZOOM_OUT, z * ZOOM_OUT);
+				if (height < 0 || height > 255) {
+					throw new IllegalStateException("Overflow: " + height);
+				}
 				this.image.setRGB(imgx, z + 250, (255 << 24) | (height << 16) | (height << 8) | height);
 			}
 		}
