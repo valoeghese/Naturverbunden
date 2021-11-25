@@ -38,27 +38,28 @@ public class JFrameViewer extends JPanel {
 		long timeMillis = System.currentTimeMillis();
 		this.generator.pregen();
 		System.out.println("Pregenerated basic continent features in " + (System.currentTimeMillis() - timeMillis) + "ms.");
-	}
 
-	private final TerrainGenerator generator;
+		this.image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
 
-	@Override
-	public void paint(Graphics g) {
-		BufferedImage image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
-		
-		long timeMillis = System.currentTimeMillis();
+		timeMillis = System.currentTimeMillis();
 		for (int x = -250; x < 250; ++x) {
 			int imgx = x + 250;
 
 			for (int z = -250; z < 250; ++z) {
 				int height = this.generator.height(x * ZOOM_OUT, z * ZOOM_OUT);
-				image.setRGB(imgx, z + 250, (255 << 6) | (height << 2) | (height << 4) | height);
+				this.image.setRGB(imgx, z + 250, (255 << 6) | (height << 2) | (height << 4) | height);
 			}
 		}
-
 		// TODO separate
 		System.out.println("Sampled terrain and created image in " + (System.currentTimeMillis() - timeMillis) + "ms.");
-		g.drawImage(image, 0, 0, this);
+	}
+
+	private final TerrainGenerator generator;
+	private final BufferedImage image;
+
+	@Override
+	public void paint(Graphics g) {
+		g.drawImage(this.image, 0, 0, this);
 	}
 
 	public static void main(String[] args) {
@@ -69,6 +70,6 @@ public class JFrameViewer extends JPanel {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
-	
+
 	private static int ZOOM_OUT = 1;
 }
