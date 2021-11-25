@@ -23,20 +23,27 @@ import java.util.Random;
 import java.util.function.Function;
 
 import valoeghese.naturverbunden.terrain.core.noise.INoise;
-import valoeghese.naturverbunden.terrain.core.noise.RidgedSimplexGenerator;
+import valoeghese.naturverbunden.terrain.core.noise.OpenSimplexGenerator;
 
 public class TerrainGenerator {
 	public TerrainGenerator(long seed) {
 		Random random = new Random(seed);
 		this.noiseSupplier = n -> n.apply(random); // I would avoid this lambda mess but it's run a single time: startup. So I think it's fine.
-		this.baseHeightGenerator = this.noiseSupplier.apply(RidgedSimplexGenerator::new);
+		this.baseHeightGenerator = this.noiseSupplier.apply(OpenSimplexGenerator::new);
 	}
 
 	private final Function<Function<Random, INoise>, INoise> noiseSupplier;
 	private final INoise baseHeightGenerator;
 
 	public double baseHeight(double x, double z) {
-		return BASE_AVERAGE_HEIGHT + BASE_HEIGHT_AMPLITUDE * this.baseHeightGenerator.sample(x * BASE_HEIGHT_FREQUENCY, z * BASE_HEIGHT_FREQUENCY);
+		double radialX = 0.0003 * x;
+		double radialZ = 0.0003 * z;
+		double radialValue = radialX * radialX + radialZ * radialZ;
+		radialValue = MathsUtils.clamp(radialValue * radialValue * radialValue, 0, 1);
+
+		double noise = this.baseHeightGenerator.sample(x * BASE_HEIGHT_FREQUENCY, z * BASE_HEIGHT_FREQUENCY);
+		noise = MathsUtils.clamp(noise - radialValue, -1, 1);
+		return BASE_AVERAGE_HEIGHT + BASE_HEIGHT_AMPLITUDE * noise;
 	}
 
 	public void pregen() {
@@ -44,10 +51,11 @@ public class TerrainGenerator {
 	}
 
 	public int height(int x, int z) {
-		return (int)this.baseHeight(x, z);
+		return (int)this.baseHeight(x, z) > 80 ? 255 : 0;
 	}
 
 	private static final double BASE_HEIGHT_FREQUENCY = 1.0 / 1024.0;
 	private static final double BASE_HEIGHT_AMPLITUDE = 60.0;
 	private static final double BASE_AVERAGE_HEIGHT = 63.0;
+	private static final double RADIAL_INPUT = 0;
 }
