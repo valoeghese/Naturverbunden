@@ -74,5 +74,5 @@ public class JFrameViewer extends JPanel {
 		frame.setVisible(true);
 	}
 
-	private static int ZOOM_OUT = 1;
+	private static int ZOOM_OUT = 16;
 }
