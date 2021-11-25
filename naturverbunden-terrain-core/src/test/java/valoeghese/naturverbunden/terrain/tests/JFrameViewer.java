@@ -25,6 +25,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import valoeghese.naturverbunden.terrain.core.MathsUtils;
 import valoeghese.naturverbunden.terrain.core.TerrainGenerator;
 
 public class JFrameViewer extends JPanel {
@@ -32,6 +33,7 @@ public class JFrameViewer extends JPanel {
 
 	public JFrameViewer() {
 		final long seed = 1;
+		final boolean fakeHeightColour = true;
 		this.generator = new TerrainGenerator(seed);
 
 		// pregen
@@ -50,7 +52,22 @@ public class JFrameViewer extends JPanel {
 				if (height < 0 || height > 255) {
 					throw new IllegalStateException("Overflow: " + height);
 				}
-				this.image.setRGB(imgx, z + 250, (255 << 24) | (height << 16) | (height << 8) | height);
+				
+				if (fakeHeightColour) {
+					float blue = (height - 30) / 50.0f;
+					blue *= blue;
+					blue = -255 * blue + 255;
+					float green = (height - 100) / 75.0f;
+					green *= green;
+					green = -255 * green + 255;
+					float red = (height - 160) / 80.0f;
+					red *= red;
+					red = -255 * red + 255;
+
+					this.image.setRGB(imgx, z + 250, (255 << 24) | ((int)MathsUtils.clamp(red, 0, 255) << 16) | ((int)MathsUtils.clamp(green, 0, 255) << 8) | ((int)MathsUtils.clamp(blue, 0, 255) & 0xFF));
+				} else {
+					this.image.setRGB(imgx, z + 250, (255 << 24) | (height << 16) | (height << 8) | height);
+				}
 			}
 		}
 		// TODO separate
